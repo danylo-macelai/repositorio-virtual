@@ -2,6 +2,10 @@ package br.com.common.business.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.transaction.annotation.Transactional;
+
 import br.com.common.business.IBusiness;
 import br.com.common.domain.Domain;
 import br.com.common.persistence.IPersistence;
@@ -14,13 +18,15 @@ import br.com.common.persistence.IPersistence;
  */
 public abstract class Business<D extends Domain> implements IBusiness<D> {
 
+    @Autowired
     IPersistence<D> persistence;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<D> carregarTodos() {
+    @Transactional(readOnly = true)
+    public List<D> carregarTodos() throws DataAccessException {
         return persistence.carregarTodos();
     }
 
@@ -28,7 +34,8 @@ public abstract class Business<D extends Domain> implements IBusiness<D> {
      * {@inheritDoc}
      */
     @Override
-    public D ache(long id) {
+    @Transactional(readOnly = true)
+    public D ache(long id) throws DataAccessException {
         return persistence.ache(id);
     }
 
@@ -36,7 +43,8 @@ public abstract class Business<D extends Domain> implements IBusiness<D> {
      * {@inheritDoc}
      */
     @Override
-    public D carregar(long id) {
+    @Transactional(readOnly = true)
+    public D carregar(long id) throws DataAccessException {
         return persistence.carregar(id);
     }
 
@@ -44,7 +52,8 @@ public abstract class Business<D extends Domain> implements IBusiness<D> {
      * {@inheritDoc}
      */
     @Override
-    public void incluir(D dominio) {
+    @Transactional
+    public void incluir(D dominio) throws DataAccessException {
         persistence.incluir(dominio);
     }
 
@@ -52,7 +61,8 @@ public abstract class Business<D extends Domain> implements IBusiness<D> {
      * {@inheritDoc}
      */
     @Override
-    public void alterar(D dominio) {
+    @Transactional
+    public void alterar(D dominio) throws DataAccessException {
         persistence.alterar(dominio);
     }
 
@@ -60,7 +70,8 @@ public abstract class Business<D extends Domain> implements IBusiness<D> {
      * {@inheritDoc}
      */
     @Override
-    public void excluir(D dominio) {
+    @Transactional
+    public void excluir(D dominio) throws DataAccessException {
         persistence.excluir(dominio);
     }
 
@@ -68,7 +79,8 @@ public abstract class Business<D extends Domain> implements IBusiness<D> {
      * {@inheritDoc}
      */
     @Override
-    public void excluirTodos() {
+    @Transactional
+    public void excluirTodos() throws DataAccessException {
         persistence.excluirTodos();
     }
 

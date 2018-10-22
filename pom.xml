@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>br.com.repositorio</groupId>
     <artifactId>virtual-parent</artifactId>
-    <version>0.0.1</version>
+	<version>0.0.1</version>
     <packaging>pom</packaging>
 
     <modules>

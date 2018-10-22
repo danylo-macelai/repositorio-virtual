@@ -5,6 +5,13 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import br.com.common.domain.Domain;
 import br.com.common.utils.Utils;
@@ -17,13 +24,21 @@ import br.com.common.utils.Utils;
  */
 public abstract class Persistence<D extends Domain> implements IPersistence<D> {
 
-    private Class<D>      dominioClass;
+    private Class<D>                   dominioClass;
 
     @PersistenceContext
-    private EntityManager em;
+    private EntityManager              em;
 
-    public Persistence() {
+    private NamedParameterJdbcTemplate jdbcTemplate;
+
+    private SimpleJdbcInsert           jdbcInsert;
+
+    @Autowired
+    public Persistence(DataSource dataSource) {
         this.dominioClass = Utils.actualType(this);
+        this.jdbcInsert = new SimpleJdbcInsert(dataSource).withTableName(dominioClass.getAnnotation(Table.class).name())
+                .usingGeneratedKeyColumns("id");
+        this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
     /**
@@ -32,8 +47,9 @@ public abstract class Persistence<D extends Domain> implements IPersistence<D> {
      * @param hql
      * @return Query
      */
-    protected final Query query(StringBuilder hql) {
+    protected final Query query(StringBuilder hql) throws DataAccessException {
         return em.createQuery(hql.toString());
+
     }
 
     /**
@@ -41,7 +57,7 @@ public abstract class Persistence<D extends Domain> implements IPersistence<D> {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public final List<D> carregarTodos() {
+    public final List<D> carregarTodos() throws DataAccessException {
         StringBuilder hql = new StringBuilder();
         hql.append("SELECT D ");
         hql.append("FROM ").append(dominioClass.getName()).append(" D ");
@@ -52,7 +68,7 @@ public abstract class Persistence<D extends Domain> implements IPersistence<D> {
      * {@inheritDoc}
      */
     @Override
-    public final D ache(long id) {
+    public final D ache(long id) throws DataAccessException {
         return em.find(dominioClass, id);
     }
 
@@ -61,7 +77,7 @@ public abstract class Persistence<D extends Domain> implements IPersistence<D> {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public final D carregar(long id) {
+    public final D carregar(long id) throws DataAccessException {
         StringBuilder hql = new StringBuilder();
         hql.append("SELECT D ");
         hql.append("FROM ").append(dominioClass.getName()).append(" D ");
@@ -76,7 +92,7 @@ public abstract class Persistence<D extends Domain> implements IPersistence<D> {
      * {@inheritDoc}
      */
     @Override
-    public final void incluir(D dominio) {
+    public final void incluir(D dominio) throws DataAccessException {
         em.persist(dominio);
     }
 
@@ -84,7 +100,7 @@ public abstract class Persistence<D extends Domain> implements IPersistence<D> {
      * {@inheritDoc}
      */
     @Override
-    public final void alterar(D dominio) {
+    public final void alterar(D dominio) throws DataAccessException {
         em.merge(dominio);
     }
 
@@ -92,7 +108,7 @@ public abstract class Persistence<D extends Domain> implements IPersistence<D> {
      * {@inheritDoc}
      */
     @Override
-    public final void excluir(D dominio) {
+    public final void excluir(D dominio) throws DataAccessException {
         em.remove(em.contains(dominio) ? dominio : em.merge(dominio));
     }
 
@@ -100,7 +116,7 @@ public abstract class Persistence<D extends Domain> implements IPersistence<D> {
      * {@inheritDoc}
      */
     @Override
-    public final void excluirTodos() {
+    public final void excluirTodos() throws DataAccessException {
         em.createQuery("DELETE " + dominioClass.getName()).executeUpdate();
     }
 

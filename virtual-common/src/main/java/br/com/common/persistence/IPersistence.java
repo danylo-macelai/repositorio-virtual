@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.persistence.NoResultException;
 
+import org.springframework.dao.DataAccessException;
+
 import br.com.common.domain.Domain;
 
 /**
@@ -18,8 +20,9 @@ public interface IPersistence<D extends Domain> {
      * O método {@link IPersistence#carregarTodos()} retornará todos os registros que correspondem à especificação.
      *
      * @return List<D>
+     * @throws DataAccessException
      */
-    List<D> carregarTodos();
+    List<D> carregarTodos() throws DataAccessException;
 
     /**
      * O método {@link IPersistence#ache(long)} lê o registro da tabela com base na chave primária.
@@ -28,8 +31,9 @@ public interface IPersistence<D extends Domain> {
      *
      * @param id
      * @return D
+     * @throws DataAccessException
      */
-    D ache(final long id);
+    D ache(final long id) throws DataAccessException;
 
     /**
      * O método {@link IPersistence#carregar(long)} lê o registro da tabela com base na chave primária.
@@ -38,35 +42,40 @@ public interface IPersistence<D extends Domain> {
      *
      * @param id
      * @return D
+     * @throws DataAccessException
      */
-    D carregar(final long id);
+    D carregar(final long id) throws DataAccessException;
 
     /**
      * O método {@link IPersistence#incluir(Domain)} executa a instrução insert para criar o registro informado.
      *
      * @param dominio
+     * @throws DataAccessException
      */
-    void incluir(final D dominio);
+    void incluir(final D dominio) throws DataAccessException;
 
     /**
      * O método {@link IPersistence#alterar(Domain)} executa uma instrução update com base nas informações do registro.
      *
      * @param dominio
+     * @throws DataAccessException
      */
-    void alterar(final D dominio);
+    void alterar(final D dominio) throws DataAccessException;
 
     /**
      * O método {@link IPersistence#excluir(Domain)} exclui apenas o registro informado.
      *
      * @param dominio void
+     * @throws DataAccessException
      */
-    void excluir(final D dominio);
+    void excluir(final D dominio) throws DataAccessException;
 
     /**
      * O método {@link IPersistence#carregarTodos()} exclui todos os registros que correspondem à especificação.
      *
      * @return List<D>
+     * @throws DataAccessException
      */
-    void excluirTodos();
+    void excluirTodos() throws DataAccessException;
 
 }

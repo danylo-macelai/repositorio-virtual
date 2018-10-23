@@ -1,6 +1,7 @@
 /target/
 /RemoteSystemsTempFiles/
 /.settings/
+/.recommenders/
 /.classpath
 /.project
 bin/

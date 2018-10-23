@@ -11,6 +11,7 @@
 
     <modules>
         <module>virtual-common</module>
+		<module>virtual-slave</module>
     </modules>
 
     <build>

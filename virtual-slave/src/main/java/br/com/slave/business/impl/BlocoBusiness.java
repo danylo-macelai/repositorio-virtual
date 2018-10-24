@@ -3,7 +3,7 @@ package br.com.slave.business.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.common.business.impl.Business;
+import br.com.common.business.Business;
 import br.com.slave.business.IBloco;
 import br.com.slave.domain.BlocoTO;
 import br.com.slave.persistence.BlocoDAO;

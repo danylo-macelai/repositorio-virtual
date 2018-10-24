@@ -12,6 +12,11 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Version;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 /**
  * <b>Project:</b> virtual-common <br>
  *
@@ -87,6 +92,26 @@ public abstract class Domain implements Serializable {
     @PreUpdate
     public void preUpdate() {
         setAlteracao(LocalDateTime.now());
+    }
+
+    @Override
+    public final String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    @Override
+    public final boolean equals(Object other) {
+        if ((other == null) || !this.getClass().equals(other.getClass())) {
+            return false;
+        }
+        EqualsBuilder builder = new EqualsBuilder();
+        builder.append(id, ((Domain) other).id);
+        return builder.isEquals();
+    }
+
+    @Override
+    public final int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
 }

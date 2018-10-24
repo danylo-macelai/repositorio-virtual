@@ -16,11 +16,12 @@
 	<packaging>jar</packaging>
 
 	<properties>
+		<microservice.mainClass>br.com.slave.Application</microservice.mainClass>
+		<msf4j.version>2.6.4</msf4j.version>
+		
 		<hibernate-entitymanager.version>5.2.12.Final</hibernate-entitymanager.version>
-		<commons-dbcp.version>1.4</commons-dbcp.version>
 		<commons-pool.version>1.5.6</commons-pool.version>
 		<hsqldb.version>1.8.0.10</hsqldb.version>
-		<commons-lang.version>2.6</commons-lang.version>
 	</properties>
 
 	<dependencies>
@@ -28,6 +29,57 @@
 			<groupId>br.com.repositorio</groupId>
 			<artifactId>virtual-common</artifactId>
 			<version>0.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>javax.el-api</artifactId>
+			<version>2.2.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.wso2.msf4j</groupId>
+			<artifactId>msf4j-spring</artifactId>
+			<version>${msf4j.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context-support</artifactId>
+
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.wso2.msf4j</groupId>
+			<artifactId>msf4j-core</artifactId>
+			<version>${msf4j.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.wso2.carbon</groupId>
+					<artifactId>org.wso2.carbon.kernel.feature</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.wso2.carbon</groupId>
+					<artifactId>org.wso2.carbon.runtime.feature</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.wso2.carbon</groupId>
+					<artifactId>org.wso2.carbon.launcher</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.wso2.eclipse.osgi</groupId>
+					<artifactId>org.eclipse.osgi</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.wso2.eclipse.osgi</groupId>
+					<artifactId>org.eclipse.osgi.services</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.code.findbugs</groupId>
+					<artifactId>jsr305</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -50,22 +102,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>commons-dbcp</groupId>
-			<artifactId>commons-dbcp</artifactId>
-			<version>${commons-dbcp.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>xml-apis</groupId>
-					<artifactId>xml-apis</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
 			<version>${commons-pool.version}</version>
@@ -75,12 +111,6 @@
 			<groupId>hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 			<version>${hsqldb.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>${commons-lang.version}</version>
 		</dependency>
 	</dependencies>
 

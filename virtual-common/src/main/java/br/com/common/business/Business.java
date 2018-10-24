@@ -1,4 +1,4 @@
-package br.com.common.business.impl;
+package br.com.common.business;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.common.business.IBusiness;
 import br.com.common.domain.Domain;
 import br.com.common.persistence.IPersistence;
 

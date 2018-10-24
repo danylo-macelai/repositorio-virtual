@@ -1,6 +1,8 @@
 package br.com.common.utils;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
  * <b>Project:</b> virtual-common <br>
@@ -20,6 +22,17 @@ public abstract class Utils {
     public static <T extends Object> Class<T> actualType(Object object) {
         ParameterizedType thisType = (ParameterizedType) object.getClass().getGenericSuperclass();
         return (Class<T>) thisType.getActualTypeArguments()[0];
+    }
+
+    /**
+     * Cria um Array concatenado com os elementos do one seguido por todos os elementos two.
+     *
+     * @param one
+     * @param two
+     * @return T[]
+     */
+    public static String[] concat(String[] one, String[] two) {
+        return Stream.concat(Arrays.stream(one), Arrays.stream(two)).toArray(String[]::new);
     }
 
 }

@@ -8,7 +8,7 @@ import org.wso2.msf4j.spring.SpringMicroservicesRunner;
 
 import br.com.slave.configuration.CorsInterceptor;
 import br.com.slave.configuration.SlaveConfiguration;
-import br.com.slave.resource.BlocoResource;
+import br.com.slave.resource.VolumeResource;
 
 /**
  * <b>Project:</b> virtual-slave <br>
@@ -25,10 +25,10 @@ public class Application {
         context.refresh();
 
         ClassPathBeanDefinitionScanner classPathBeanDefinitionScanner = new ClassPathBeanDefinitionScanner(context);
-        classPathBeanDefinitionScanner.scan(BlocoResource.class.getPackage().getName());
+        classPathBeanDefinitionScanner.scan(VolumeResource.class.getPackage().getName());
         SpringMicroservicesRunner runner = context.getBean(SpringMicroservicesRunner.class);
         runner.addGlobalRequestInterceptor(context.getBean(CorsInterceptor.class));
-        runner.deploy("/blocos", context.getBean(BlocoResource.class));
+        runner.deploy("/volumes", context.getBean(VolumeResource.class));
     }
 
 }

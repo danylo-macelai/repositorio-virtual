@@ -9,8 +9,8 @@ import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import br.com.slave.business.IBloco;
-import br.com.slave.domain.BlocoTO;
+import br.com.slave.business.IVolume;
+import br.com.slave.domain.VolumeTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.Contact;
@@ -25,10 +25,10 @@ import io.swagger.annotations.SwaggerDefinition;
  * @author macelai
  * @date: 24 de out de 2018
  */
-@Api(value = "blocos")
+@Api(value = "volumes")
 @SwaggerDefinition(
         info = @Info(
-                title = "Blocos RESTful Web Services",
+                title = "Volumes RESTful Web Services",
                 version = "1.0",
                 description = "Manual de Integração",
                 license = @License(
@@ -41,11 +41,11 @@ import io.swagger.annotations.SwaggerDefinition;
                 )
         )
 @Component
-@Path("/blocos")
-public class BlocoResource {
+@Path("/volumes")
+public class VolumeResource {
 
     @Autowired
-    private IBloco business;
+    private IVolume business;
 
     @OPTIONS
     @Path("/")
@@ -62,9 +62,9 @@ public class BlocoResource {
     @Path("/")
     @Produces({"application/json"})
     @ApiOperation(
-            value = "Pegar todos os blocos",
-            notes = "Retorna todos os itens de BlocoTO",
-            response = BlocoTO.class,
+            value = "Pegar todos os volumes",
+            notes = "Retorna todos os itens de VolumeTO",
+            response = VolumeTO.class,
             responseContainer = "List",
             produces= "application/json")
     public Response listagem() {

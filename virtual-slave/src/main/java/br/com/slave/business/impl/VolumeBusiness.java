@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.common.business.Business;
-import br.com.slave.business.IBloco;
-import br.com.slave.domain.BlocoTO;
-import br.com.slave.persistence.BlocoDAO;
+import br.com.slave.business.IVolume;
+import br.com.slave.domain.VolumeTO;
+import br.com.slave.persistence.VolumeDAO;
 
 /**
  * <b>Project:</b> virtual-slave <br>
@@ -15,9 +15,9 @@ import br.com.slave.persistence.BlocoDAO;
  * @date: 23 de out de 2018
  */
 @Service
-public class BlocoBusiness extends Business<BlocoTO> implements IBloco {
+public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
 
     @Autowired
-    BlocoDAO persistence;
+    VolumeDAO persistence;
 
 }

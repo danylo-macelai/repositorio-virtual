@@ -12,20 +12,14 @@ import org.springframework.dao.DataAccessException;
 @SuppressWarnings("serial")
 public class SlaveException extends DataAccessException {
 
-    private final String message;
-    private Object[]     args;
+    private Object[] args;
 
     public SlaveException(String message) {
         super(message);
-        this.message = message;
     }
 
     public final void args(String... param) {
         args = param;
-    }
-
-    public String code() {
-        return message;
     }
 
     public Object[] args() {

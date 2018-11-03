@@ -13,6 +13,8 @@ import br.com.slave.business.IVolume;
 import br.com.slave.domain.VolumeTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Contact;
 import io.swagger.annotations.Info;
 import io.swagger.annotations.License;
@@ -62,13 +64,20 @@ public class VolumeResource {
     @Path("/")
     @Produces({"application/json"})
     @ApiOperation(
-            value = "Pegar todos os volumes",
-            notes = "Retorna todos os itens de VolumeTO",
+            value = "Consulta os volume",
+            nickname = "consulta",
+            notes = "Retorna um item de VolumeTO",
             response = VolumeTO.class,
-            responseContainer = "List",
-            produces= "application/json")
-    public Response listagem() {
-        return Response.status(Response.Status.ACCEPTED).entity(business.carregarTodos()).build();
+            produces = "application/json")
+    @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "Volume localizado com sucesso", response = VolumeTO.class),
+            @ApiResponse(code = 404, message = "Volume não existe ou não foi localizado")})
+    public Response consulta() {
+        VolumeTO volume = business.buscar();;
+        if (volume == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.status(Response.Status.OK).entity(volume).build();
     }
 
 }

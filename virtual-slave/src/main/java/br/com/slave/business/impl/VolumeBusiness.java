@@ -31,9 +31,31 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
     @Transactional(readOnly = true)
     public VolumeTO buscar() throws SlaveException {
         if (INSTANCE == null) {
-             INSTANCE = persistence.buscar();
+            INSTANCE = persistence.buscar();
         }
         return INSTANCE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void incluir(VolumeTO volume) throws SlaveException {
+        long count = persistence.count();
+        if (count > 0) {
+            throw new SlaveException("volume.inclusao.unica");
+        }
+        super.incluir(volume);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public long count() throws SlaveException {
+        return persistence.count();
     }
 
 }

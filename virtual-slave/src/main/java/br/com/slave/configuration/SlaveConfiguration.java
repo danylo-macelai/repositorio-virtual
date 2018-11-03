@@ -1,5 +1,6 @@
 package br.com.slave.configuration;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -9,9 +10,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
 import org.wso2.msf4j.spring.MSF4JSpringConfiguration;
 
 import br.com.common.configuration.CommonConfiguration;
+import br.com.slave.business.IVolume;
+import br.com.slave.domain.VolumeTO;
 
 /**
  * <b>Description:</b> <br>
@@ -28,8 +32,10 @@ import br.com.common.configuration.CommonConfiguration;
 @Import({ MSF4JSpringConfiguration.class })
 public class SlaveConfiguration extends CommonConfiguration {
 
-    private static final String[] BASE_PACKAGES     = { "br.com.slave"  };
-    private static final String   MESSAGE_BASE_NAME = "i18n/messages";
+    private static final String[] BASE_PACKAGES      = { "br.com.slave" };
+    private static final String   MESSAGE_BASE_NAME  = "i18n/messages";
+    private static final String   VOLUME_LOCALIZACAO = "volume.localizacao";
+    private static final String   VOLUME_CAPACIDADE  = "volume.capacidade";
 
     /**
      * {@inheritDoc}
@@ -56,5 +62,25 @@ public class SlaveConfiguration extends CommonConfiguration {
     @Bean
     PropertySourcesPlaceholderConfigurer propertyPlaceHolderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
+    }
+
+    @Bean
+    InitializingBean initializing(IVolume volumeBusiness, Environment env) {
+        return () -> {
+            long init = volumeBusiness.count();
+            if (init == 0) {
+                volumePopulator(volumeBusiness, env);
+            }
+        };
+    }
+
+    private void volumePopulator(IVolume volumeBusiness, Environment env) {
+        VolumeTO volume = new VolumeTO();
+        volume.setLocalizacao(env.getRequiredProperty(VOLUME_LOCALIZACAO));
+        volume.setCapacidade(Long.valueOf(env.getRequiredProperty(VOLUME_CAPACIDADE)));
+        volume.setTamanho(0L);
+        volume.setContem(0);
+        volume.setDisponibilidade(true);
+        volumeBusiness.incluir(volume);
     }
 }

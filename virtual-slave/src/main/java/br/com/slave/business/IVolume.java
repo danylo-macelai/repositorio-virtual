@@ -20,4 +20,11 @@ public interface IVolume extends IBusiness<VolumeTO> {
      */
     VolumeTO buscar() throws SlaveException;
 
+    /**
+     * O método count retorna a quantidade de volumes cadastrados
+     *
+     * @return int
+     */
+    public long count() throws SlaveException;
+
 }

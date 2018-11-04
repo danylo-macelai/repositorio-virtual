@@ -2,14 +2,23 @@ package br.com.slave.resource;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flipkart.zjsonpatch.JsonPatch;
+
+import br.com.common.wrappers.PatchForm;
 import br.com.slave.business.IVolume;
+import br.com.slave.configuration.SlaveException;
 import br.com.slave.domain.VolumeTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,7 +30,7 @@ import io.swagger.annotations.License;
 import io.swagger.annotations.SwaggerDefinition;
 
 /**
- * <b>Description:</b>  <br>
+ * <b>Description:</b> <br>
  * <b>Project:</b> virtual-slave <br>
  *
  * @author macelai
@@ -62,22 +71,51 @@ public class VolumeResource {
 
     @GET
     @Path("/")
-    @Produces({"application/json"})
+    @Produces({ MediaType.APPLICATION_JSON })
     @ApiOperation(
             value = "Consulta os volume",
             nickname = "consulta",
             notes = "Retorna um item de VolumeTO",
             response = VolumeTO.class,
-            produces = "application/json")
+            produces = MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
             @ApiResponse(code = 202, message = "Volume localizado com sucesso", response = VolumeTO.class),
             @ApiResponse(code = 404, message = "Volume não existe ou não foi localizado")})
     public Response consulta() {
-        VolumeTO volume = business.buscar();;
+        VolumeTO volume = business.buscar();
         if (volume == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.status(Response.Status.OK).entity(volume).build();
     }
 
+    @PUT
+    @Path("/{id:\\d+}")
+    @Produces({ MediaType.APPLICATION_JSON })
+    @ApiOperation(
+            value = "Altera o volume",
+            nickname = "edicao",
+            notes = "Altera as informações do VolumeTO",
+            produces = MediaType.APPLICATION_JSON)
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "Volume alterado com sucesso", response = VolumeTO.class),
+            @ApiResponse(code = 404, message = "Volume não existe ou não foi localizado")})
+    public Response edicao(@PathParam("id") final int id, PatchForm[] patchs) {
+        try {
+            VolumeTO volume = business.ache(id);
+            if (volume == null) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode patch = mapper.valueToTree(patchs);
+            JsonNode domain = mapper.valueToTree(volume);
+            JsonNode mergeNode = JsonPatch.apply(patch, domain);
+            volume = mapper.readerForUpdating(volume).readValue(mergeNode);
+            business.alterar(volume);
+            return Response.status(Response.Status.NO_CONTENT).build();
+        } catch (Exception e) {
+            throw new SlaveException(e.getMessage(), e);
+        }
+
+    }
 }

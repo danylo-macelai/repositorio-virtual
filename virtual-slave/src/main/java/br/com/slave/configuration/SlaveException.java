@@ -11,19 +11,23 @@ import org.springframework.dao.DataAccessException;
  */
 @SuppressWarnings("serial")
 public class SlaveException extends DataAccessException {
-
+    
     private Object[] args;
-
+    
     public SlaveException(String message) {
         super(message);
     }
-
+    
+    public SlaveException(String message, Throwable cause) {
+        super(message, cause);
+    }
+    
     public final void args(String... param) {
         args = param;
     }
-
+    
     public Object[] args() {
         return args;
     }
-
+    
 }

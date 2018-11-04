@@ -10,12 +10,13 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-import javax.persistence.Version;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * <b>Project:</b> virtual-common <br>
@@ -32,13 +33,15 @@ public abstract class Domain implements Serializable {
     @Column(name = "id", updatable = false, nullable = false, unique = true)
     private Long          id;
 
-    @Version
+    @JsonIgnore
     @Column(name = "versao", nullable = false)
     private long          versao;
 
+    @JsonIgnore
     @Column(name = "criacao", insertable = true, updatable = false, nullable = false)
     private LocalDateTime criacao;
 
+    @JsonIgnore
     @Column(name = "alteracao", updatable = true, nullable = false)
     private LocalDateTime alteracao;
 
@@ -91,6 +94,7 @@ public abstract class Domain implements Serializable {
 
     @PreUpdate
     public void preUpdate() {
+        setVersao(getVersao() + 1);
         setAlteracao(LocalDateTime.now());
     }
 

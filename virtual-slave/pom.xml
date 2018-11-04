@@ -21,7 +21,6 @@
 		
 		<hibernate-entitymanager.version>5.2.12.Final</hibernate-entitymanager.version>
 		<commons-pool.version>1.5.6</commons-pool.version>
-		<hsqldb.version>1.8.0.10</hsqldb.version>
 	</properties>
 
 	<dependencies>
@@ -111,12 +110,6 @@
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
 			<version>${commons-pool.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>${hsqldb.version}</version>
 		</dependency>
 	</dependencies>
 

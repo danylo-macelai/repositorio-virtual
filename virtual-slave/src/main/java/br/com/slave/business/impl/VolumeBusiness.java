@@ -1,6 +1,7 @@
 package br.com.slave.business.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +48,16 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
             throw new SlaveException("volume.inclusao.unica");
         }
         super.incluir(volume);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void alterar(VolumeTO volume) throws DataAccessException {
+        super.alterar(volume);
+        INSTANCE = null;
     }
 
     /**

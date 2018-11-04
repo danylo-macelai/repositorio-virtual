@@ -15,7 +15,7 @@ public class PatchForm {
     private String value;
 
     public PatchForm() {
-        super();
+
     }
 
     public PatchForm(String op, String path, String value) {

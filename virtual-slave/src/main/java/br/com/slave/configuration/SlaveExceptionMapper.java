@@ -2,6 +2,7 @@ package br.com.slave.configuration;
 
 import javax.persistence.NoResultException;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,20 +19,22 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SlaveExceptionMapper implements ExceptionMapper<Exception> {
-    
+
     @Autowired
     MessageSource messageSource;
-    
+
     @Override
     public Response toResponse(Exception exception) {
         String code = exception.getMessage();
         Object[] args = null;
+        Status status = Response.Status.BAD_REQUEST;
         if (exception instanceof SlaveException) {
             args = ((SlaveException) exception).args();
+            status = ((SlaveException) exception).status();
         } else if (exception instanceof NoResultException) {
             code = "no.result.exception";
         }
         String message = messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
-        return Response.status(Response.Status.BAD_REQUEST).entity(message).type("text/plain").build();
+        return Response.status(status).entity(message).type("text/plain").build();
     }
 }

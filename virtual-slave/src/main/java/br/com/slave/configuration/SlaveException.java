@@ -1,6 +1,6 @@
 package br.com.slave.configuration;
 
-import org.springframework.dao.DataAccessException;
+import br.com.common.configuration.CommonException;
 
 /**
  * <b>Description:</b> <br>
@@ -10,24 +10,14 @@ import org.springframework.dao.DataAccessException;
  * @date: 29 de out de 2018
  */
 @SuppressWarnings("serial")
-public class SlaveException extends DataAccessException {
-    
-    private Object[] args;
-    
+public class SlaveException extends CommonException {
+
     public SlaveException(String message) {
         super(message);
     }
-    
+
     public SlaveException(String message, Throwable cause) {
         super(message, cause);
     }
-    
-    public final void args(String... param) {
-        args = param;
-    }
-    
-    public Object[] args() {
-        return args;
-    }
-    
+
 }

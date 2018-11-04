@@ -1,8 +1,14 @@
 package br.com.common.utils;
 
 import java.lang.reflect.ParameterizedType;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.stream.Stream;
+
+import br.com.common.configuration.CommonException;
 
 /**
  * <b>Project:</b> virtual-common <br>
@@ -19,7 +25,7 @@ public abstract class Utils {
      * @return Class<T>
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Object> Class<T> actualType(Object object) {
+    public static <T extends Object> Class<T> actualType(final Object object) {
         ParameterizedType thisType = (ParameterizedType) object.getClass().getGenericSuperclass();
         return (Class<T>) thisType.getActualTypeArguments()[0];
     }
@@ -31,8 +37,49 @@ public abstract class Utils {
      * @param two
      * @return T[]
      */
-    public static String[] concat(String[] one, String[] two) {
+    public static String[] concat(final String[] one, final String[] two) {
         return Stream.concat(Arrays.stream(one), Arrays.stream(two)).toArray(String[]::new);
+    }
+
+    /**
+     * Remove o arquivo se ele existir
+     *
+     * @param path
+     * @return boolean
+     */
+    public static boolean deleteFileQuietly(final Path path) {
+        try {
+            if (path == null) {
+                return false;
+            }
+            return Files.deleteIfExists(path);
+        } catch (final Exception ignored) {
+            return false;
+        }
+    }
+
+    /**
+     * Gera um identificador único
+     *
+     * @return String
+     */
+    public static String gerarIdentificador() {
+        try {
+            MessageDigest salt = MessageDigest.getInstance("SHA-256");
+            salt.update(UUID.randomUUID().toString().getBytes("UTF-8"));
+            byte[] hash = salt.digest();
+            StringBuffer uuid = new StringBuffer();
+            for (int i = 0; i < hash.length; i++) {
+                String hex = Integer.toHexString(0xff & hash[i]);
+                if (hex.length() == 1) {
+                    uuid.append('0');
+                }
+                uuid.append(hex);
+            }
+            return uuid.toString();
+        } catch (Exception e) {
+            throw new CommonException("", e);
+        }
     }
 
 }

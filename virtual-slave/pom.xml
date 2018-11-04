@@ -38,7 +38,6 @@
 				<exclusion>
 					<groupId>org.springframework</groupId>
 					<artifactId>spring-context-support</artifactId>
-
 				</exclusion>
 			</exclusions>
 		</dependency>

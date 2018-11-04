@@ -1,11 +1,20 @@
 package br.com.slave.business.impl;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.ws.rs.core.Response.Status;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.common.business.Business;
+import br.com.common.utils.Utils;
 import br.com.slave.business.IVolume;
 import br.com.slave.configuration.SlaveException;
 import br.com.slave.domain.VolumeTO;
@@ -20,10 +29,12 @@ import br.com.slave.persistence.VolumeDAO;
 @Service
 public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
 
-    VolumeTO  INSTANCE;
+    static final int BUFFER_SIZE     = 4096;
+    String           BLOCO_EXTENSION = ".bl";
+    VolumeTO         INSTANCE;
 
     @Autowired
-    VolumeDAO persistence;
+    VolumeDAO        persistence;
 
     /**
      * {@inheritDoc}
@@ -67,6 +78,46 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
     @Transactional(readOnly = true)
     public long count() throws SlaveException {
         return persistence.count();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public String upload(InputStream stream) throws SlaveException {
+        VolumeTO volume = buscar();
+        String uuid = Utils.gerarIdentificador();
+        Path path = Paths.get(volume.getLocalizacao(), uuid + BLOCO_EXTENSION);
+        try (InputStream in = stream) {
+            if (path.toFile().exists()) {
+                throw new SlaveException("volume.bloco.existe").args(uuid).status(Status.CONFLICT);
+            }
+            try (OutputStream os = Files.newOutputStream(path)) {
+                int size = 0;
+                byte[] buffer = new byte[BUFFER_SIZE];
+                int read = -1;
+                while ((read = in.read(buffer)) != -1) {
+                    if ((size += read) > volume.getCapacidade()) {
+                        throw new SlaveException("volume.capacidade.excedida");
+                    }
+                    os.write(buffer, 0, read);
+                }
+                os.flush();
+
+                volume.setContem(volume.getContem() + 1);
+                volume.setTamanho(volume.getTamanho() + size);
+                alterar(volume);
+
+                return uuid;
+            }
+        } catch (SlaveException e) {
+            Utils.deleteFileQuietly(path);
+            throw e;
+        } catch (Exception e) {
+            Utils.deleteFileQuietly(path);
+            throw new SlaveException(e.getMessage(), e);
+        }
     }
 
 }

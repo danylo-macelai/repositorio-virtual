@@ -1,5 +1,7 @@
 package br.com.slave.business;
 
+import java.io.InputStream;
+
 import br.com.common.business.IBusiness;
 import br.com.slave.configuration.SlaveException;
 import br.com.slave.domain.VolumeTO;
@@ -26,6 +28,15 @@ public interface IVolume extends IBusiness<VolumeTO> {
      * @return int
      * @throws SlaveException
      */
-    public long count() throws SlaveException;
+    long count() throws SlaveException;
+
+    /**
+     * Gera um identificador único para o bloco que será salvo no volume
+     *
+     * @param stream
+     * @return String
+     * @throws SlaveException
+     */
+    String upload(InputStream stream) throws SlaveException;
 
 }

@@ -17,6 +17,37 @@ import br.com.common.domain.Domain;
 public interface IPersistence<D extends Domain> {
 
     /**
+     * Remove a entidade do contexto de persistência, fazendo com que as suas alterações não sejam sincronizadas com o banco de dados.
+     *
+     * @param dominio
+     * @throws DataAccessException
+     */
+    void detach(D dominio) throws DataAccessException;
+
+    /**
+     * Sincronize o contexto de persistência com o banco de dados forçando a execução dos Sqls.
+     *
+     * @throws DataAccessException
+     */
+    void flush() throws DataAccessException;
+
+    /**
+     * Limpa o contexto de persistência, fazendo com que as alterações realizads nas entidades que ainda não foram persistidas em banco de dados sejam
+     * descatadas.
+     *
+     * @throws DataAccessException
+     */
+    void clear() throws DataAccessException;
+
+    /**
+     * Verifique se a instância da entidade está presente no contexto de persistência.
+     *
+     * @param dominio
+     * @throws DataAccessException
+     */
+    boolean contains(D dominio) throws DataAccessException;
+
+    /**
      * O método {@link IPersistence#carregarTodos()} retornará todos os registros que correspondem à especificação.
      *
      * @return List<D>

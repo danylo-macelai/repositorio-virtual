@@ -1,16 +1,21 @@
 package br.com.slave.resource;
 
+import java.io.IOException;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.wso2.msf4j.Request;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -101,21 +106,37 @@ public class VolumeResource {
             @ApiResponse(code = 204, message = "Volume alterado com sucesso", response = VolumeTO.class),
             @ApiResponse(code = 404, message = "Volume não existe ou não foi localizado")})
     public Response edicao(@PathParam("id") final int id, PatchForm[] patchs) {
-        try {
-            VolumeTO volume = business.ache(id);
-            if (volume == null) {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode patch = mapper.valueToTree(patchs);
-            JsonNode domain = mapper.valueToTree(volume);
-            JsonNode mergeNode = JsonPatch.apply(patch, domain);
-            volume = mapper.readerForUpdating(volume).readValue(mergeNode);
-            business.alterar(volume);
-            return Response.status(Response.Status.NO_CONTENT).build();
-        } catch (Exception e) {
-            throw new SlaveException(e.getMessage(), e);
+        VolumeTO volume = business.ache(id);
+        if (volume == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
-
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode patch = mapper.valueToTree(patchs);
+        JsonNode domain = mapper.valueToTree(volume);
+        JsonNode merge = JsonPatch.apply(patch, domain);
+        try {
+            volume = mapper.readerForUpdating(volume).readValue(merge);
+        } catch (IOException e) {
+            throw new SlaveException("volume.preencher.erro");
+        }
+        business.alterar(volume);
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
+
+    @POST
+    @Path("/upload")
+    @Produces({ MediaType.TEXT_HTML })
+    @ApiOperation(
+            value = "Upload de Blocos",
+            nickname = "upload",
+            notes = "Realiza o upload dos blocos",
+            produces = MediaType.TEXT_HTML)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Upload realizado com sucesso", response = String.class),
+            @ApiResponse(code = 409, message = "O identificador gerado já existe")})
+    public Response upload(@Context Request request) {
+        String uuid = business.upload(request.getMessageContentStream());
+        return Response.status(Response.Status.OK).entity(uuid).build();
+    }
+
 }

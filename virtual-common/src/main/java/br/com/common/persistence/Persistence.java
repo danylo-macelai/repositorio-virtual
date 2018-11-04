@@ -55,6 +55,38 @@ public abstract class Persistence<D extends Domain> implements IPersistence<D> {
     /**
      * {@inheritDoc}
      */
+    @Override
+    public final void clear() throws DataAccessException {
+        em.clear();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void detach(D dominio) throws DataAccessException {
+        em.detach(dominio);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void flush() throws DataAccessException {
+        em.flush();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final boolean contains(D dominio) throws DataAccessException {
+        return em.contains(dominio);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     @Override
     public final List<D> carregarTodos() throws DataAccessException {

@@ -9,9 +9,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -137,6 +139,22 @@ public class VolumeResource {
     public Response upload(@Context Request request) {
         String uuid = business.upload(request.getMessageContentStream());
         return Response.status(Response.Status.OK).entity(uuid).build();
+    }
+
+    @GET
+    @Path("/download/{uuid}")
+    @ApiOperation(
+            value = "Download de Bloco",
+            nickname = "download",
+            notes = "Realiza o download dos blocos",
+            produces = MediaType.TEXT_HTML)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Download realizado com sucesso", response = String.class)})
+    public Response download(@PathParam("uuid") String uuid, @QueryParam("mimeType") String mimeType) {
+        StreamingOutput stream = os -> {
+            business.download(uuid, os);
+        };
+        return Response.status(Response.Status.OK).entity(stream).type(mimeType).build();
     }
 
 }

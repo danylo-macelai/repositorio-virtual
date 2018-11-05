@@ -1,5 +1,6 @@
 package br.com.slave.business.impl;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -116,6 +117,27 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
             throw e;
         } catch (Exception e) {
             Utils.deleteFileQuietly(path);
+            throw new SlaveException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void download(String uuid, OutputStream stream) throws SlaveException {
+        Path path = Paths.get(buscar().getLocalizacao(), uuid + BLOCO_EXTENSION);
+        if (!path.toFile().exists()) {
+            throw new SlaveException("volume.bloco.nao.existe").args(uuid);
+        }
+        try (InputStream in = new FileInputStream(path.toFile())) {
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int read = -1;
+            while ((read = in.read(buffer)) != -1) {
+                stream.write(buffer, 0, read);
+            }
+            stream.flush();
+        } catch (Exception e) {
             throw new SlaveException(e.getMessage(), e);
         }
     }

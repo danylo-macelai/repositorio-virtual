@@ -20,8 +20,7 @@
 		<commons-dbcp.version>1.4</commons-dbcp.version>
 		<commons-lang.version>2.6</commons-lang.version>
 
-		<zjsonpatch.version>0.2.1</zjsonpatch.version>
-		<fasterxml.version>2.8.9</fasterxml.version>
+		<zjsonpatch.version>0.4.3</zjsonpatch.version>
 		<ws.rs-api.version>2.0</ws.rs-api.version>
 
 		<postgresql.version>9.4-1200-jdbc41</postgresql.version>
@@ -29,12 +28,6 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-			<version>${fasterxml.version}</version>
-		</dependency>
-
 		<dependency>
 			<groupId>com.flipkart.zjsonpatch</groupId>
 			<artifactId>zjsonpatch</artifactId>

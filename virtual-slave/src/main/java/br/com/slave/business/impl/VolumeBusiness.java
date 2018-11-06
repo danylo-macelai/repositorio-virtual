@@ -1,6 +1,8 @@
 package br.com.slave.business.impl;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -8,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -20,6 +23,13 @@ import br.com.slave.business.IVolume;
 import br.com.slave.configuration.SlaveException;
 import br.com.slave.domain.VolumeTO;
 import br.com.slave.persistence.VolumeDAO;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okio.BufferedSink;
+import okio.Okio;
+import okio.Source;
 
 /**
  * <b>Project:</b> virtual-slave <br>
@@ -29,14 +39,15 @@ import br.com.slave.persistence.VolumeDAO;
  */
 @Service
 public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
-
-    static final int BUFFER_SIZE     = 4096;
-    String           BLOCO_EXTENSION = ".bl";
-    VolumeTO         INSTANCE;
-
+    
+    static final int    BUFFER_SIZE     = 4096;
+    static final String BLOCO_EXTENSION = ".bl";
+    OkHttpClient        client          = new OkHttpClient();
+    VolumeTO            INSTANCE;
+    
     @Autowired
-    VolumeDAO        persistence;
-
+    VolumeDAO           persistence;
+    
     /**
      * {@inheritDoc}
      */
@@ -125,21 +136,55 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
      * {@inheritDoc}
      */
     @Override
-    public void download(String uuid, OutputStream stream) throws SlaveException {
-        Path path = Paths.get(buscar().getLocalizacao(), uuid + BLOCO_EXTENSION);
-        if (!path.toFile().exists()) {
-            throw new SlaveException("volume.bloco.nao.existe").args(uuid);
-        }
-        try (InputStream in = new FileInputStream(path.toFile())) {
-            byte[] buffer = new byte[BUFFER_SIZE];
-            int read = -1;
-            while ((read = in.read(buffer)) != -1) {
-                stream.write(buffer, 0, read);
+    public StreamingOutput download(String uuid) throws SlaveException {
+        StreamingOutput stream = os -> {
+            Path path = Paths.get(buscar().getLocalizacao(), uuid + BLOCO_EXTENSION);
+            if (!path.toFile().exists()) {
+                throw new SlaveException("volume.bloco.nao.existe").args(uuid);
             }
-            stream.flush();
+            try (InputStream in = new FileInputStream(path.toFile())) {
+                byte[] buffer = new byte[BUFFER_SIZE];
+                int read = -1;
+                while ((read = in.read(buffer)) != -1) {
+                    os.write(buffer, 0, read);
+                }
+                os.flush();
+            } catch (Exception e) {
+                throw new SlaveException(e.getMessage(), e);
+            }
+        };
+        return stream;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String replicacao(String uuid, String host) throws SlaveException {
+        try {
+            Path path = Paths.get(buscar().getLocalizacao(), uuid + BLOCO_EXTENSION);
+            File file = path.toFile();
+            InputStream inputStream = new FileInputStream(file);
+            RequestBody requestBody = new RequestBody() {
+                @Override
+                public MediaType contentType() {
+                    return MediaType.parse("application/x-www-form-urlencoded");
+                }
+                
+                @Override
+                public void writeTo(BufferedSink sink) throws IOException {
+                    try (Source src = Okio.source(inputStream)) {
+                        sink.writeAll(src);
+                    }
+                }
+                
+            };
+            Request request = new Request.Builder().url(host + "/upload").post(requestBody).build();
+            okhttp3.Response response = client.newCall(request).execute();
+            return response.body().string();
         } catch (Exception e) {
             throw new SlaveException(e.getMessage(), e);
         }
     }
-
+    
 }

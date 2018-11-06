@@ -1,7 +1,8 @@
 package br.com.slave.business;
 
 import java.io.InputStream;
-import java.io.OutputStream;
+
+import javax.ws.rs.core.StreamingOutput;
 
 import br.com.common.business.IBusiness;
 import br.com.slave.configuration.SlaveException;
@@ -47,6 +48,16 @@ public interface IVolume extends IBusiness<VolumeTO> {
      * @param stream
      * @throws SlaveException
      */
-    void download(String uuid, OutputStream stream) throws SlaveException;
+    StreamingOutput download(String uuid) throws SlaveException;
+
+    /**
+     * Cria uma cópia do bloco no host informado
+     *
+     * @param uuid
+     * @param host
+     * @return String
+     * @throws SlaveException
+     */
+    String replicacao(String uuid, String host) throws SlaveException;
 
 }

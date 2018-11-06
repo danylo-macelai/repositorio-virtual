@@ -2,6 +2,7 @@ package br.com.slave.resource;
 
 import java.io.IOException;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
@@ -151,10 +152,23 @@ public class VolumeResource {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Download realizado com sucesso", response = String.class)})
     public Response download(@PathParam("uuid") String uuid, @QueryParam("mimeType") String mimeType) {
-        StreamingOutput stream = os -> {
-            business.download(uuid, os);
-        };
+        StreamingOutput stream = business.download(uuid);
         return Response.status(Response.Status.OK).entity(stream).type(mimeType).build();
+    }
+
+    @POST
+    @Path("/replicacao/{uuid}")
+    @Produces({ MediaType.TEXT_HTML })
+    @ApiOperation(
+            value = "Replicação de Bloco",
+            nickname = "download",
+            notes = "Cria uma cópia do bloco no host informado",
+            produces = MediaType.TEXT_HTML)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Replicação realizada com sucesso", response = String.class)})
+    public Response replicacao(@PathParam("uuid") String uuid, @FormParam("slave") String host) throws Exception {
+        String bloco = business.replicacao(uuid, host);
+        return Response.status(Response.Status.OK).entity(bloco).build();
     }
 
 }

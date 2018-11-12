@@ -12,6 +12,7 @@
 	<modules>
 		<module>virtual-common</module>
 		<module>virtual-slave</module>
+		<module>virtual-master</module>
 	</modules>
 
 	<properties>

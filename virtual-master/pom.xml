@@ -26,6 +26,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>br.com.repositorio</groupId>
+			<artifactId>virtual-common</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
@@ -57,16 +63,16 @@
 		</plugins>
 	</build>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot-starter.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring-boot-starter.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
     
 </project>

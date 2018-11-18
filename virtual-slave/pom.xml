@@ -21,7 +21,6 @@
 		
 		<hibernate-entitymanager.version>5.3.7.Final</hibernate-entitymanager.version>
 		<commons-pool.version>1.5.6</commons-pool.version>
-		<okhttp3.version>3.11.0</okhttp3.version>
 	</properties>
 
 	<dependencies>
@@ -110,12 +109,6 @@
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
 			<version>${commons-pool.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>okhttp</artifactId>
-			<version>${okhttp3.version}</version>
 		</dependency>
 	</dependencies>
 

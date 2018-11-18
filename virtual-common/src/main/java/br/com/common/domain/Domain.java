@@ -11,6 +11,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -26,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @SuppressWarnings("serial")
 @MappedSuperclass
-public abstract class Domain implements Serializable {
+public abstract class Domain implements Serializable, Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -116,6 +117,11 @@ public abstract class Domain implements Serializable {
     @Override
     public final int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public Domain clone() throws CloneNotSupportedException {
+        return (Domain) ObjectUtils.cloneIfPossible(this);
     }
 
 }

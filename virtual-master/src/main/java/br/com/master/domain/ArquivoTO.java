@@ -1,5 +1,6 @@
 package br.com.master.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -62,6 +63,9 @@ public class ArquivoTO extends Domain {
     }
 
     public Set<BlocoTO> getBlocos() {
+        if (blocos == null) {
+            blocos = new HashSet<>();
+        }
         return blocos;
     }
 

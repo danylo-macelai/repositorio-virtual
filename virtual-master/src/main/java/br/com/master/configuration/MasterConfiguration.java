@@ -8,6 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import br.com.common.configuration.CommonConfiguration;
 import br.com.master.business.impl.ConfiguracaoBusiness;
@@ -55,6 +56,13 @@ public class MasterConfiguration extends CommonConfiguration {
         return new PropertySourcesPlaceholderConfigurer();
     }
 
+    @Bean(name = "multipartResolver")
+    public CommonsMultipartResolver multipartResolver() {
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        multipartResolver.setMaxUploadSize(-1);
+        return multipartResolver;
+    }
+    
     @Bean
     CommandLineRunner initializing(ConfiguracaoBusiness configuracaoBusiness, Environment env) {
         return args -> {

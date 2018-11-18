@@ -26,6 +26,7 @@
 
 		<postgresql.version>9.4-1200-jdbc41</postgresql.version>
 		<hsqldb.version>1.8.0.10</hsqldb.version>
+		<okhttp3.version>3.11.0</okhttp3.version>
 	</properties>
 
 	<dependencies>
@@ -107,6 +108,12 @@
 			<groupId>hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 			<version>${hsqldb.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>${okhttp3.version}</version>
 		</dependency>
 	</dependencies>
 

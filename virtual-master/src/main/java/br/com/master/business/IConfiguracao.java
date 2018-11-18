@@ -1,6 +1,7 @@
 package br.com.master.business;
 
 import br.com.common.business.IBusiness;
+import br.com.master.configuration.MasterException;
 import br.com.master.domain.ConfiguracaoTO;
 
 /**
@@ -11,6 +12,14 @@ import br.com.master.domain.ConfiguracaoTO;
  * @date: 18 de nov de 2018
  */
 public interface IConfiguracao extends IBusiness<ConfiguracaoTO> {
+
+    /**
+     *  O método buscar é um singleton que retorna a única instância da classe configuracao.
+     *
+     * @return ConfiguracaoTO
+     * @throws MasterException
+     */
+    ConfiguracaoTO buscar() throws MasterException;
 
 
 }

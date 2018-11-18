@@ -6,6 +6,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.common.domain.Domain;
 
 /**
@@ -29,9 +31,17 @@ public class BlocoTO extends Domain {
     @Column(name = "host", updatable = false, nullable = false)
     private String    host;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_arquivo", updatable = false, nullable = false)
     private ArquivoTO arquivo;
+
+    public BlocoTO(ArquivoTO arquivo, String host, Integer numero, String uuid) {
+        this.arquivo = arquivo;
+        this.host = host;
+        this.numero = numero;
+        this.uuid = uuid;
+    }
 
     public String getUuid() {
         return uuid;

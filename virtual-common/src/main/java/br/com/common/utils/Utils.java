@@ -1,6 +1,8 @@
 package br.com.common.utils;
 
+import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -8,7 +10,10 @@ import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+import javax.ws.rs.core.StreamingOutput;
+
 import br.com.common.configuration.CommonException;
+import okhttp3.Response;
 
 /**
  * <b>Project:</b> virtual-common <br>
@@ -80,6 +85,51 @@ public abstract class Utils {
         } catch (Exception e) {
             throw new CommonException("", e);
         }
+    }
+
+    /**
+     * Escreve os bytes do binário no disco
+     *
+     * @param path - Arquivo em disco
+     * @param stream - bytes do binário
+     * @param tamanho - tamanho atual do storage
+     * @param capacidade - capacidade máxima do storage
+     * @throws CommonException
+     */
+    public static void fileEscrever(Path path, InputStream stream, long tamanho, long capacidade) throws CommonException {
+        FileUtils.escrever(path, stream, tamanho, capacidade);
+    }
+
+    /**
+     * Retorna um streaming para leitura dos bytes do arquivo
+     *
+     * @param path - Arquivo em disco
+     * @return StreamingOutput
+     * @throws CommonException
+     */
+    public static StreamingOutput fileLer(Path path) throws CommonException {
+        return FileUtils.ler(path);
+    }
+
+    /**
+     * Retorna um stream de um determinado tamanho a partir da posição informada
+     *
+     * @param channel - Arquivo em disco
+     * @param position - Posição inicial para particionar
+     * @param byteSize - Tamanho do stream que será retornado
+     * @return InputStream
+     * @throws CommonException
+     */
+    public static InputStream fileParticionar(FileChannel channel, long position, long byteSize) throws CommonException {
+        return FileUtils.particionar(channel, position, byteSize);
+    }
+
+    public static Response httpPost(String host, String service, String path, String... params) throws CommonException {
+        return HttpUtils.post(host, service, path, params);
+    }
+
+    public static Response httpPost(InputStream stream, String host, String service) throws CommonException {
+        return HttpUtils.post(stream, host, service);
     }
 
 }

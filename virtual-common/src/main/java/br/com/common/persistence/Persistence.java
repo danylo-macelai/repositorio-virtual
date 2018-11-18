@@ -152,4 +152,22 @@ public abstract class Persistence<D extends Domain> implements IPersistence<D> {
         em.createQuery("DELETE " + dominioClass.getName()).executeUpdate();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final long count() {
+        StringBuilder hql = new StringBuilder();
+        hql.append("SELECT COUNT(D.id) ");
+        hql.append("FROM ").append(dominioClass.getName()).append(" D ");
+
+        Query query = query(hql);
+        Long count = (Long) query.getSingleResult();
+        if (count != null) {
+            return count;
+        } else {
+            return 0L;
+        }
+    }
+
 }

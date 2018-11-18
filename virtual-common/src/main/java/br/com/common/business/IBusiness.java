@@ -78,4 +78,12 @@ public interface IBusiness<D extends Domain> {
      */
     void excluirTodos() throws DataAccessException;
 
+    /**
+     * O método count retorna a quantidade de registros cadastrados
+     *
+     * @return long
+     * @throws DataAccessException
+     */
+    long count() throws DataAccessException;
+
 }

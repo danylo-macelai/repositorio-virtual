@@ -86,4 +86,12 @@ public abstract class DBusiness<D extends Domain> implements IBusiness<D> {
         persistence.deleteAll();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public long count() throws DataAccessException {
+        return persistence.count();
+    }
+
 }

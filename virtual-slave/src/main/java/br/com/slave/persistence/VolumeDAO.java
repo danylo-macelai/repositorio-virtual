@@ -37,23 +37,4 @@ public class VolumeDAO extends Persistence<VolumeTO> {
         return (VolumeTO) query.getSingleResult();
     }
 
-    /**
-     * O método count retorna a quantidade de volumes cadastrados
-     *
-     * @return int
-     */
-    public long count() {
-        StringBuilder hql = new StringBuilder();
-        hql.append("SELECT COUNT(V.id) ");
-        hql.append("FROM ").append(VolumeTO.class.getName()).append(" V ");
-
-        Query query = query(hql);
-        Long count = (Long) query.getSingleResult();
-        if (count != null) {
-            return count;
-        } else {
-            return 0L;
-        }
-    }
-
 }

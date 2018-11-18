@@ -1,26 +1,32 @@
 package br.com.master.configuration;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
 
 import br.com.common.configuration.CommonConfiguration;
+import br.com.master.business.impl.ConfiguracaoBusiness;
+import br.com.master.domain.ConfiguracaoTO;
 
 /**
- * <b>Description:</b>  <br>
+ * <b>Description:</b> <br>
  * <b>Project:</b> virtual-master <br>
-
+ *
  * @author macelai
  * @date: 18 de nov de 2018
  */
 @Configuration
 public class MasterConfiguration extends CommonConfiguration {
 
-    private static final String[] BASE_PACKAGES     = { "br.com.master" };
-    private static final String   MESSAGE_BASE_NAME = "i18n/messages";
+    private static final String[] BASE_PACKAGES           = { "br.com.master" };
+    private static final String   MESSAGE_BASE_NAME       = "i18n/messages";
+    private static final String   ARQUIVO_TAMANHO_BLOCO   = "arquivo.tamanho.bloco";
+    private static final String   ARQUIVO_QTDE_REPLICACAO = "arquivo.qtde.replicacao";
 
     /**
      * {@inheritDoc}
@@ -47,6 +53,23 @@ public class MasterConfiguration extends CommonConfiguration {
     @Bean
     PropertySourcesPlaceholderConfigurer propertyPlaceHolderConfigurer() {
         return new PropertySourcesPlaceholderConfigurer();
+    }
+
+    @Bean
+    CommandLineRunner initializing(ConfiguracaoBusiness configuracaoBusiness, Environment env) {
+        return args -> {
+            long init = configuracaoBusiness.count();
+            if (init == 0) {
+                configuracaoPopulator(configuracaoBusiness, env);
+            }
+        };
+    }
+
+    private void configuracaoPopulator(ConfiguracaoBusiness configuracaoBusiness, Environment env) {
+        ConfiguracaoTO configuracao = new ConfiguracaoTO();
+        configuracao.setTamanhoBloco(Long.valueOf(env.getRequiredProperty(ARQUIVO_TAMANHO_BLOCO)));
+        configuracao.setQtdeReplicacao(Integer.valueOf(env.getRequiredProperty(ARQUIVO_QTDE_REPLICACAO)));
+        configuracaoBusiness.incluir(configuracao);
     }
 
 }

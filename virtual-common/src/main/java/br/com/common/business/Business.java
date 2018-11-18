@@ -83,4 +83,13 @@ public abstract class Business<D extends Domain> implements IBusiness<D> {
         persistence.excluirTodos();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public long count() throws DataAccessException {
+        return persistence.count();
+    }
+
 }

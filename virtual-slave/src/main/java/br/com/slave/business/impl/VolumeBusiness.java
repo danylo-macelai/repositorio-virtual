@@ -39,15 +39,15 @@ import okio.Source;
  */
 @Service
 public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
-    
+
     static final int    BUFFER_SIZE     = 4096;
     static final String BLOCO_EXTENSION = ".bl";
     OkHttpClient        client          = new OkHttpClient();
     VolumeTO            INSTANCE;
-    
+
     @Autowired
     VolumeDAO           persistence;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -83,14 +83,6 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
         INSTANCE = null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public long count() throws SlaveException {
-        return persistence.count();
-    }
 
     /**
      * {@inheritDoc}
@@ -155,7 +147,7 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
         };
         return stream;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -170,14 +162,14 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
                 public MediaType contentType() {
                     return MediaType.parse("application/x-www-form-urlencoded");
                 }
-                
+
                 @Override
                 public void writeTo(BufferedSink sink) throws IOException {
                     try (Source src = Okio.source(inputStream)) {
                         sink.writeAll(src);
                     }
                 }
-                
+
             };
             Request request = new Request.Builder().url(host + "/upload").post(requestBody).build();
             okhttp3.Response response = client.newCall(request).execute();
@@ -186,5 +178,5 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
             throw new SlaveException(e.getMessage(), e);
         }
     }
-    
+
 }

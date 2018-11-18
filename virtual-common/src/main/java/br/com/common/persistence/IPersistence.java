@@ -109,4 +109,11 @@ public interface IPersistence<D extends Domain> {
      */
     void excluirTodos() throws DataAccessException;
 
+    /**
+     * O método count retorna a quantidade de registros cadastrados
+     *
+     * @return long
+     */
+    long count();
+
 }

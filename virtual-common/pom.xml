@@ -15,6 +15,19 @@
 	<artifactId>virtual-common</artifactId>
 	<packaging>jar</packaging>
 
+	<properties>
+		<spring-data-jpa.version>2.1.2.RELEASE</spring-data-jpa.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+			<version>${spring-data-jpa.version}</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>

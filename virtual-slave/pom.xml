@@ -19,7 +19,7 @@
 		<microservice.mainClass>br.com.slave.Application</microservice.mainClass>
 		<msf4j.version>2.6.4</msf4j.version>
 		
-		<hibernate-entitymanager.version>5.2.12.Final</hibernate-entitymanager.version>
+		<hibernate-entitymanager.version>5.3.7.Final</hibernate-entitymanager.version>
 		<commons-pool.version>1.5.6</commons-pool.version>
 		<okhttp3.version>3.11.0</okhttp3.version>
 	</properties>

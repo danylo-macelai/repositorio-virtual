@@ -17,7 +17,7 @@
 
 	<properties>
 		<hibernate-jpa-2.1-api.version>1.0.0.Final</hibernate-jpa-2.1-api.version>
-		<spring.version>5.0.3.RELEASE</spring.version>
+		<spring.version>5.1.2.RELEASE</spring.version>
 		<commons-dbcp.version>1.4</commons-dbcp.version>
 		<commons-lang.version>2.6</commons-lang.version>
 
@@ -91,6 +91,16 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>${postgresql.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>

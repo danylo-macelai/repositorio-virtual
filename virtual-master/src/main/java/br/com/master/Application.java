@@ -2,6 +2,7 @@ package br.com.master;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
 /**
  * <b>Description:</b>  <br>
@@ -11,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date: 18 de nov de 2018
  */
 @SpringBootApplication
+@EnableEurekaServer
 public class Application {
 
 	public static void main(String[] args) {

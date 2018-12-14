@@ -18,9 +18,13 @@
 	<properties>
 		<microservice.mainClass>br.com.slave.Application</microservice.mainClass>
 		<msf4j.version>2.6.4</msf4j.version>
-		
+
 		<hibernate-entitymanager.version>5.3.7.Final</hibernate-entitymanager.version>
 		<commons-pool.version>1.5.6</commons-pool.version>
+		<eureka.version>1.9.8</eureka.version>
+		<commons-configuration.version>1.8</commons-configuration.version>
+		<archaius-core.version>0.7.6</archaius-core.version>
+		<jersey-server.version>1.8</jersey-server.version>
 	</properties>
 
 	<dependencies>
@@ -28,6 +32,36 @@
 			<groupId>br.com.repositorio</groupId>
 			<artifactId>virtual-common</artifactId>
 			<version>0.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>${jersey-server.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.netflix.archaius</groupId>
+			<artifactId>archaius-core</artifactId>
+			<version>${archaius-core.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+			<version>${commons-configuration.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.netflix.eureka</groupId>
+			<artifactId>eureka-client</artifactId>
+			<version>${eureka.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>servlet-api</artifactId>
+					<groupId>javax.servlet</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>

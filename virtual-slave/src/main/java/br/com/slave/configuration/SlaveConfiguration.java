@@ -16,6 +16,7 @@ import org.wso2.msf4j.spring.MSF4JSpringConfiguration;
 import br.com.common.configuration.CommonConfiguration;
 import br.com.slave.business.IVolume;
 import br.com.slave.domain.VolumeTO;
+import br.com.slave.resource.VolumeResource;
 
 /**
  * <b>Description:</b> <br>
@@ -65,12 +66,18 @@ public class SlaveConfiguration extends CommonConfiguration {
     }
 
     @Bean
-    InitializingBean initializing(IVolume volumeBusiness, Environment env) {
+    VirtualEurekaClient slaveEurekaClient(Environment env) {
+        return new VirtualEurekaClient(env);
+    }
+
+    @Bean
+    InitializingBean initializing(IVolume volumeBusiness, VirtualEurekaClient commonEurekaClient, Environment env) {
         return () -> {
             long init = volumeBusiness.count();
             if (init == 0) {
                 volumePopulator(volumeBusiness, env);
             }
+            commonEurekaClient.register(VolumeResource.RESOURCE_ROOT_URL);
         };
     }
 

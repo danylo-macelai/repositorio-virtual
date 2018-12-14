@@ -7,7 +7,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import javax.ws.rs.HttpMethod;
-import javax.ws.rs.NameBinding;
 
 /**
  * <b>Description:</b>  <br>
@@ -20,6 +19,5 @@ import javax.ws.rs.NameBinding;
 @Retention(RetentionPolicy.RUNTIME)
 @HttpMethod("PATCH")
 @Documented
-@NameBinding
 public @interface PATCH {
 }

@@ -1,5 +1,7 @@
 package br.com.slave.resource;
 
+import static br.com.slave.resource.VolumeResource.RESOURCE_ROOT_URL;
+
 import java.io.IOException;
 
 import javax.ws.rs.FormParam;
@@ -60,11 +62,28 @@ import io.swagger.annotations.SwaggerDefinition;
                 )
         )
 @Component
-@Path("/volumes")
+@Path(RESOURCE_ROOT_URL)
 public class VolumeResource {
+
+    public static final String RESOURCE_ROOT_URL   = "/volumes";
 
     @Autowired
     private IVolume business;
+
+    @GET
+    @Path("/healthCheck")
+    public Response healthCheck() {
+        return Response.status(200)
+                .entity("alive")
+                .build();
+    }
+
+    @GET
+    @Path("/status")
+    public Response status() {
+        return Response.status(200)
+                .build();
+    }
 
     @OPTIONS
     @Path("/")

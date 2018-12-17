@@ -88,7 +88,9 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
         VolumeTO volume = buscar();
         String uuid = Utils.gerarIdentificador();
         Path path = Paths.get(volume.getLocalizacao(), uuid + BLOCO_EXTENSION);
-        Utils.fileEscrever(path, stream, volume.getTamanho(), volume.getCapacidade());
+        int read = Utils.fileEscrever(path, stream, volume.getTamanho(), volume.getCapacidade());
+        volume.incrementar(read);
+        alterar(volume);
         return uuid;
     }
 

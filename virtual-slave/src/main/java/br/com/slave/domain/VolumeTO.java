@@ -32,6 +32,11 @@ public class VolumeTO extends Domain {
     @Column(name = "disponibilidade", nullable = false)
     private Boolean disponibilidade;
 
+    public final void incrementar(int read) {
+        contem++;
+        tamanho += read;
+    }
+
     public String getLocalizacao() {
         return localizacao;
     }

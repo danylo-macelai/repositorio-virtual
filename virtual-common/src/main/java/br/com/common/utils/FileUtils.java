@@ -27,12 +27,13 @@ abstract class FileUtils {
     private FileUtils() {
         
     }
-    
-    public final static void escrever(Path path, InputStream stream, long tamanho, long capacidade) throws CommonException {
+
+    public final static int escrever(Path path, InputStream stream, long tamanho, long capacidade) throws CommonException {
         try (InputStream in = stream) {
             if (path.toFile().exists()) {
                 throw new CommonException("volume.bloco.existe").status(Status.CONFLICT);
             }
+            int size = 0;
             try (OutputStream os = Files.newOutputStream(path)) {
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int read = -1;
@@ -41,9 +42,11 @@ abstract class FileUtils {
                         throw new CommonException("volume.capacidade.excedida");
                     }
                     os.write(buffer, 0, read);
+                    size += read;
                 }
                 os.flush();
             }
+            return size;
         } catch (CommonException e) {
             Utils.deleteFileQuietly(path);
             throw e;
@@ -52,7 +55,7 @@ abstract class FileUtils {
             throw new CommonException(e.getMessage(), e);
         }
     }
-    
+
     public final static StreamingOutput ler(Path path) throws CommonException {
         StreamingOutput stream = os -> {
             if (!path.toFile().exists()) {

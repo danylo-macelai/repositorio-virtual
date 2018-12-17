@@ -96,8 +96,8 @@ public abstract class Utils {
      * @param capacidade - capacidade máxima do storage
      * @throws CommonException
      */
-    public static void fileEscrever(Path path, InputStream stream, long tamanho, long capacidade) throws CommonException {
-        FileUtils.escrever(path, stream, tamanho, capacidade);
+    public static int fileEscrever(Path path, InputStream stream, long tamanho, long capacidade) throws CommonException {
+        return FileUtils.escrever(path, stream, tamanho, capacidade);
     }
 
     /**

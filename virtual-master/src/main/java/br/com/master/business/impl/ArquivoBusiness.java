@@ -5,19 +5,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.shared.Application;
+import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
+
 import br.com.common.business.DBusiness;
 import br.com.common.utils.Utils;
+import br.com.common.wrappers.File;
 import br.com.master.business.IArquivo;
 import br.com.master.business.IConfiguracao;
 import br.com.master.configuration.MasterException;
@@ -37,13 +40,14 @@ import okhttp3.Response;
 @Service
 public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
 
-    Set<String> SLAVE = new HashSet<>();
-
     @Autowired
     ArquivoDAO    persistence;
 
     @Autowired
     IConfiguracao configuracaoBusiness;
+
+    @Autowired
+    PeerAwareInstanceRegistry registry;
 
     /**
      * {@inheritDoc}
@@ -58,51 +62,48 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      * {@inheritDoc}
      */
     @Override
-    public void upload(MultipartFile file)  {
-        String host = getUrlSlave(null);
+    public void upload(MultipartFile multipartFile)  {
+        String host = getHomePageUrl();
         ConfiguracaoTO configuracao = configuracaoBusiness.buscar();
 
         ArquivoTO arquivo = new ArquivoTO();
-        arquivo.setNome(file.getOriginalFilename());
-        arquivo.setTamanho(file.getSize());
-        arquivo.setMimeType(file.getContentType());
+        arquivo.setNome(multipartFile.getOriginalFilename());
+        arquivo.setTamanho(multipartFile.getSize());
+        arquivo.setMimeType(multipartFile.getContentType());
 
         long tamanhoBloco = 1024L * configuracao.getTamanhoBloco();
         long miniBloco = arquivo.getTamanho() % tamanhoBloco;
         long qtdeBloco = arquivo.getTamanho() / tamanhoBloco;
         int position = 0;
-        try (FileChannel channel = ((FileInputStream) file.getInputStream()).getChannel()) {
+        try (FileChannel channel = ((FileInputStream) multipartFile.getInputStream()).getChannel()) {
             while (position < qtdeBloco) {
-                String uuid = blocoUuid(host, channel, (position * tamanhoBloco), tamanhoBloco);
-                arquivo.getBlocos().add(new BlocoTO(arquivo, host, position, uuid));
+                String uuid = blocoUuid(host, channel, ((position++) * tamanhoBloco), tamanhoBloco);
+                File file = new File(uuid, host);
+                arquivo.getBlocos().add(new BlocoTO(position, file, arquivo));
             }
             if (miniBloco > 0) {
-                String uuid = blocoUuid(host, channel, (position * tamanhoBloco), tamanhoBloco);
-                arquivo.getBlocos().add(new BlocoTO(arquivo, host, position, uuid));
+                String uuid = blocoUuid(host, channel, (position * tamanhoBloco), miniBloco);
+                File file = new File(uuid, host);
+                arquivo.getBlocos().add(new BlocoTO(position, file, arquivo));
             }
-        } catch (Exception e) {
 
-        }
-
-        try {
             Integer qtdeReplicacao = configuracao.getQtdeReplicacao();
             if (qtdeReplicacao > 0) {
+                ObjectMapper mapper = new ObjectMapper();
                 Iterator<BlocoTO> blocos = arquivo.getBlocos().iterator();
                 List<BlocoTO> replicacoes = new ArrayList<>();
                 while(blocos.hasNext()) {
-                    BlocoTO bloco = (BlocoTO) blocos.next().clone();
-                    String slave = getUrlSlave(bloco.getHost());
-                    String[] params = {"slave="+slave};
-                    Response response = Utils.httpPost(bloco.getHost(), "/replicacao", "/" + bloco.getUuid(), params);
-
-                    bloco.setHost(slave);
-                    bloco.setUuid(response.body().string());
-                    replicacoes.add(bloco);
+                    BlocoTO bloco = blocos.next();
+                    for (int i = 0; i < qtdeReplicacao; i++) {
+                        Response response = Utils.httpPost(bloco.getFile().getHost(), "/replicacao", "/" + bloco.getFile().getUuid());
+                        File file = mapper.readValue(response.body().string(), File.class);
+                        replicacoes.add(new BlocoTO(bloco.getNumero(), file, arquivo));
+                    }
                 }
                 arquivo.getBlocos().addAll(replicacoes);
             }
         } catch (Exception e) {
-            // TODO: handle exception
+            throw new MasterException("", e);
         }
 
         super.incluir(arquivo);
@@ -114,14 +115,16 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
         return response.body().string();
     }
 
-    private String getUrlSlave(String url) {
-        Random r = new Random();
-        String slave = SLAVE.stream().skip(r.nextInt(SLAVE.size()-1)).findFirst().get();
-        if(url.equals(slave) && SLAVE.size() > 1) {
-           return getUrlSlave(url);
+    private String getHomePageUrl() {
+        List<Application> applications = registry.getApplications().getRegisteredApplications();
+        String url = null;
+        for (Application application : applications) {
+            List<InstanceInfo> applicationsInstances = application.getInstances();
+            for (InstanceInfo applicationsInstance : applicationsInstances) {
+                url = applicationsInstance.getHomePageUrl();
+            }
         }
-        return slave;
+        return url;
     }
-
 
 }

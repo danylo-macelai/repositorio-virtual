@@ -4,7 +4,6 @@ import static br.com.slave.resource.VolumeResource.RESOURCE_ROOT_URL;
 
 import java.io.IOException;
 
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
@@ -26,6 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flipkart.zjsonpatch.JsonPatch;
 
+import br.com.common.wrappers.File;
 import br.com.common.wrappers.PatchForm;
 import br.com.slave.business.IVolume;
 import br.com.slave.configuration.SlaveException;
@@ -177,17 +177,17 @@ public class VolumeResource {
 
     @POST
     @Path("/replicacao/{uuid}")
-    @Produces({ MediaType.TEXT_HTML })
+    @Produces({ MediaType.APPLICATION_JSON })
     @ApiOperation(
             value = "Replicação de Bloco",
             nickname = "download",
-            notes = "Cria uma cópia do bloco no host informado",
-            produces = MediaType.TEXT_HTML)
+            notes = "Cria uma cópia do bloco",
+            produces = MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Replicação realizada com sucesso", response = String.class)})
-    public Response replicacao(@PathParam("uuid") String uuid, @FormParam("slave") String host) throws Exception {
-        String bloco = business.replicacao(uuid, host);
-        return Response.status(Response.Status.OK).entity(bloco).build();
+    public Response replicacao(@PathParam("uuid") String uuid) throws Exception {
+        File file = business.replicacao(uuid);
+        return Response.status(Response.Status.OK).entity(file).build();
     }
 
 }

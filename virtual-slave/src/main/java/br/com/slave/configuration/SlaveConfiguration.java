@@ -66,18 +66,18 @@ public class SlaveConfiguration extends CommonConfiguration {
     }
 
     @Bean
-    VirtualEurekaClient slaveEurekaClient(Environment env) {
-        return new VirtualEurekaClient(env);
+    SlaveEurekaClient slaveEurekaClient(Environment env) {
+        return new SlaveEurekaClient(env);
     }
 
     @Bean
-    InitializingBean initializing(IVolume volumeBusiness, VirtualEurekaClient commonEurekaClient, Environment env) {
+    InitializingBean initializing(IVolume volumeBusiness, SlaveEurekaClient eurekaClient, Environment env) {
         return () -> {
             long init = volumeBusiness.count();
             if (init == 0) {
                 volumePopulator(volumeBusiness, env);
             }
-            commonEurekaClient.register(VolumeResource.RESOURCE_ROOT_URL);
+            eurekaClient.register(VolumeResource.RESOURCE_ROOT_URL);
         };
     }
 

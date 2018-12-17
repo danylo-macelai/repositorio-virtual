@@ -1,5 +1,7 @@
 package br.com.slave.configuration;
 
+import java.util.List;
+
 import org.springframework.core.env.Environment;
 
 import com.netflix.appinfo.ApplicationInfoManager;
@@ -16,6 +18,7 @@ import com.netflix.discovery.DefaultEurekaClientConfig;
 import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.EurekaClientConfig;
+import com.netflix.discovery.shared.Application;
 
 /**
  * <b>Project:</b> virtual-slave <br>
@@ -23,7 +26,7 @@ import com.netflix.discovery.EurekaClientConfig;
  * @author macelai
  * @date: 14 de dez de 2018
  */
-public final class VirtualEurekaClient {
+public final class SlaveEurekaClient {
 
     private static final String EUREKA_CLIENT_HOST = "http.host";
     private static final String EUREKA_CLIENT_PORT = "http.port";
@@ -37,7 +40,7 @@ public final class VirtualEurekaClient {
     private int                 port;
     private EurekaClient        eurekaClient;
 
-    public VirtualEurekaClient(Environment env) {
+    public SlaveEurekaClient(Environment env) {
         this.env = env;
         init();
     }
@@ -62,12 +65,24 @@ public final class VirtualEurekaClient {
             return InstanceInfo.InstanceStatus.UP;
         });
     }
-    
+
+    public final String getHomePageUrl() {
+        List<Application> applications = eurekaClient.getApplications().getRegisteredApplications();
+        String url = null;
+        for (Application application : applications) {
+            List<InstanceInfo> applicationsInstances = application.getInstances();
+            for (InstanceInfo applicationsInstance : applicationsInstances) {
+                url = applicationsInstance.getHomePageUrl();
+            }
+        }
+        return url;
+    }
+
     private void init() {
         serviceIp = env.getProperty(EUREKA_CLIENT_HOST);
         port = Integer.valueOf(env.getProperty(EUREKA_CLIENT_PORT));
         appName = env.getProperty(EUREKA_APP_NAME);
-        
+
         ConfigurationManager.getConfigInstance().setProperty(EUREKA_REGION, env.getProperty(EUREKA_REGION));
         ConfigurationManager.getConfigInstance().setProperty(EUREKA_SERVER_URL, env.getProperty(EUREKA_SERVER_URL));
     }
@@ -104,4 +119,5 @@ public final class VirtualEurekaClient {
         );
         return instanceInfo;
     }
+
 }

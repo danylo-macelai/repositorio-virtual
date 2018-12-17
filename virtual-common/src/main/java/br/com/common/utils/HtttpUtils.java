@@ -32,7 +32,11 @@ abstract class HttpUtils {
     
     public static Response post(String host, String service, String path, String... params) throws CommonException {
         try {
-            RequestBody body = RequestBody.create(form_urlencoded, StringUtils.join(params, "&"));
+            String joinParams = "";
+            if (params.length > 0) {
+                joinParams = StringUtils.join(params, "&");
+            }
+            RequestBody body = RequestBody.create(form_urlencoded, joinParams);
             Request request = new Request.Builder().url(host + service + Objects.toString(path, "")).post(body)
                     .addHeader("content-type", form_urlencoded.type()).build();
             

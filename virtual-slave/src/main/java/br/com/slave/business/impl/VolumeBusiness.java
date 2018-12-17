@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.common.business.Business;
 import br.com.common.utils.Utils;
+import br.com.common.wrappers.File;
 import br.com.slave.business.IVolume;
+import br.com.slave.configuration.SlaveEurekaClient;
 import br.com.slave.configuration.SlaveException;
 import br.com.slave.domain.VolumeTO;
 import br.com.slave.persistence.VolumeDAO;
@@ -37,6 +39,9 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
 
     @Autowired
     VolumeDAO           persistence;
+
+    @Autowired
+    SlaveEurekaClient eurekaClient;
 
     /**
      * {@inheritDoc}
@@ -103,11 +108,12 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
      * {@inheritDoc}
      */
     @Override
-    public String replicacao(String uuid, String host) throws SlaveException {
+    public File replicacao(String uuid) throws SlaveException {
         try {
             Path path = Paths.get(buscar().getLocalizacao(), uuid + BLOCO_EXTENSION);
+            String host = eurekaClient.getHomePageUrl();
             Response response = Utils.httpPost(new FileInputStream(path.toFile()), host, "/upload");
-            return response.body().string();
+            return new File(response.body().string(), host);
         } catch (Exception e) {
             throw new SlaveException(e.getMessage(), e);
         }

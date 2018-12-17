@@ -14,7 +14,7 @@ import br.com.common.domain.Domain;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "VOLUME")
+@Table(name = "RV_VOLUME")
 public class VolumeTO extends Domain {
 
     @Column(name = "localizacao", nullable = false)

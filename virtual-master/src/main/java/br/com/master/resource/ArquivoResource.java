@@ -1,5 +1,8 @@
 package br.com.master.resource;
 
+import java.util.HashSet;
+import java.util.List;
+
 import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import br.com.master.business.IArquivo;
 import br.com.master.business.IBloco;
 import br.com.master.configuration.MasterException;
 import br.com.master.domain.ArquivoTO;
+import br.com.master.domain.BlocoTO;
 
 /**
  * <b>Description:</b> <br>
@@ -38,6 +42,11 @@ public class ArquivoResource {
         if (arquivo == null) {
             throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
         }
+        List<BlocoTO> blocos = blocoBusiness.carregarTodosPor(arquivo);
+        if (blocos.isEmpty()) {
+            throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
+        }
+        arquivo.setBlocos(new HashSet<>(blocos));
         return ResponseEntity.ok(arquivo);
     }
 

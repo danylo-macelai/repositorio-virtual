@@ -15,7 +15,7 @@ import br.com.common.domain.Domain;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "CONFIGURACAO")
+@Table(name = "RV_CONFIGURACAO")
 public class ConfiguracaoTO extends Domain {
 
     @Column(name = "tamanho_bloco", nullable = false)

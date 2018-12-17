@@ -22,7 +22,7 @@ import br.com.common.domain.Domain;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "ARQUIVO")
+@Table(name = "RV_ARQUIVO")
 public class ArquivoTO extends Domain {
 
     @Column(name = "tamanho", updatable = false, nullable = false)

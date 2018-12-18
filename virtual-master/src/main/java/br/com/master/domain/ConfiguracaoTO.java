@@ -19,16 +19,16 @@ import br.com.common.domain.Domain;
 public class ConfiguracaoTO extends Domain {
 
     @Column(name = "tamanho_bloco", nullable = false)
-    private Long    tamanhoBloco;
+    private Integer tamanhoBloco;
 
     @Column(name = "qtde_replicacao", nullable = false)
     private Integer qtdeReplicacao;
 
-    public Long getTamanhoBloco() {
+    public Integer getTamanhoBloco() {
         return tamanhoBloco;
     }
 
-    public void setTamanhoBloco(Long tamanhoBloco) {
+    public void setTamanhoBloco(Integer tamanhoBloco) {
         this.tamanhoBloco = tamanhoBloco;
     }
 

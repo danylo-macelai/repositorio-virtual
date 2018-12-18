@@ -21,10 +21,10 @@ public class VolumeTO extends Domain {
     private String  localizacao;
 
     @Column(name = "capacidade", nullable = false)
-    private Long    capacidade;
+    private Integer capacidade;
 
     @Column(name = "tamanho", nullable = false)
-    private Long    tamanho;
+    private Integer tamanho;
 
     @Column(name = "contem", nullable = false)
     private Integer contem;
@@ -45,19 +45,19 @@ public class VolumeTO extends Domain {
         this.localizacao = localizacao;
     }
 
-    public Long getCapacidade() {
+    public Integer getCapacidade() {
         return capacidade;
     }
 
-    public void setCapacidade(Long capacidade) {
+    public void setCapacidade(Integer capacidade) {
         this.capacidade = capacidade;
     }
 
-    public Long getTamanho() {
+    public Integer getTamanho() {
         return tamanho;
     }
 
-    public void setTamanho(Long tamanho) {
+    public void setTamanho(Integer tamanho) {
         this.tamanho = tamanho;
     }
 

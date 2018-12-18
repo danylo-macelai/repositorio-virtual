@@ -68,12 +68,12 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
 
         ArquivoTO arquivo = new ArquivoTO();
         arquivo.setNome(multipartFile.getOriginalFilename());
-        arquivo.setTamanho(multipartFile.getSize());
+        arquivo.setTamanho((int) multipartFile.getSize());
         arquivo.setMimeType(multipartFile.getContentType());
 
-        long tamanhoBloco = 1024L * configuracao.getTamanhoBloco();
-        long miniBloco = arquivo.getTamanho() % tamanhoBloco;
-        long qtdeBloco = arquivo.getTamanho() / tamanhoBloco;
+        int tamanhoBloco = 1024 * configuracao.getTamanhoBloco();
+        int miniBloco = arquivo.getTamanho() % tamanhoBloco;
+        int qtdeBloco = arquivo.getTamanho() / tamanhoBloco;
         int position = 0;
         try (FileChannel channel = ((FileInputStream) multipartFile.getInputStream()).getChannel()) {
             while (position < qtdeBloco) {

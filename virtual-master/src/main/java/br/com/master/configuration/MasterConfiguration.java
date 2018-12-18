@@ -75,7 +75,7 @@ public class MasterConfiguration extends CommonConfiguration {
 
     private void configuracaoPopulator(ConfiguracaoBusiness configuracaoBusiness, Environment env) {
         ConfiguracaoTO configuracao = new ConfiguracaoTO();
-        configuracao.setTamanhoBloco(Long.valueOf(env.getRequiredProperty(ARQUIVO_TAMANHO_BLOCO)));
+        configuracao.setTamanhoBloco(Integer.valueOf(env.getRequiredProperty(ARQUIVO_TAMANHO_BLOCO)));
         configuracao.setQtdeReplicacao(Integer.valueOf(env.getRequiredProperty(ARQUIVO_QTDE_REPLICACAO)));
         configuracaoBusiness.incluir(configuracao);
     }

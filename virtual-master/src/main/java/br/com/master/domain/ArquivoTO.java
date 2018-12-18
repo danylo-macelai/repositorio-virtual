@@ -28,7 +28,7 @@ import br.com.common.domain.Domain;
 public class ArquivoTO extends Domain {
 
     @Column(name = "tamanho", updatable = false, nullable = false)
-    private Long         tamanho;
+    private Integer      tamanho;
 
     @Column(name = "nome", nullable = false)
     private String       nome;
@@ -41,11 +41,11 @@ public class ArquivoTO extends Domain {
     @OrderBy("numero ASC")
     private Set<BlocoTO> blocos;
 
-    public Long getTamanho() {
+    public Integer getTamanho() {
         return tamanho;
     }
 
-    public void setTamanho(Long tamanho) {
+    public void setTamanho(Integer tamanho) {
         this.tamanho = tamanho;
     }
 

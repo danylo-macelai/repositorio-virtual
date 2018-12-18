@@ -11,6 +11,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.common.domain.Domain;
 
 /**
@@ -34,6 +36,7 @@ public class ArquivoTO extends Domain {
     @Column(name = "mime_type", updatable = false, nullable = false)
     private String       mimeType;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "arquivo")
     @OrderBy("numero ASC")
     private Set<BlocoTO> blocos;

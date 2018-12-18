@@ -28,7 +28,7 @@ public class Application {
         classPathBeanDefinitionScanner.scan(VolumeResource.class.getPackage().getName());
         SpringMicroservicesRunner runner = context.getBean(SpringMicroservicesRunner.class);
         runner.addGlobalRequestInterceptor(context.getBean(CorsInterceptor.class));
-        runner.deploy("/volumes", context.getBean(VolumeResource.class));
+        runner.deploy(VolumeResource.RESOURCE_ROOT_URL, context.getBean(VolumeResource.class));
     }
 
 }

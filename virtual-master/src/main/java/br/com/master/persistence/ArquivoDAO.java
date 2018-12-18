@@ -1,5 +1,7 @@
 package br.com.master.persistence;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.master.configuration.MasterException;
@@ -21,6 +23,6 @@ public interface ArquivoDAO extends JpaRepository<ArquivoTO, Long> {
      * @return ArquivoTO
      * @throws MasterException
      */
-    ArquivoTO findByNome(String nome);
+    List<ArquivoTO> findAllByNome(String nome);
 
 }

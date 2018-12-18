@@ -54,8 +54,8 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      */
     @Override
     @Transactional(readOnly = true)
-    public ArquivoTO carregarPor(String nome) throws MasterException {
-        return persistence.findByNome(nome);
+    public List<ArquivoTO> carregarPor(String nome) throws MasterException {
+        return persistence.findAllByNome(nome);
     }
 
     /**

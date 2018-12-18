@@ -69,5 +69,14 @@ abstract class HttpUtils {
             throw new CommonException(e.getMessage(), e);
         }
     }
-    
+
+    public static Response get(String host, String service, String path) throws CommonException {
+        try {
+            Request request = new Request.Builder().url(host + service + path).get().build();
+            Response response = client.newCall(request).execute();
+            return response;
+        } catch (IOException e) {
+            throw new CommonException(e.getMessage(), e);
+        }
+    }
 }

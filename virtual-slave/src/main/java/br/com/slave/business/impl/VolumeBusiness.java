@@ -33,7 +33,7 @@ import okhttp3.Response;
 public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
 
     static final int    BUFFER_SIZE     = 4096;
-    static final String BLOCO_EXTENSION = ".bl";
+    static final String BLOCO_EXTENSION = ".rvf";
     OkHttpClient        client          = new OkHttpClient();
     VolumeTO            INSTANCE;
 

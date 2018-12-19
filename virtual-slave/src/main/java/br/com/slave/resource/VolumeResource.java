@@ -147,18 +147,18 @@ public class VolumeResource {
 
     @POST
     @Path("/upload")
-    @Produces({ MediaType.TEXT_HTML })
+    @Produces({ MediaType.APPLICATION_JSON })
     @ApiOperation(
             value = "Upload de Blocos",
             nickname = "upload",
             notes = "Realiza o upload dos blocos",
-            produces = MediaType.TEXT_HTML)
+            produces = MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Upload realizado com sucesso", response = String.class),
             @ApiResponse(code = 409, message = "O identificador gerado já existe")})
     public Response upload(@Context Request request) {
-        String uuid = business.upload(request.getMessageContentStream());
-        return Response.status(Response.Status.OK).entity(uuid).build();
+        File file = business.upload(request);
+        return Response.status(Response.Status.OK).entity(file).build();
     }
 
     @GET

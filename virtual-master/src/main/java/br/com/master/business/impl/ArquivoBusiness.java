@@ -3,12 +3,19 @@ package br.com.master.business.impl;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.SequenceInputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.Vector;
+
+import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +29,7 @@ import br.com.common.business.DBusiness;
 import br.com.common.utils.Utils;
 import br.com.common.wrappers.File;
 import br.com.master.business.IArquivo;
+import br.com.master.business.IBloco;
 import br.com.master.business.IConfiguracao;
 import br.com.master.configuration.MasterException;
 import br.com.master.domain.ArquivoTO;
@@ -41,13 +49,18 @@ import okhttp3.Response;
 public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
 
     @Autowired
-    ArquivoDAO    persistence;
+    ArquivoDAO                persistence;
 
     @Autowired
-    IConfiguracao configuracaoBusiness;
+    IConfiguracao             configuracaoBusiness;
+
+    @Autowired
+    IBloco                    blocoBusiness;
 
     @Autowired
     PeerAwareInstanceRegistry registry;
+
+    ObjectMapper              mapper = new ObjectMapper();
 
     /**
      * {@inheritDoc}
@@ -62,7 +75,8 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      * {@inheritDoc}
      */
     @Override
-    public void upload(MultipartFile multipartFile)  {
+    @Transactional
+    public ArquivoTO upload(MultipartFile multipartFile) throws MasterException {
         String host = getHomePageUrl();
         ConfiguracaoTO configuracao = configuracaoBusiness.buscar();
 
@@ -74,25 +88,23 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
         int tamanhoBloco = 1024 * configuracao.getTamanhoBloco();
         int miniBloco = arquivo.getTamanho() % tamanhoBloco;
         int qtdeBloco = arquivo.getTamanho() / tamanhoBloco;
-        int position = 0;
+        int pecas = 0;
         try (FileChannel channel = ((FileInputStream) multipartFile.getInputStream()).getChannel()) {
-            while (position < qtdeBloco) {
-                String uuid = blocoUuid(host, channel, ((position++) * tamanhoBloco), tamanhoBloco);
-                File file = new File(uuid, host);
-                arquivo.getBlocos().add(new BlocoTO(position, file, arquivo));
+            while (pecas < qtdeBloco) {
+                File file = blocoUuid(host, channel, ((pecas++) * tamanhoBloco), tamanhoBloco);
+                arquivo.getBlocos().add(new BlocoTO(pecas, file, arquivo));
             }
             if (miniBloco > 0) {
-                String uuid = blocoUuid(host, channel, (position * tamanhoBloco), miniBloco);
-                File file = new File(uuid, host);
-                arquivo.getBlocos().add(new BlocoTO(position, file, arquivo));
+                File file = blocoUuid(host, channel, (pecas * tamanhoBloco), miniBloco);
+                arquivo.getBlocos().add(new BlocoTO(++pecas, file, arquivo));
             }
+            arquivo.setPecas(pecas);
 
             Integer qtdeReplicacao = configuracao.getQtdeReplicacao();
             if (qtdeReplicacao > 0) {
-                ObjectMapper mapper = new ObjectMapper();
                 Iterator<BlocoTO> blocos = arquivo.getBlocos().iterator();
                 List<BlocoTO> replicacoes = new ArrayList<>();
-                while(blocos.hasNext()) {
+                while (blocos.hasNext()) {
                     BlocoTO bloco = blocos.next();
                     for (int i = 0; i < qtdeReplicacao; i++) {
                         Response response = Utils.httpPost(bloco.getFile().getHost(), "/replicacao", "/" + bloco.getFile().getUuid());
@@ -102,17 +114,57 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
                 }
                 arquivo.getBlocos().addAll(replicacoes);
             }
+
+            super.incluir(arquivo);
+
+            return arquivo;
         } catch (Exception e) {
             throw new MasterException("", e);
         }
-
-        super.incluir(arquivo);
     }
 
-    private String blocoUuid(String host, FileChannel channel, long position, long byteSize) throws IOException {
+    @Override
+    @Transactional(readOnly = true)
+    public InputStreamResource download(ArquivoTO arquivo) throws MasterException {
+        try {
+            List<BlocoTO> blocos = blocoBusiness.carregarTodosPor(arquivo);
+            if (blocos.isEmpty()) {
+                throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
+            }
+
+            Vector<InputStream> vector = new Vector<>();
+            Iterator<BlocoTO> blocoIterator = blocos.iterator();
+            Set<Integer> pecas = new HashSet<>();
+            while (blocoIterator.hasNext()) {
+                BlocoTO bloco = blocoIterator.next();
+                if (pecas.add(bloco.getNumero())) {
+                    try {
+                        Response response = Utils.httpGet(bloco.getFile().getHost(), "/download/", bloco.getFile().getUuid());
+                        vector.add(response.body().byteStream());
+                    } catch (Exception e) {
+                        pecas.remove(bloco.getNumero());
+                    }
+                }
+            }
+            if (!arquivo.getPecas().equals(pecas.size())) {
+                Iterator<InputStream> vectorIterator = vector.iterator();
+                while (vectorIterator.hasNext()) {
+                    InputStream inputStream = vectorIterator.next();
+                    inputStream.close();
+                }
+                throw new MasterException("");
+            }
+
+            return new InputStreamResource(new SequenceInputStream(vector.elements()));
+        } catch (Exception e) {
+            throw new MasterException(e.getMessage(), e);
+        }
+    }
+
+    private File blocoUuid(String host, FileChannel channel, long position, long byteSize) throws IOException {
         InputStream stream = Utils.fileParticionar(channel, position, byteSize);
         Response response = Utils.httpPost(stream, host, "/upload");
-        return response.body().string();
+        return mapper.readValue(response.body().string(), File.class);
     }
 
     private String getHomePageUrl() {

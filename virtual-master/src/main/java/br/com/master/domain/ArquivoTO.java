@@ -30,6 +30,9 @@ public class ArquivoTO extends Domain {
     @Column(name = "tamanho", updatable = false, nullable = false)
     private Integer      tamanho;
 
+    @Column(name = "pecas", updatable = false, nullable = false)
+    private Integer      pecas;
+
     @Column(name = "nome", nullable = false)
     private String       nome;
 
@@ -47,6 +50,14 @@ public class ArquivoTO extends Domain {
 
     public void setTamanho(Integer tamanho) {
         this.tamanho = tamanho;
+    }
+
+    public Integer getPecas() {
+        return pecas;
+    }
+
+    public void setPecas(Integer pecas) {
+        this.pecas = pecas;
     }
 
     public String getNome() {

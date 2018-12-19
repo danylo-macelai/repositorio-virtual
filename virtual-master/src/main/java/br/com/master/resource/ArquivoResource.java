@@ -1,10 +1,6 @@
 package br.com.master.resource;
 
-import java.io.InputStream;
-import java.io.SequenceInputStream;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import javax.ws.rs.core.Response.Status;
 
@@ -20,13 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.common.utils.Utils;
 import br.com.master.business.IArquivo;
-import br.com.master.business.IBloco;
 import br.com.master.configuration.MasterException;
 import br.com.master.domain.ArquivoTO;
-import br.com.master.domain.BlocoTO;
-import okhttp3.Response;
 
 /**
  * <b>Description:</b> <br>
@@ -40,9 +32,6 @@ public class ArquivoResource {
 
     @Autowired
     IArquivo arquivoBusiness;
-
-    @Autowired
-    IBloco   blocoBusiness;
 
     @GetMapping(value = "/arquivos/{nome}")
     public ResponseEntity<List<ArquivoTO>> consultaArquivo(@PathVariable String nome) {
@@ -59,26 +48,19 @@ public class ArquivoResource {
         if (arquivo == null) {
             throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
         }
-        List<BlocoTO> blocos = blocoBusiness.carregarTodosPor(arquivo);
-        if (blocos.isEmpty()) {
-            throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
-        }
 
-        Vector<InputStream> v = new Vector<>(2);
-        Iterator<BlocoTO> iterator = blocos.iterator();
-        while (iterator.hasNext()) {
-            BlocoTO bloco = iterator.next();
-            Response response = Utils.httpGet(bloco.getFile().getHost(), "/download/", bloco.getFile().getUuid());
-            v.add(response.body().byteStream());
-        }
-        return ResponseEntity.ok().contentLength(arquivo.getTamanho()).contentType(MediaType.parseMediaType(arquivo.getMimeType()))
-                .body(new InputStreamResource(new SequenceInputStream(v.elements())));
+        InputStreamResource stream = arquivoBusiness.download(arquivo);
+
+        return ResponseEntity.ok()
+                .contentLength(arquivo.getTamanho())
+                .contentType(MediaType.parseMediaType(arquivo.getMimeType()))
+                .body(stream);
     }
 
     @PostMapping("/arquivos/upload")
-    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
-        arquivoBusiness.upload(file);
-        return ResponseEntity.ok("ok");
+    public ResponseEntity<ArquivoTO> upload(@RequestParam("file") MultipartFile file) {
+        ArquivoTO arquivo = arquivoBusiness.upload(file);
+        return ResponseEntity.ok(arquivo);
     }
 
 }

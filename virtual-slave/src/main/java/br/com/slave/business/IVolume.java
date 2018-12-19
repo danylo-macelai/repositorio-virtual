@@ -1,8 +1,8 @@
 package br.com.slave.business;
 
-import java.io.InputStream;
-
 import javax.ws.rs.core.StreamingOutput;
+
+import org.wso2.msf4j.Request;
 
 import br.com.common.business.IBusiness;
 import br.com.common.wrappers.File;
@@ -28,11 +28,11 @@ public interface IVolume extends IBusiness<VolumeTO> {
     /**
      * Gera um identificador único para o bloco que será salvo no volume
      *
-     * @param stream
-     * @return String
+     * @param request
+     * @return File
      * @throws SlaveException
      */
-    String upload(InputStream stream) throws SlaveException;
+    File upload(Request request) throws SlaveException;
 
     /**
      * Realiza o download do bloco com o uuid informado

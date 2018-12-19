@@ -1,7 +1,6 @@
 package br.com.slave.business.impl;
 
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -11,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.wso2.msf4j.Request;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.common.business.Business;
 import br.com.common.utils.Utils;
@@ -20,6 +22,7 @@ import br.com.slave.configuration.SlaveEurekaClient;
 import br.com.slave.configuration.SlaveException;
 import br.com.slave.domain.VolumeTO;
 import br.com.slave.persistence.VolumeDAO;
+import br.com.slave.resource.VolumeResource;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
@@ -84,14 +87,17 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
      */
     @Override
     @Transactional
-    public String upload(InputStream stream) throws SlaveException {
+    public File upload(Request request) throws SlaveException {
         VolumeTO volume = buscar();
         String uuid = Utils.gerarIdentificador();
         Path path = Paths.get(volume.getLocalizacao(), uuid + BLOCO_EXTENSION);
-        int read = Utils.fileEscrever(path, stream, volume.getTamanho(), volume.getCapacidade());
-        volume.incrementar(read);
+        int tamanho = Utils.fileEscrever(path, request.getMessageContentStream(), volume.getTamanho(), volume.getCapacidade());
+        volume.incrementar(tamanho);
         alterar(volume);
-        return uuid;
+
+        String host = String.format("%s://%s%s", request.getProperties().get("PROTOCOL"), request.getProperties().get("listener.interface.id"), VolumeResource.RESOURCE_ROOT_URL);
+
+        return new File(uuid, tamanho, host);
     }
 
     /**
@@ -115,7 +121,8 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
             Path path = Paths.get(buscar().getLocalizacao(), uuid + BLOCO_EXTENSION);
             String host = eurekaClient.getHomePageUrl();
             Response response = Utils.httpPost(new FileInputStream(path.toFile()), host, "/upload");
-            return new File(response.body().string(), host);
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(response.body().string(), File.class);
         } catch (Exception e) {
             throw new SlaveException(e.getMessage(), e);
         }

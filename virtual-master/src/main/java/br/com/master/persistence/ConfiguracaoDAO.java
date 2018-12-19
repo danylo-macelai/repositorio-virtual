@@ -16,12 +16,12 @@ import br.com.master.domain.ConfiguracaoTO;
 public interface ConfiguracaoDAO extends JpaRepository<ConfiguracaoTO, Long> {
 
     /**
-     *  O método buscar retorna a única instância da classe configuracao.
+     *  O método buscar retorna a única instância da classe configuração.
      *
      * @return ConfiguracaoTO
      * @throws MasterException
      */
     @Query("SELECT C FROM br.com.master.domain.ConfiguracaoTO C")
-    ConfiguracaoTO buscar();
+    ConfiguracaoTO buscar() throws MasterException;
 
 }

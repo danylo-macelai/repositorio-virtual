@@ -123,6 +123,9 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional(readOnly = true)
     public InputStreamResource download(ArquivoTO arquivo) throws MasterException {

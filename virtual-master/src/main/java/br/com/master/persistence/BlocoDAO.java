@@ -24,6 +24,6 @@ public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
      * @return List<BlocoTO>
      * @throws MasterException
      */
-    List<BlocoTO> findByArquivoOrderByNumeroAsc(ArquivoTO arquivo);
+    List<BlocoTO> findByArquivoOrderByNumeroAsc(ArquivoTO arquivo) throws MasterException;
 
 }

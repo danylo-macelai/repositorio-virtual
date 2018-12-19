@@ -220,11 +220,11 @@ public class Response {
             }*/
             setStatus(response.getStatus());
 
-            //###### jsr311-api ######
+            //###### RV ######
             // if (response.getMediaType() != null) {
             //     setMediaType(response.getMediaType().toString());
             // }
-            //###### jsr311-api ######
+            //###### RV ######
         } else {
             this.entity = entity;
         }

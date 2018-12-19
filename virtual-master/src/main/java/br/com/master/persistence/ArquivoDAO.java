@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import br.com.master.configuration.MasterException;
 import br.com.master.domain.ArquivoTO;
 
 /**
@@ -19,9 +18,8 @@ public interface ArquivoDAO extends JpaRepository<ArquivoTO, Long> {
     /**
      * Consulta o arquivo por nome
      *
-     * @param nome - Nome do arquivo
-     * @return ArquivoTO
-     * @throws MasterException
+     * @param nome
+     * @return List<ArquivoTO>
      */
     List<ArquivoTO> findAllByNome(String nome);
 

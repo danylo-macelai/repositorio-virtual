@@ -11,7 +11,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -170,9 +169,9 @@ public class VolumeResource {
             produces = MediaType.TEXT_HTML)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Download realizado com sucesso", response = String.class)})
-    public Response download(@PathParam("uuid") String uuid, @QueryParam("mimeType") String mimeType) {
+    public Response download(@PathParam("uuid") String uuid) {
         StreamingOutput stream = business.download(uuid);
-        return Response.status(Response.Status.OK).entity(stream).type(mimeType).build();
+        return Response.status(Response.Status.OK).entity(stream).build();
     }
 
     @POST

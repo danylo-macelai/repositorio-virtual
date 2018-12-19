@@ -112,6 +112,17 @@ public abstract class Utils {
     }
 
     /**
+     * Retorna um streaming para leitura dos bytes do arquivo
+     *
+     * @param stream
+     * @return StreamingOutput
+     * @throws CommonException
+     */
+    public final static StreamingOutput fileLer(InputStream stream) throws CommonException {
+        return FileUtils.ler(stream);
+    }
+
+    /**
      * Retorna um stream de um determinado tamanho a partir da posição informada
      *
      * @param channel - Arquivo em disco

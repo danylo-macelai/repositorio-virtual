@@ -57,12 +57,12 @@ public class MasterConfiguration extends CommonConfiguration {
     }
 
     @Bean(name = "multipartResolver")
-    public CommonsMultipartResolver multipartResolver() {
+    CommonsMultipartResolver multipartResolver() {
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
         multipartResolver.setMaxUploadSize(-1);
         return multipartResolver;
     }
-    
+
     @Bean
     CommandLineRunner initializing(ConfiguracaoBusiness configuracaoBusiness, Environment env) {
         return args -> {

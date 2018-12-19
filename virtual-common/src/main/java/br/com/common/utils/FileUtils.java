@@ -57,11 +57,19 @@ abstract class FileUtils {
     }
 
     public final static StreamingOutput ler(Path path) throws CommonException {
-        StreamingOutput stream = os -> {
+        try {
             if (!path.toFile().exists()) {
                 throw new CommonException("volume.bloco.nao.existe");
             }
-            try (InputStream in = new FileInputStream(path.toFile())) {
+            return ler(new FileInputStream(path.toFile()));
+        } catch (Exception e) {
+            throw new CommonException(e.getMessage(), e);
+        }
+    }
+
+    public final static StreamingOutput ler(InputStream is) throws CommonException {
+        StreamingOutput stream = os -> {
+            try (InputStream in = is) {
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int read = -1;
                 while ((read = in.read(buffer)) != -1) {

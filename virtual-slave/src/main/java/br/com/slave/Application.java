@@ -8,6 +8,7 @@ import org.wso2.msf4j.spring.SpringMicroservicesRunner;
 
 import br.com.slave.configuration.CorsInterceptor;
 import br.com.slave.configuration.SlaveConfiguration;
+import br.com.slave.resource.SwaggerUIResource;
 import br.com.slave.resource.VolumeResource;
 
 /**
@@ -29,6 +30,7 @@ public class Application {
         SpringMicroservicesRunner runner = context.getBean(SpringMicroservicesRunner.class);
         runner.addGlobalRequestInterceptor(context.getBean(CorsInterceptor.class));
         runner.deploy(VolumeResource.RESOURCE_ROOT_URL, context.getBean(VolumeResource.class));
+        runner.deploy(SwaggerUIResource.RESOURCE_ROOT_URL, context.getBean(SwaggerUIResource.class));
     }
 
 }

@@ -28,7 +28,7 @@ import br.com.slave.configuration.SlaveException;
 @Path(RESOURCE_ROOT_URL)
 public class SwaggerUIResource {
 
-    public static final String RESOURCE_ROOT_URL = "/SwaggerUI";
+    public static final String RESOURCE_ROOT_URL = "/swagger-ui.html";
 
     @GET
     @Path("/")

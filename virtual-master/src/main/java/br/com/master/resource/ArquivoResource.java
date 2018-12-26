@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiResponses;
  * @date: 18 de nov de 2018
  */
 @RestController()
-@Api(value= "Arquivos")
+@Api(tags = { "Arquivos" })
 public class ArquivoResource {
 
     @Autowired
@@ -41,33 +41,50 @@ public class ArquivoResource {
 
     @GetMapping(value = "/arquivos/{nome}")
     @ApiOperation(
-            value = "Consulta os arquivos",
-            nickname = "consultaArquivo",
-            notes = "Retorna uma lista de ArquivoTO",
-            response = ArquivoTO.class,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+            value = "Consulta os metadados do arquivo",
+            nickname = "consulta",
+            notes = "Retorna uma lista de metadados de arquivos que possuem o nome informado",
+            response = List.class,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "Nenhum arquivo foi localizado com o nome informado")})
-    public ResponseEntity<List<ArquivoTO>> consultaArquivo(
-            @ApiParam("Nome do arquivo a ser obtido. Não pode estar vazio.")
+            @ApiResponse(code = 404, message = "Nenhum arquivo foi localizado!")
+            }
+    )
+    public ResponseEntity<List<ArquivoTO>> consulta(
+            @ApiParam(
+                    name = "nome",
+                    value = "Nome é a identificação do arquivo digital deverá conter a extensão Exemplo: remessa.zip, remessa.xls, remessa.png, remessa.avi, etc.",
+                    example = "remessa.txt",
+                    required = true
+            )
             @PathVariable String nome) {
         List<ArquivoTO> arquivos = arquivoBusiness.carregarPor(nome);
-        if (arquivos == null) {
+        if (arquivos.isEmpty()) {
             throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
         }
         return ResponseEntity.ok(arquivos);
     }
 
 
-    @GetMapping(value = "/arquivos/download/{id:\\d+}")
+    @GetMapping(value = "/arquivos/leitura/{id:\\d+}")
     @ApiOperation(
-            value = "Download de arquivo",
-            nickname = "download",
-            notes = "Retorna o binário do arquivo")
+            value = "Transfere o arquivo para o computador local",
+            nickname = "leitura",
+            notes = "Retorna uma cópia do arquivo que está no servidor Master para um computador local",
+            response = Resource.class
+    )
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "Nenhum arquivo foi localizado com o id informado")})
-    public ResponseEntity<Resource> download(
-            @ApiParam("Id do arquivo a ser obtido. Não pode estar vazio.")
+            @ApiResponse(code = 404, message = "Nenhum arquivo foi localizado!")
+            }
+    )
+    public ResponseEntity<Resource> leitura(
+            @ApiParam(
+                    name = "id",
+                    value = "Id é um número utilizado para a identificação do arquivo que será transferido",
+                    example = "1234",
+                    required = true
+            )
             @PathVariable("id") long id) {
         ArquivoTO arquivo = arquivoBusiness.ache(id);
         if (arquivo == null) {
@@ -82,14 +99,20 @@ public class ArquivoResource {
                 .body(stream);
     }
 
-    @PostMapping("/arquivos/upload")
+    @PostMapping("/arquivos/gravacao")
     @ApiOperation(
-            value = "Upload de arquivos",
-            nickname = "upload",
-            notes = "Retorna o ArquivoTO",
+            value = "Envia o arquivo para o servidor remoto",
+            nickname = "gravacao",
+            notes = "Retorna os metadados de arquivos que foi enviado ao servidor Master",
             response = ArquivoTO.class,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ArquivoTO> upload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ArquivoTO> gravacao(
+            @ApiParam(
+                    name = "file",
+                    value = "file é o arquivo que será enviado ao servidor",
+                    required = true
+            )
+            @RequestParam("file") MultipartFile file) {
         ArquivoTO arquivo = arquivoBusiness.upload(file);
         return ResponseEntity.ok(arquivo);
     }

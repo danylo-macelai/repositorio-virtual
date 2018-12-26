@@ -19,6 +19,7 @@ import springfox.documentation.builders.ResponseMessageBuilder;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.service.ResponseMessage;
+import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -48,6 +49,10 @@ public class MasterSpringFox {
                 .apis(RequestHandlerSelectors.basePackage("br.com.master.resource")) // .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build()
+                .tags(new Tag(
+                        "Arquivos",
+                        "O serviço de arquivos envolve a leitura, gravação e exclusão.")
+                )
                 .apiInfo(apiInfo())
                 .useDefaultResponseMessages(false)
                 .globalResponseMessage(RequestMethod.DELETE, listGlobalResponseMessage)
@@ -60,7 +65,7 @@ public class MasterSpringFox {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "Arquivos RESTful Web Services" ,                                                       /* title */
+                "Master RESTful Web Services" ,                                                         /* title */
                 "Manual de Integração." ,                                                               /* description */
                 "1.0",                                                                                  /* version */
                 "Terms of service" ,                                                                    /* termsOfServiceUrl */

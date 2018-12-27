@@ -79,4 +79,21 @@ abstract class HttpUtils {
             throw new CommonException(e.getMessage(), e);
         }
     }
+
+    public static Response delete(String host, String service, String path) throws CommonException {
+        try {
+
+            Request request = new Request.Builder()
+                    .url(host + service + path)
+                    .delete()
+                    .addHeader("content-type", form_urlencoded.type())
+                    .build();
+
+            Response response = client.newCall(request).execute();
+            return response;
+        } catch (IOException e) {
+            throw new CommonException(e.getMessage(), e);
+        }
+    }
+
 }

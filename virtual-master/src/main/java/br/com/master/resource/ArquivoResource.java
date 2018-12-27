@@ -2,6 +2,7 @@ package br.com.master.resource;
 
 import java.util.List;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -115,6 +117,36 @@ public class ArquivoResource {
             @RequestParam("file") MultipartFile file) {
         ArquivoTO arquivo = arquivoBusiness.upload(file);
         return ResponseEntity.ok(arquivo);
+    }
+
+    @DeleteMapping(value = "/arquivos/exclusao/{id:\\d+}")
+    @ApiOperation(
+            value = "Remove o arquivo do servidor remoto",
+            nickname = "exclusao",
+            notes = "Retorna o status 204 indicando que a exclusão foi bem sucedida",
+            response = Response.class
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Nenhum arquivo foi localizado!")
+            }
+    )
+    public ResponseEntity<Response> exclusao(
+            @ApiParam(
+                    name = "id",
+                    value = "Id é um número utilizado para a identificação do arquivo que será removido",
+                    example = "1234",
+                    required = true
+            )
+            @PathVariable("id") long id) {
+
+        ArquivoTO arquivo = arquivoBusiness.ache(id);
+        if (arquivo == null) {
+            throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
+        }
+
+        arquivoBusiness.excluir(arquivo);
+
+        return ResponseEntity.noContent().build();
     }
 
 }

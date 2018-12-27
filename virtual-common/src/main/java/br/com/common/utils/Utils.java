@@ -146,4 +146,8 @@ public abstract class Utils {
     public static Response httpGet(String host, String service, String path) throws CommonException {
         return HttpUtils.get(host, service, path);
     }
+
+    public static Response httpDelete(String host, String service, String path) throws CommonException {
+        return HttpUtils.delete(host, service, path);
+    }
 }

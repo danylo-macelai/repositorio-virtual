@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -69,6 +70,26 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
     @Transactional(readOnly = true)
     public List<ArquivoTO> carregarPor(String nome) throws MasterException {
         return persistence.findAllByNome(nome);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void excluir(ArquivoTO arquivo) throws DataAccessException {
+        List<BlocoTO> blocos = blocoBusiness.carregarTodosPor(arquivo);
+        if (blocos.isEmpty()) {
+            throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
+        }
+
+        Iterator<BlocoTO> blocoIterator = blocos.iterator();
+        while (blocoIterator.hasNext()) {
+            BlocoTO bloco = blocoIterator.next();
+            Utils.httpDelete(bloco.getFile().getHost(), "/exclusao/", bloco.getFile().getUuid());
+        }
+
+        super.excluir(arquivo);
     }
 
     /**

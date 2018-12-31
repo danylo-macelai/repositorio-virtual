@@ -120,7 +120,7 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
         try {
             Path path = Paths.get(buscar().getLocalizacao(), uuid + BLOCO_EXTENSION);
             String host = eurekaClient.getHomePageUrl();
-            Response response = Utils.httpPost(new FileInputStream(path.toFile()), host, "/upload");
+            Response response = Utils.httpPost(new FileInputStream(path.toFile()), host, "/gravacao");
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(response.body().string(), File.class);
         } catch (Exception e) {

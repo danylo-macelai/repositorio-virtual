@@ -100,6 +100,7 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
     private final ReaderConfig config;
     private Swagger swagger;
     private String basePath;
+    private static io.swagger.models.Info info;
 
     ExtendedSwaggerReader(String basePath, Swagger swagger) {
         super(swagger);
@@ -167,6 +168,9 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
 
     @Override
     public Swagger getSwagger() {
+        if (swagger.getInfo() == null) {
+            swagger.setInfo(info);
+        }
         return swagger;
     }
 
@@ -537,7 +541,7 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
     @Override
     protected void readInfoConfig(SwaggerDefinition config) {
         Info infoConfig = config.info();
-        io.swagger.models.Info info = swagger.getInfo();
+        info = swagger.getInfo();
         if (info == null) {
             info = new io.swagger.models.Info();
             swagger.setInfo(info);

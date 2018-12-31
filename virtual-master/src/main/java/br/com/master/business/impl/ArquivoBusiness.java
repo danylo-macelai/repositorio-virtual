@@ -163,7 +163,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
                 BlocoTO bloco = blocoIterator.next();
                 if (pecas.add(bloco.getNumero())) {
                     try {
-                        Response response = Utils.httpGet(bloco.getFile().getHost(), "/download/", bloco.getFile().getUuid());
+                        Response response = Utils.httpGet(bloco.getFile().getHost(), "/leitura/", bloco.getFile().getUuid());
                         vector.add(response.body().byteStream());
                     } catch (Exception e) {
                         pecas.remove(bloco.getNumero());
@@ -187,7 +187,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
 
     private File blocoUuid(String host, FileChannel channel, long position, long byteSize) throws IOException {
         InputStream stream = Utils.fileParticionar(channel, position, byteSize);
-        Response response = Utils.httpPost(stream, host, "/upload");
+        Response response = Utils.httpPost(stream, host, "/gravacao");
         return mapper.readValue(response.body().string(), File.class);
     }
 

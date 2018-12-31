@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.wso2.msf4j.Request;
 
@@ -31,12 +32,14 @@ import br.com.slave.configuration.SlaveException;
 import br.com.slave.domain.VolumeTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Contact;
 import io.swagger.annotations.Info;
 import io.swagger.annotations.License;
 import io.swagger.annotations.SwaggerDefinition;
+import io.swagger.annotations.Tag;
 
 /**
  * <b>Description:</b> <br>
@@ -45,7 +48,7 @@ import io.swagger.annotations.SwaggerDefinition;
  * @author macelai
  * @date: 24 de out de 2018
  */
-@Api(value = "volumes")
+@Api(tags = {"Volumes"})
 @SwaggerDefinition(
         info = @Info(
                 title = "Volumes RESTful Web Services",
@@ -58,7 +61,10 @@ import io.swagger.annotations.SwaggerDefinition;
                         name = "Danylo Macelai",
                         email = "danylomacelai@gmail.com",
                         url = "http://danylomacelai.com")
-                )
+                ),
+        tags = {
+                @Tag(name="Volumes", description="O serviço de volumes envolve a leitura, gravação e exclusão de blocos.")
+        }
         )
 @Component
 @Path(RESOURCE_ROOT_URL)
@@ -79,6 +85,12 @@ public class VolumeResource {
 
     @GET
     @Path("/status")
+    @ApiOperation(
+            value = "Verifica o status da aplicação",
+            nickname = "status",
+            notes = "Retorna o status 200 para indicando que as solicitações HTTP serão bem-sucedidas",
+            response = Response.class
+    )
     public Response status() {
         return Response.status(200)
                 .build();
@@ -86,6 +98,12 @@ public class VolumeResource {
 
     @OPTIONS
     @Path("/")
+    @ApiOperation(
+            value = "Consultar as opções de requisição",
+            nickname = "options",
+            notes = "Retorna as operações de requisições permitidas para o volume",
+            response = Response.class
+            )
     public Response options() {
         return Response.ok()
                 .header("Access-Control-Allow-Origin", "*")
@@ -99,14 +117,16 @@ public class VolumeResource {
     @Path("/")
     @Produces({ MediaType.APPLICATION_JSON })
     @ApiOperation(
-            value = "Consulta os volume",
+            value = "Consulta os metadados do volume",
             nickname = "consulta",
-            notes = "Retorna um item de VolumeTO",
-            response = VolumeTO.class,
-            produces = MediaType.APPLICATION_JSON)
+            notes = "Retorna os metadados do volume",
+            response = Response.class,
+            produces = MediaType.APPLICATION_JSON
+    )
     @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "Volume localizado com sucesso", response = VolumeTO.class),
-            @ApiResponse(code = 404, message = "Volume não existe ou não foi localizado")})
+            @ApiResponse(code = 404, message = "Nenhum volume foi cadastrado!")
+            }
+    )
     public Response consulta() {
         VolumeTO volume = business.buscar();
         if (volume == null) {
@@ -116,18 +136,24 @@ public class VolumeResource {
     }
 
     @PUT
-    @Path("/{id:\\d+}")
+    @Path("/")
     @Produces({ MediaType.APPLICATION_JSON })
     @ApiOperation(
-            value = "Altera o volume",
+            value = "Altera os metadados do volume",
             nickname = "edicao",
-            notes = "Altera as informações do VolumeTO",
+            notes = "Retorna o status que indica a situação da solicitações HTTP",
             produces = MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "Volume alterado com sucesso", response = VolumeTO.class),
-            @ApiResponse(code = 404, message = "Volume não existe ou não foi localizado")})
-    public Response edicao(@PathParam("id") final int id, PatchForm[] patchs) {
-        VolumeTO volume = business.ache(id);
+            @ApiResponse(code = 204, message = "A alteração dos metadados foram bem-sucedidas"),
+            @ApiResponse(code = 404, message = "Nenhum volume foi cadastrado!")
+            })
+    public Response edicao(
+            @ApiParam(name = "patchs",
+                    value = "Lista de objetos que contém as informações necessárias para a alteração das propriedades, em OP deverá ser informado o tipo de operação realizada (ADD, REMOVE, REPLACE, MOVE, COPY, TEST), no PATH nome da propriedade a ser alterada, em VALUE o valor que será atribuído",
+                    required = true
+            )
+            PatchForm[] patchs) {
+        VolumeTO volume = business.buscar();
         if (volume == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -145,31 +171,42 @@ public class VolumeResource {
     }
 
     @POST
-    @Path("/upload")
+    @Path("/gravacao")
     @Produces({ MediaType.APPLICATION_JSON })
     @ApiOperation(
-            value = "Upload de Blocos",
-            nickname = "upload",
-            notes = "Realiza o upload dos blocos",
+            value = "Envia um bloco para o servidor remoto",
+            nickname = "gravacao",
+            notes = "Retorna os metadados que identifica o bloco no servidor Slave",
+            response = File.class,
             produces = MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Upload realizado com sucesso", response = String.class),
+            @ApiResponse(code = 200, message = "Gravação foi realizada com sucesso"),
             @ApiResponse(code = 409, message = "O identificador gerado já existe")})
-    public Response upload(@Context Request request) {
+    public Response gravacao(@Context Request request) {
         File file = business.upload(request);
         return Response.status(Response.Status.OK).entity(file).build();
     }
 
     @GET
-    @Path("/download/{uuid}")
+    @Path("/leitura/{uuid}")
     @ApiOperation(
-            value = "Download de Bloco",
-            nickname = "download",
-            notes = "Realiza o download dos blocos",
-            produces = MediaType.TEXT_HTML)
+            value = "Transfere o bloco para o computador local",
+            nickname = "leitura",
+            notes = "Retorna uma cópia do bloco que está no servidor Slave para um computador local",
+            response = Resource.class
+    )
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Download realizado com sucesso", response = String.class)})
-    public Response download(@PathParam("uuid") String uuid) {
+            @ApiResponse(code = 200, message = "Leitura realizada com sucesso"),
+            @ApiResponse(code = 404, message = "Nenhum arquivo foi localizado!")
+            }
+    )
+    public Response leitura(
+            @ApiParam(
+                    name = "uuid",
+                    value = "Identificador único do bloco",
+                    required = true
+            )
+            @PathParam("uuid") String uuid) {
         StreamingOutput stream = business.download(uuid);
         return Response.status(Response.Status.OK).entity(stream).build();
     }
@@ -178,12 +215,13 @@ public class VolumeResource {
     @Path("/replicacao/{uuid}")
     @Produces({ MediaType.APPLICATION_JSON })
     @ApiOperation(
-            value = "Replicação de Bloco",
-            nickname = "download",
-            notes = "Cria uma cópia do bloco",
+            value = "Gera uma cópia do bloco",
+            nickname = "replicacao",
+            notes = "Gera uma cópia do bloco em outro servidor Slave e retorna os metadados que identifica a sua localização",
             produces = MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Replicação realizada com sucesso", response = String.class)})
+            @ApiResponse(code = 200, message = "Replicação realizada com sucesso", response = String.class)}
+    )
     public Response replicacao(@PathParam("uuid") String uuid) throws Exception {
         File file = business.replicacao(uuid);
         return Response.status(Response.Status.OK).entity(file).build();

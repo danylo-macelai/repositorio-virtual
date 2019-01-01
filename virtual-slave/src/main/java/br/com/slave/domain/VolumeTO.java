@@ -37,6 +37,11 @@ public class VolumeTO extends Domain {
         tamanho += read;
     }
 
+    public final void decrementar(int read) {
+        contem--;
+        tamanho -= read;
+    }
+
     public String getLocalizacao() {
         return localizacao;
     }

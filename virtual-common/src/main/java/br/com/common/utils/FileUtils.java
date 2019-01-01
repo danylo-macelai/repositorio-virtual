@@ -97,5 +97,13 @@ abstract class FileUtils {
             throw new CommonException(e.getMessage(), e);
         }
     }
-    
+
+    public final static boolean remover(Path path) throws CommonException {
+        try {
+            return Files.deleteIfExists(path);
+        } catch (Exception e) {
+            throw new CommonException(e.getMessage(), e);
+        }
+    }
+
 }

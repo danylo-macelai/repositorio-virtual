@@ -35,6 +35,6 @@ public class SlaveExceptionMapper implements ExceptionMapper<Exception> {
             code = "no.result.exception";
         }
         String message = messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
-        return Response.status(status).entity(message).type("text/plain").build();
+        return Response.status(status).entity(message).build();
     }
 }

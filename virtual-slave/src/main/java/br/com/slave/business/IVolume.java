@@ -52,4 +52,11 @@ public interface IVolume extends IBusiness<VolumeTO> {
      */
     File replicacao(String uuid) throws SlaveException;
 
+    /**
+     * Exclui apenas o bloco com uuid informado.
+     *
+     * @param uuid
+     */
+    void excluir(String uuid) throws SlaveException;
+
 }

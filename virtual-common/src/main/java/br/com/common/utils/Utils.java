@@ -135,6 +135,16 @@ public abstract class Utils {
         return FileUtils.particionar(channel, position, byteSize);
     }
 
+    /**
+     * Remove o arquivo do diretório
+     *
+     * @param path
+     * @return boolean
+     */
+    public static boolean fileRemover(Path path) {
+        return FileUtils.remover(path);
+    }
+
     public static Response httpPost(String host, String service, String path, String... params) throws CommonException {
         return HttpUtils.post(host, service, path, params);
     }

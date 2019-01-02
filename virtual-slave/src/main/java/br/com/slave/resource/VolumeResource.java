@@ -232,7 +232,7 @@ public class VolumeResource {
     @ApiOperation(
             value = "Gera uma cópia do bloco",
             nickname = "replicacao",
-            notes = "<p>A replica&ccedil;&atilde;o &eacute; usada para fazer uma <strong>c&oacute;pia</strong> dos <strong>blocos</strong> nos outros servidores. O <strong>bloco</strong> ser&aacute; identificado atrav&eacute;s do <strong>uuid</strong> e replicado conforme as configura&ccedil;&otilde;es nos outros servidores que est&atilde;o registrados no service discovery. Se a opera&ccedil;&atilde;o for realizada com sucesso, retorna os <strong>metadados</strong> de identifica&ccedil;&atilde;o caso contr&aacute;rio, a mensagem de erro</p>",
+            notes = "<p>A replica&ccedil;&atilde;o &eacute; usada para fazer uma <strong>c&oacute;pia</strong> dos <strong>blocos</strong> nos outros servidores. O <strong>bloco</strong> ser&aacute; identificado atrav&eacute;s do <strong>uuid</strong> e replicado nos outros servidores que est&atilde;o registrados no service discovery. Se a opera&ccedil;&atilde;o for realizada com sucesso, retorna os <strong>metadados</strong> de identifica&ccedil;&atilde;o caso contr&aacute;rio, a mensagem de erro</p>",
             produces = MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "<p>Replica&ccedil;&atilde;o realizada com sucesso</p>"),
@@ -253,7 +253,7 @@ public class VolumeResource {
     @DELETE
     @Path("/exclusao/{uuid}")
     @ApiOperation(
-            value = "Remove os blocos do volume",
+            value = "Remove o arquivo do volume",
             nickname = "exclusao",
             notes = "<p>A exclus&atilde;o &eacute; usada para remover o <strong>bloco</strong> do volume. O <strong>bloco</strong> ser&aacute; identificado atrav&eacute;s do <strong>uuid</strong> e exclu&iacute;do do volume. Se a opera&ccedil;&atilde;o for realizada com sucesso, retorna o status <strong>204</strong> caso contr&aacute;rio, a mensagem de erro.</p>"
     )

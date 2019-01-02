@@ -45,7 +45,7 @@ public class ArquivoResource {
     @ApiOperation(
             value = "Consulta os metadados do arquivo",
             nickname = "consulta",
-            notes = "Retorna uma lista de metadados de arquivos que possuem o nome informado",
+            notes = "<p>A consulta &eacute; usada para recuperar os <strong>metadados</strong> dos <strong>arquivos</strong> atrav&eacute;s do <strong>nome</strong>, caso seja localizado um ou mais registros ser&aacute; retornado os <strong>metadados</strong> no corpo da mensagem da resposta no formato <strong>json</strong> caso contr&aacute;rio, o status <strong>404</strong> indicando que o arquivo n&atilde;o existe ou n&atilde;o foi localizado.</p>",
             response = List.class,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -56,7 +56,7 @@ public class ArquivoResource {
     public ResponseEntity<List<ArquivoTO>> consulta(
             @ApiParam(
                     name = "nome",
-                    value = "Nome é a identificação do arquivo digital deverá conter a extensão Exemplo: remessa.zip, remessa.xls, remessa.png, remessa.avi, etc.",
+                    value = "Nome é a identificação do arquivo digital deverá conter a extensão.",
                     example = "remessa.txt",
                     required = true
             )
@@ -71,19 +71,19 @@ public class ArquivoResource {
 
     @GetMapping(value = "/arquivos/leitura/{id:\\d+}")
     @ApiOperation(
-            value = "Transfere o arquivo para o computador local",
+            value = "Carrega o arquivo do volume",
             nickname = "leitura",
-            notes = "Retorna uma cópia do arquivo que está no servidor Master para um computador local",
+            notes = "<p>A leitura &eacute; usada para fazer o <strong>download</strong> do <strong>arquivo</strong> no servidor, atrav&eacute;s do <strong>id</strong>. O arquivo ser&aacute; reconstru&iacute;do como os <strong>blocos</strong> que est&atilde;o espalhados entre os servidores <strong>slave</strong> registrados no <strong>service Discovery</strong> se a opera&ccedil;&atilde;o for realizada com sucesso, retorna o <strong>bin&aacute;rio</strong> no corpo da mensagem caso contr&aacute;rio, a mensagem de erro.</p>",
             response = Resource.class
     )
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "Nenhum arquivo foi localizado!")
+            @ApiResponse(code = 404, message = "Nenhum registro foi encontrado para a consulta.")
             }
     )
     public ResponseEntity<Resource> leitura(
             @ApiParam(
                     name = "id",
-                    value = "Id é um número utilizado para a identificação do arquivo que será transferido",
+                    value = "Id é um número utilizado para a identificação do arquivo",
                     example = "1234",
                     required = true
             )
@@ -103,15 +103,18 @@ public class ArquivoResource {
 
     @PostMapping("/arquivos/gravacao")
     @ApiOperation(
-            value = "Envia o arquivo para o servidor remoto",
+            value = "Envia um arquivo para o volume",
             nickname = "gravacao",
-            notes = "Retorna os metadados de arquivos que foi enviado ao servidor Master",
+            notes = "<p>A grava&ccedil;&atilde;o &eacute; usada para fazer o <strong>upload</strong> do <strong>arquivo</strong> para o volume, que ser&aacute; divido em <strong>blocos</strong> de tamanho fixo pr&eacute;-configurado e enviados aos servidores <strong>slave</strong> para o armazenamento, caso esteja configurado tamb&eacute;m ser&atilde;o replicados em outros servidores registrados no <strong>service discovery</strong>. Se a opera&ccedil;&atilde;o for realizada com sucesso, retorna os <strong>metadados</strong> do arquivo caso contr&aacute;rio, a mensagem de erro</p>",
             response = ArquivoTO.class,
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "<p>Regras de Neg&oacute;cio:</p> <ul> <li>N&atilde;o existe servi&ccedil;o registrado no service discovery</li> <li>A localiza&ccedil;&atilde;o (<span style=\"color: #555; font-weight: bold;\">C</span>:<span style=\"color: #555;\">/....</span>/<span style=\"color: #555; font-weight: bold;\">m1</span>) do volume &eacute; invalida.</li> </ul>")}
+            )
     public ResponseEntity<ArquivoTO> gravacao(
             @ApiParam(
                     name = "file",
-                    value = "file é o arquivo que será enviado ao servidor",
+                    value = "<p>File &eacute; o bin&aacute;rio que ser&aacute; enviado ao servidor pode ser um arquivo de texto, planilha, livro, v&iacute;deo, m&uacute;sica e etc..</p>",
                     required = true
             )
             @RequestParam("file") MultipartFile file) {
@@ -121,9 +124,9 @@ public class ArquivoResource {
 
     @DeleteMapping(value = "/arquivos/exclusao/{id:\\d+}")
     @ApiOperation(
-            value = "Remove o arquivo do servidor remoto",
+            value = "Remove o bloco do volume",
             nickname = "exclusao",
-            notes = "Retorna o status 204 indicando que a exclusão foi bem sucedida",
+            notes = "<p>A exclus&atilde;o &eacute; usada para <strong>remover</strong> o <strong>arquivo</strong> do volume, atrav&eacute;s do <strong>id</strong>. Todos os <strong>blocos</strong> do arquivo ser&atilde;o removidos do volume em seguida os <strong>metadados</strong> se a opera&ccedil;&atilde;o for realizada com sucesso, retorna o status <strong>204</strong> caso contr&aacute;rio, a mensagem de erro.</p>",
             response = Response.class
     )
     @ApiResponses(value = {

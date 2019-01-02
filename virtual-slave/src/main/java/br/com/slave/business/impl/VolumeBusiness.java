@@ -103,7 +103,11 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
     public File upload(Request request) throws SlaveException {
         VolumeTO volume = buscar();
         String uuid = Utils.gerarIdentificador();
-        Path path = Paths.get(volume.getLocalizacao(), uuid + BLOCO_EXTENSION);
+        Path path = Paths.get(volume.getLocalizacao());
+        if (!path.toFile().exists()) {
+            throw new CommonException("volume.Localizacao.nao.existe").args(volume.getLocalizacao()).status(Status.BAD_REQUEST);
+        }
+        path = path.resolve(uuid + BLOCO_EXTENSION);
         int tamanho = Utils.fileEscrever(path, request.getMessageContentStream(), volume.getTamanho(), volume.getCapacidade());
         volume.incrementar(tamanho);
         _alterar(volume);
@@ -129,14 +133,17 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
     public File replicacao(String uuid) throws SlaveException {
         try {
             Path path = Paths.get(buscar().getLocalizacao(), uuid + BLOCO_EXTENSION);
-            if (path.toFile().exists()) {
-                throw new CommonException("volume.bloco.existe").status(Status.BAD_REQUEST);
+            if (!path.toFile().exists()) {
+                throw new CommonException("volume.bloco.nao.existe").args(uuid).status(Status.BAD_REQUEST);
             }
             String host = eurekaClient.getHomePageUrl();
             if (host == null) {
                 throw new CommonException("volume.regra.service_discovery").status(Status.BAD_REQUEST);
             }
             Response response = Utils.httpPost(new FileInputStream(path.toFile()), host, "/gravacao");
+            if (Status.OK.getStatusCode() != response.code()) {
+                throw new SlaveException(response.body().string()).status(Status.BAD_REQUEST);
+            }
             ObjectMapper mapper = new ObjectMapper();
             return mapper.readValue(response.body().string(), File.class);
         } catch (Exception e) {

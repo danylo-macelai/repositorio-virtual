@@ -16,7 +16,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +26,7 @@ import com.netflix.discovery.shared.Application;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 
 import br.com.common.business.DBusiness;
+import br.com.common.configuration.CommonException;
 import br.com.common.utils.Utils;
 import br.com.common.wrappers.File;
 import br.com.master.business.IArquivo;
@@ -77,19 +77,26 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      */
     @Override
     @Transactional
-    public void excluir(ArquivoTO arquivo) throws DataAccessException {
-        List<BlocoTO> blocos = blocoBusiness.carregarTodosPor(arquivo);
-        if (blocos.isEmpty()) {
-            throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
-        }
+    public void excluir(ArquivoTO arquivo) throws MasterException {
+        try {
+            List<BlocoTO> blocos = blocoBusiness.carregarTodosPor(arquivo);
+            if (blocos.isEmpty()) {
+                throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
+            }
 
-        Iterator<BlocoTO> blocoIterator = blocos.iterator();
-        while (blocoIterator.hasNext()) {
-            BlocoTO bloco = blocoIterator.next();
-            Utils.httpDelete(bloco.getFile().getHost(), "/exclusao/", bloco.getFile().getUuid());
-        }
+            Iterator<BlocoTO> blocoIterator = blocos.iterator();
+            while (blocoIterator.hasNext()) {
+                BlocoTO bloco = blocoIterator.next();
+                Response response = Utils.httpDelete(bloco.getFile().getHost(), "/exclusao/", bloco.getFile().getUuid());
+                if (Status.OK.getStatusCode() != response.code()) {
+                    throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
+                }
+            }
 
-        super.excluir(arquivo);
+            super.excluir(arquivo);
+        } catch (IOException e) {
+            throw new MasterException(e.getMessage(), e);
+        }
     }
 
     /**
@@ -99,6 +106,9 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
     @Transactional
     public ArquivoTO upload(MultipartFile multipartFile) throws MasterException {
         String host = getHomePageUrl();
+        if (host == null) {
+            throw new CommonException("volume.regra.service_discovery").status(Status.BAD_REQUEST);
+        }
         ConfiguracaoTO configuracao = configuracaoBusiness.buscar();
 
         ArquivoTO arquivo = new ArquivoTO();
@@ -129,6 +139,9 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
                     BlocoTO bloco = blocos.next();
                     for (int i = 0; i < qtdeReplicacao; i++) {
                         Response response = Utils.httpPost(bloco.getFile().getHost(), "/replicacao", "/" + bloco.getFile().getUuid());
+                        if (Status.OK.getStatusCode() != response.code()) {
+                            throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
+                        }
                         File file = mapper.readValue(response.body().string(), File.class);
                         replicacoes.add(new BlocoTO(bloco.getNumero(), file, arquivo));
                     }
@@ -140,7 +153,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
 
             return arquivo;
         } catch (Exception e) {
-            throw new MasterException("", e);
+            throw new MasterException(e.getMessage(), e);
         }
     }
 
@@ -164,6 +177,9 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
                 if (pecas.add(bloco.getNumero())) {
                     try {
                         Response response = Utils.httpGet(bloco.getFile().getHost(), "/leitura/", bloco.getFile().getUuid());
+                        if (Status.OK.getStatusCode() != response.code()) {
+                            throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
+                        }
                         vector.add(response.body().byteStream());
                     } catch (Exception e) {
                         pecas.remove(bloco.getNumero());
@@ -176,7 +192,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
                     InputStream inputStream = vectorIterator.next();
                     inputStream.close();
                 }
-                throw new MasterException("");
+                throw new MasterException("master.regra.blocos_qtde").args(arquivo.getPecas().toString(), String.valueOf(pecas.size())).status(Status.BAD_REQUEST);
             }
 
             return new InputStreamResource(new SequenceInputStream(vector.elements()));
@@ -188,6 +204,9 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
     private File blocoUuid(String host, FileChannel channel, long position, long byteSize) throws IOException {
         InputStream stream = Utils.fileParticionar(channel, position, byteSize);
         Response response = Utils.httpPost(stream, host, "/gravacao");
+        if (Status.OK.getStatusCode() != response.code()) {
+            throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
+        }
         return mapper.readValue(response.body().string(), File.class);
     }
 

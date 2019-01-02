@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import br.com.common.configuration.CommonException;
+
 /**
  * <b>Description:</b>  <br>
  * <b>Project:</b> virtual-master <br>
@@ -31,9 +33,9 @@ public class MasterExceptionMapper extends ResponseEntityExceptionHandler {
         String code = exception.getMessage();
         Object[] args = null;
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        if (exception instanceof MasterException) {
-            args = ((MasterException) exception).args();
-            status = HttpStatus.valueOf(((MasterException) exception).status().getStatusCode());
+        if (exception instanceof CommonException) {
+            args = ((CommonException) exception).args();
+            status = HttpStatus.valueOf(((CommonException) exception).status().getStatusCode());
         } else if (exception instanceof NoResultException) {
             code = "no.result.exception";
         }

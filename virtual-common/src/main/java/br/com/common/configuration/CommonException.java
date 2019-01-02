@@ -22,7 +22,10 @@ public class CommonException extends DataAccessException {
     }
 
     public CommonException(String message, Throwable cause) {
-        super(message, cause);
+        super(message);
+        if (cause instanceof CommonException) {
+            args = ((CommonException) cause).args();
+        }
     }
 
     public final CommonException status(Status status) {

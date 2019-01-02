@@ -35,7 +35,7 @@ public class SlaveExceptionMapper implements ExceptionMapper<Exception> {
             args = ((CommonException) exception).args();
             status = ((CommonException) exception).status();
         } else if (exception instanceof NoResultException) {
-            code = "no.result.exception";
+            code = "slave.obj.nao.localizado";
         }
         String message = messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
         return Response.status(status).entity(message).type(MediaType.TEXT_HTML).build();

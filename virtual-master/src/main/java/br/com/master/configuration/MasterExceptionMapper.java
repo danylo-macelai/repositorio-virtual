@@ -37,7 +37,7 @@ public class MasterExceptionMapper extends ResponseEntityExceptionHandler {
             args = ((CommonException) exception).args();
             status = HttpStatus.valueOf(((CommonException) exception).status().getStatusCode());
         } else if (exception instanceof NoResultException) {
-            code = "no.result.exception";
+            code = "slave.obj.nao.localizado";
         }
         String message = messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
         return handleExceptionInternal(exception, message, new HttpHeaders(), status, request);

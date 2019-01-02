@@ -63,7 +63,7 @@ public class ArquivoResource {
             @PathVariable String nome) {
         List<ArquivoTO> arquivos = arquivoBusiness.carregarPor(nome);
         if (arquivos.isEmpty()) {
-            throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
+            throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
         }
         return ResponseEntity.ok(arquivos);
     }
@@ -90,7 +90,7 @@ public class ArquivoResource {
             @PathVariable("id") long id) {
         ArquivoTO arquivo = arquivoBusiness.ache(id);
         if (arquivo == null) {
-            throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
+            throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
         }
 
         InputStreamResource stream = arquivoBusiness.download(arquivo);
@@ -144,7 +144,7 @@ public class ArquivoResource {
 
         ArquivoTO arquivo = arquivoBusiness.ache(id);
         if (arquivo == null) {
-            throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
+            throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
         }
 
         arquivoBusiness.excluir(arquivo);

@@ -39,7 +39,7 @@ abstract class FileUtils {
                 int read = -1;
                 while ((read = in.read(buffer)) != -1) {
                     if ((tamanho += read) > capacidade) {
-                        throw new CommonException("volume.capacidade.excedida");
+                        throw new CommonException("common.capacidade.excedida");
                     }
                     os.write(buffer, 0, read);
                     size += read;
@@ -59,7 +59,7 @@ abstract class FileUtils {
     public final static StreamingOutput ler(Path path) throws CommonException {
         try {
             if (!path.toFile().exists()) {
-                throw new CommonException("volume.bloco.nao.existe");
+                throw new CommonException("common.file.nao.existe");
             }
             return ler(new FileInputStream(path.toFile()));
         } catch (Exception e) {
@@ -90,7 +90,7 @@ abstract class FileUtils {
             channel.read(buffer);
             buffer.flip();
             if (!buffer.hasRemaining()) {
-                throw new CommonException("volume.bloco.nao.existe");
+                throw new CommonException("common.file.nao.existe");
             }
             return new ByteArrayInputStream(buffer.array(), 0, (int) byteSize);
         } catch (Exception e) {

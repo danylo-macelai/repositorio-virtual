@@ -81,7 +81,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
         try {
             List<BlocoTO> blocos = blocoBusiness.carregarTodosPor(arquivo);
             if (blocos.isEmpty()) {
-                throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
+                throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
             }
 
             Iterator<BlocoTO> blocoIterator = blocos.iterator();
@@ -107,7 +107,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
     public ArquivoTO upload(MultipartFile multipartFile) throws MasterException {
         String host = getHomePageUrl();
         if (host == null) {
-            throw new CommonException("volume.regra.service_discovery").status(Status.BAD_REQUEST);
+            throw new CommonException("slave.nao.registrado.discovery").status(Status.BAD_REQUEST);
         }
         ConfiguracaoTO configuracao = configuracaoBusiness.buscar();
 
@@ -166,7 +166,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
         try {
             List<BlocoTO> blocos = blocoBusiness.carregarTodosPor(arquivo);
             if (blocos.isEmpty()) {
-                throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
+                throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
             }
 
             Vector<InputStream> vector = new Vector<>();
@@ -192,7 +192,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
                     InputStream inputStream = vectorIterator.next();
                     inputStream.close();
                 }
-                throw new MasterException("master.regra.blocos_qtde").args(arquivo.getPecas().toString(), String.valueOf(pecas.size())).status(Status.BAD_REQUEST);
+                throw new MasterException("master.montar.blocos.qtde").args(arquivo.getPecas().toString(), String.valueOf(pecas.size())).status(Status.BAD_REQUEST);
             }
 
             return new InputStreamResource(new SequenceInputStream(vector.elements()));

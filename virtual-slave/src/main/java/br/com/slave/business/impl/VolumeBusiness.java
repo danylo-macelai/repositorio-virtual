@@ -68,7 +68,7 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
     public void incluir(VolumeTO volume) throws SlaveException {
         long count = persistence.count();
         if (count > 0) {
-            throw new SlaveException("volume.inclusao.unica");
+            throw new SlaveException("slave.inclusao.unica");
         }
         super.incluir(volume);
     }
@@ -81,16 +81,16 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
     public void alterar(VolumeTO volume) throws SlaveException {
         INSTANCE = null;
         if (volume.getCapacidade() < buscar().getTamanho()) {
-            throw new SlaveException("volume.regra.capacidade").args(volume.getCapacidade().toString(), buscar().getTamanho().toString()).status(Status.BAD_REQUEST);
+            throw new SlaveException("slave.capc.menor.tam").args(volume.getCapacidade().toString(), buscar().getTamanho().toString()).status(Status.BAD_REQUEST);
         }
         if (!buscar().getTamanho().equals(volume.getTamanho())) {
-            throw new SlaveException("volume.regra.tamanho").status(Status.FORBIDDEN);
+            throw new SlaveException("slave.proibido.update.tam").status(Status.FORBIDDEN);
         }
         if (!buscar().getContem().equals(volume.getContem())) {
-            throw new SlaveException("volume.regra.quantidade").status(Status.FORBIDDEN);
+            throw new SlaveException("slave.proibido.update.qtde").status(Status.FORBIDDEN);
         }
         if (Files.notExists(Paths.get(volume.getLocalizacao()))) {
-            throw new SlaveException("volume.regra.localizacao").args(volume.getLocalizacao()).status(Status.BAD_REQUEST);
+            throw new SlaveException("slave.paths.invalido").args(volume.getLocalizacao()).status(Status.BAD_REQUEST);
         }
         _alterar(volume);
     }
@@ -105,7 +105,7 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
         String uuid = Utils.gerarIdentificador();
         Path path = Paths.get(volume.getLocalizacao());
         if (!path.toFile().exists()) {
-            throw new CommonException("volume.Localizacao.nao.existe").args(volume.getLocalizacao()).status(Status.BAD_REQUEST);
+            throw new CommonException("slave.paths.invalido").args(volume.getLocalizacao()).status(Status.BAD_REQUEST);
         }
         path = path.resolve(uuid + BLOCO_EXTENSION);
         int tamanho = Utils.fileEscrever(path, request.getMessageContentStream(), volume.getTamanho(), volume.getCapacidade());
@@ -134,11 +134,11 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
         try {
             Path path = Paths.get(buscar().getLocalizacao(), uuid + BLOCO_EXTENSION);
             if (!path.toFile().exists()) {
-                throw new CommonException("volume.bloco.nao.existe").args(uuid).status(Status.BAD_REQUEST);
+                throw new CommonException("common.file.nao.existe").args(uuid).status(Status.BAD_REQUEST);
             }
             String host = eurekaClient.getHomePageUrl();
             if (host == null) {
-                throw new CommonException("volume.regra.service_discovery").status(Status.BAD_REQUEST);
+                throw new CommonException("slave.nao.registrado.discovery").status(Status.BAD_REQUEST);
             }
             Response response = Utils.httpPost(new FileInputStream(path.toFile()), host, "/gravacao");
             if (Status.OK.getStatusCode() != response.code()) {
@@ -177,7 +177,7 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
      */
     private void _alterar(VolumeTO volume) {
         if (!buscar().getDisponibilidade()) {
-            throw new SlaveException("volume.regra.disponibilidade").status(Status.BAD_REQUEST);
+            throw new SlaveException("slave.volume.inativado").status(Status.BAD_REQUEST);
         }
         super.alterar(volume);
         INSTANCE = null;

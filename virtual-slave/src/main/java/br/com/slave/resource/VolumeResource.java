@@ -176,7 +176,7 @@ public class VolumeResource {
             JsonNode merge = JsonPatch.apply(patch, domain);
             volume = mapper.readerForUpdating(volume).readValue(merge);
         } catch (IOException e) {
-            throw new SlaveException("volume.preencher.erro");
+            throw new SlaveException("slave.preencher.patchs.obj", e);
         }
         business.alterar(volume);
         return Response.status(Response.Status.NO_CONTENT).build();

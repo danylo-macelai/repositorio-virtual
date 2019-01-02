@@ -53,7 +53,7 @@ public class ConfiguracaoResource {
     public ResponseEntity<ConfiguracaoTO> consulta() {
         ConfiguracaoTO configuracao = business.buscar();
         if (configuracao == null) {
-            throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
+            throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
         }
         return ResponseEntity.ok(configuracao);
     }
@@ -75,7 +75,7 @@ public class ConfiguracaoResource {
             @RequestBody PatchForm[] patchs) {
         ConfiguracaoTO configuracao = business.buscar();
         if (configuracao == null) {
-            throw new MasterException("no.result.exception").status(Status.NOT_FOUND);
+            throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
         }
         ObjectMapper mapper = new ObjectMapper();
         JsonNode patch = mapper.valueToTree(patchs);
@@ -84,7 +84,7 @@ public class ConfiguracaoResource {
             JsonNode merge = JsonPatch.apply(patch, domain);
             configuracao = mapper.readerForUpdating(configuracao).readValue(merge);
         } catch (Exception e) {
-            throw new MasterException("volume.preencher.erro", e);
+            throw new MasterException("slave.preencher.patchs.obj", e);
         }
         business.alterar(configuracao);
         return ResponseEntity.noContent().build();

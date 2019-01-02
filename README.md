@@ -39,6 +39,8 @@ Quando o cliente solicitar a leitura do arquivo o Master deverá recuperar os bl
 
 >Outro problema foi encontrado, desta vez dentro do msf4j-swagger na versão utilizada existe alguns relatos na issues, para resolver o problema foi utilizado a mesma abordagem acima.
 
+>A versão atual msf4j não tem suporte ao verb @PATCH, foi utilizado o @PUT para fazer a atualização parcial do objeto.
+
 ## Requisitos Funcionais
 
 * Executar uma instância Master e várias instâncias do Slave na plataforma de microsservos;

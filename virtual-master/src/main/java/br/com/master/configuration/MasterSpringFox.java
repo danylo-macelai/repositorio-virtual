@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -51,7 +53,10 @@ public class MasterSpringFox {
                 .build()
                 .tags(new Tag(
                         "Arquivos",
-                        "O serviço de arquivos envolve a leitura, gravação e exclusão.")
+                        "O serviço de arquivos envolve a leitura, gravação e exclusão."),
+                      new Tag(
+                        "Configuração",
+                        "O serviço de configuração envolve a cosulta e ateração.")
                 )
                 .apiInfo(apiInfo())
                 .useDefaultResponseMessages(false)
@@ -60,7 +65,7 @@ public class MasterSpringFox {
                 .globalResponseMessage(RequestMethod.PATCH, listGlobalResponseMessage)
                 .globalResponseMessage(RequestMethod.POST, listGlobalResponseMessage)
                 .globalResponseMessage(RequestMethod.PUT, listGlobalResponseMessage)
-                .ignoredParameterTypes(File.class, InputStream.class, Resource.class, URI.class, URL.class);
+                .ignoredParameterTypes(File.class, InputStream.class, Resource.class, URI.class, URL.class, Response.class);
     }
 
     private ApiInfo apiInfo() {

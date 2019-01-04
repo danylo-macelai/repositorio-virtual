@@ -3,7 +3,7 @@
 </h1>
 
 <h3 align="center">
-	Gestão Distribuída de Arquivos
+    Gestão Distribuída de Arquivos
 </h3>
 
 <p align="center">
@@ -35,11 +35,13 @@ Quando o cliente solicitar a leitura do arquivo o Master deverá recuperar os bl
 
 * O Slave é um micros-serviço que utiliza [msf4j](https://github.com/wso2/msf4j) oferecendo uma interface rest para interagir exclusivamente com Master além de ser flexivelmente estendido, a cada inicialização ele se auto registra no service discovery permitindo assim que o Master sempre verifique a disponibilidade de suas instâncias.
 
->A versão utilizada do Eureka client tem a dependência jsr311-api que está em conflito com javax.ws.rs-api do msf4j infelizmente não é possível fazer a exclusão das dependências e contar que as bibliotecas continue fornecendo os serviços da forma esperada. Existe outras formas de contornar este problema, a que mais se adeqúo as necessidades foi trazer a classe org.wso2.msf4j.Response para dentro do projeto e realizar o ajuste necessário quando o método getMediaType() for invocado da javax.ws.rs.core.Response que não existe na versão jsr311-api e aguardar que  Eureka Client venha trabalhar algum dia com javax.ws.rs-ap não havendo assim a necessidade de se manter esta cópia ajustada dentro do projeto.
+* Percalços
 
->Outro problema foi encontrado, desta vez dentro do msf4j-swagger na versão utilizada existe alguns relatos na issues, para resolver o problema foi utilizado a mesma abordagem acima.
+  >A versão utilizada do Eureka client tem a dependência jsr311-api que está em conflito com javax.ws.rs-api do msf4j infelizmente não é possível fazer a exclusão das dependências e contar que as bibliotecas continue fornecendo os serviços da forma esperada. Existe outras formas de contornar este problema, a que mais se adeqúo as necessidades foi trazer a classe org.wso2.msf4j.Response para dentro do projeto e realizar o ajuste necessário quando o método getMediaType() for invocado da javax.ws.rs.core.Response que não existe na versão jsr311-api e aguardar que  Eureka Client venha trabalhar algum dia com javax.ws.rs-ap não havendo assim a necessidade de se manter esta cópia ajustada dentro do projeto.
 
->A versão atual msf4j não tem suporte ao verb @PATCH, foi utilizado o @PUT para fazer a atualização parcial do objeto.
+  >Outro problema foi encontrado, desta vez dentro do msf4j-swagger na versão utilizada existe alguns relatos na issues, para resolver o problema foi utilizado a mesma abordagem acima.
+
+  >A versão atual msf4j não tem suporte ao verb @PATCH, foi utilizado o @PUT para fazer a atualização parcial do objeto.
 
 ## Requisitos Funcionais
 

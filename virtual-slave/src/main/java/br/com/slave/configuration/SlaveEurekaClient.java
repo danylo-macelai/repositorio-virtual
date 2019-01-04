@@ -1,6 +1,6 @@
 package br.com.slave.configuration;
 
-import java.util.List;
+import java.util.Iterator;
 
 import org.springframework.core.env.Environment;
 
@@ -39,6 +39,8 @@ public final class SlaveEurekaClient {
     private String              appName;
     private int                 port;
     private EurekaClient        eurekaClient;
+    private String              instanceId;
+    private String              dirtyInstanceId;
 
     public SlaveEurekaClient(Environment env) {
         this.env = env;
@@ -67,30 +69,52 @@ public final class SlaveEurekaClient {
     }
 
     public final String getHomePageUrl() {
-        List<Application> applications = eurekaClient.getApplications().getRegisteredApplications();
-        String url = null;
-        for (Application application : applications) {
-            List<InstanceInfo> applicationsInstances = application.getInstances();
-            for (InstanceInfo applicationsInstance : applicationsInstances) {
-                url = applicationsInstance.getHomePageUrl();
+        InstanceInfo instance = getApplications().getByInstanceId(instanceId);
+        return instance.getHomePageUrl();
+    }
+
+    public final String getReplicacaoUrl() {
+        Long now = System.currentTimeMillis();
+        Iterator<InstanceInfo> instances = getApplications().getInstances().iterator();
+        InstanceInfo dirty = null;
+        if (dirtyInstanceId != null) {
+            dirty =  getApplications().getByInstanceId(dirtyInstanceId);
+        }
+        while (instances.hasNext()) {
+            InstanceInfo info = instances.next();
+            if (!info.getInstanceId().equals(instanceId) && !info.getInstanceId().equals(dirtyInstanceId) && info.getLastDirtyTimestamp() < now) {
+                now = info.getLastDirtyTimestamp();
+                dirty = info;
             }
         }
-        return url;
+        if (dirty == null) {
+            throw new SlaveException("Não existe replicas!!!!!");
+        }
+        dirtyInstanceId = dirty.getInstanceId();
+        return dirty.getHomePageUrl();
     }
 
     private void init() {
         serviceIp = env.getProperty(EUREKA_CLIENT_HOST);
         port = Integer.valueOf(env.getProperty(EUREKA_CLIENT_PORT));
         appName = env.getProperty(EUREKA_APP_NAME);
+        instanceId = String.format("%s:%s:%s", serviceIp, appName, port);
 
         ConfigurationManager.getConfigInstance().setProperty(EUREKA_REGION, env.getProperty(EUREKA_REGION));
         ConfigurationManager.getConfigInstance().setProperty(EUREKA_SERVER_URL, env.getProperty(EUREKA_SERVER_URL));
     }
 
+    private Application getApplications() {
+        synchronized (SlaveEurekaClient.class) {
+            Application registeredApplications = eurekaClient.getApplications().getRegisteredApplications(appName);
+            return registeredApplications;
+        }
+    }
+    
     private InstanceInfo info(String serviceRootUrl, DataCenterInfo dataCenterInfo) {
 
         InstanceInfo instanceInfo = new InstanceInfo(
-                String.format("%s:%s:%s", serviceIp, appName, port),                            /* instanceId */
+                instanceId,                                                                     /* instanceId */
                 appName,                                                                        /* appName */
                 "",                                                                             /* appGroupName */
                 serviceIp,                                                                      /* ipAddr */

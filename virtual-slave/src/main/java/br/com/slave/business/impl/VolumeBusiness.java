@@ -24,7 +24,6 @@ import br.com.slave.configuration.SlaveEurekaClient;
 import br.com.slave.configuration.SlaveException;
 import br.com.slave.domain.VolumeTO;
 import br.com.slave.persistence.VolumeDAO;
-import br.com.slave.resource.VolumeResource;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
@@ -112,7 +111,7 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
         volume.incrementar(tamanho);
         _alterar(volume);
 
-        String host = String.format("%s://%s%s", request.getProperties().get("PROTOCOL"), request.getProperties().get("listener.interface.id"), VolumeResource.RESOURCE_ROOT_URL);
+        String host = eurekaClient.getHomePageUrl();
 
         return new File(uuid, tamanho, host);
     }
@@ -136,7 +135,7 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
             if (!path.toFile().exists()) {
                 throw new CommonException("common.file.nao.existe").args(uuid).status(Status.BAD_REQUEST);
             }
-            String host = eurekaClient.getHomePageUrl();
+            String host = eurekaClient.getReplicacaoUrl();
             if (host == null) {
                 throw new CommonException("slave.nao.registrado.discovery").status(Status.BAD_REQUEST);
             }

@@ -24,14 +24,22 @@ public class File implements Serializable {
     @Column(name = "host", updatable = false, nullable = false)
     private String  host;
 
+    @Column(name = "replica", updatable = false, nullable = false)
+    private Boolean replica;
+
     public File() {
 
     }
 
     public File(String uuid, Integer tamanho, String host) {
+        this(uuid, tamanho, host, false);
+    }
+
+    public File(String uuid, Integer tamanho, String host, Boolean replica) {
         this.uuid = uuid;
         this.tamanho = tamanho;
         this.host = host;
+        this.replica = replica;
     }
 
     public String getUuid() {
@@ -56,6 +64,14 @@ public class File implements Serializable {
 
     public void setHost(String host) {
         this.host = host;
+    }
+
+    public Boolean getReplica() {
+        return replica;
+    }
+
+    public void setReplica(Boolean replica) {
+        this.replica = replica;
     }
 
 }

@@ -144,7 +144,9 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
                 throw new SlaveException(response.body().string()).status(Status.BAD_REQUEST);
             }
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(response.body().string(), File.class);
+            File file = mapper.readValue(response.body().string(), File.class);
+            file.setReplica(true);
+            return file;
         } catch (Exception e) {
             throw new SlaveException(e.getMessage(), e);
         }

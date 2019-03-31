@@ -21,17 +21,15 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.appinfo.InstanceInfo;
-import com.netflix.discovery.shared.Application;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 
 import br.com.common.business.DBusiness;
-import br.com.common.configuration.CommonException;
 import br.com.common.utils.Utils;
 import br.com.common.wrappers.File;
 import br.com.master.business.IArquivo;
 import br.com.master.business.IBloco;
 import br.com.master.business.IConfiguracao;
+import br.com.master.configuration.MasterBalance;
 import br.com.master.configuration.MasterException;
 import br.com.master.domain.ArquivoTO;
 import br.com.master.domain.BlocoTO;
@@ -57,6 +55,9 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
 
     @Autowired
     IBloco                    blocoBusiness;
+
+    @Autowired
+    MasterBalance             masterBalance;
 
     @Autowired
     PeerAwareInstanceRegistry registry;
@@ -87,7 +88,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
             Iterator<BlocoTO> blocoIterator = blocos.iterator();
             while (blocoIterator.hasNext()) {
                 BlocoTO bloco = blocoIterator.next();
-                Response response = Utils.httpDelete(bloco.getFile().getHost(), "/exclusao/", bloco.getFile().getUuid());
+                Response response = Utils.httpDelete(masterBalance.volumeUrlSlave(bloco.getFile().getInstanceId()), "/exclusao/", bloco.getFile().getUuid());
                 if (Status.OK.getStatusCode() != response.code()) {
                     throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
                 }
@@ -105,10 +106,6 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
     @Override
     @Transactional
     public ArquivoTO upload(MultipartFile multipartFile) throws MasterException {
-        String host = getHomePageUrl();
-        if (host == null) {
-            throw new CommonException("slave.nao.registrado.discovery").status(Status.BAD_REQUEST);
-        }
         ConfiguracaoTO configuracao = configuracaoBusiness.buscar();
 
         ArquivoTO arquivo = new ArquivoTO();
@@ -122,11 +119,11 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
         int pecas = 0;
         try (FileChannel channel = ((FileInputStream) multipartFile.getInputStream()).getChannel()) {
             while (pecas < qtdeBloco) {
-                File file = blocoUuid(host, channel, ((pecas++) * tamanhoBloco), tamanhoBloco);
+                File file = blocoUuid(masterBalance.nextVolumeUrlSlave(), channel, ((pecas++) * tamanhoBloco), tamanhoBloco);
                 arquivo.getBlocos().add(new BlocoTO(pecas, file, arquivo));
             }
             if (miniBloco > 0) {
-                File file = blocoUuid(host, channel, (pecas * tamanhoBloco), miniBloco);
+                File file = blocoUuid(masterBalance.nextVolumeUrlSlave(), channel, (pecas * tamanhoBloco), miniBloco);
                 arquivo.getBlocos().add(new BlocoTO(++pecas, file, arquivo));
             }
             arquivo.setPecas(pecas);
@@ -138,7 +135,8 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
                 while (blocos.hasNext()) {
                     BlocoTO bloco = blocos.next();
                     for (int i = 0; i < qtdeReplicacao; i++) {
-                        Response response = Utils.httpPost(bloco.getFile().getHost(), "/replicacao", "/" + bloco.getFile().getUuid());
+                        String params = "?instance_id=" + masterBalance.nextVolumeInstanceIdSlave();
+                        Response response = Utils.httpPost(masterBalance.volumeUrlSlave(bloco.getFile().getInstanceId()), "/replicacao", "/" + bloco.getFile().getUuid() + params);
                         if (Status.OK.getStatusCode() != response.code()) {
                             throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
                         }
@@ -176,7 +174,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
                 BlocoTO bloco = blocoIterator.next();
                 if (pecas.add(bloco.getNumero())) {
                     try {
-                        Response response = Utils.httpGet(bloco.getFile().getHost(), "/leitura/", bloco.getFile().getUuid());
+                        Response response = Utils.httpGet(masterBalance.volumeUrlSlave(bloco.getFile().getInstanceId()), "/leitura/", bloco.getFile().getUuid());
                         if (Status.OK.getStatusCode() != response.code()) {
                             throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
                         }
@@ -192,7 +190,8 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
                     InputStream inputStream = vectorIterator.next();
                     inputStream.close();
                 }
-                throw new MasterException("master.montar.blocos.qtde").args(arquivo.getPecas().toString(), String.valueOf(pecas.size())).status(Status.BAD_REQUEST);
+                throw new MasterException("master.montar.blocos.qtde").args(arquivo.getPecas().toString(), String.valueOf(pecas.size()))
+                        .status(Status.BAD_REQUEST);
             }
 
             return new InputStreamResource(new SequenceInputStream(vector.elements()));
@@ -200,6 +199,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
             throw new MasterException(e.getMessage(), e);
         }
     }
+
 
     private File blocoUuid(String host, FileChannel channel, long position, long byteSize) throws IOException {
         InputStream stream = Utils.fileParticionar(channel, position, byteSize);
@@ -209,17 +209,4 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
         }
         return mapper.readValue(response.body().string(), File.class);
     }
-
-    private String getHomePageUrl() {
-        List<Application> applications = registry.getApplications().getRegisteredApplications();
-        String url = null;
-        for (Application application : applications) {
-            List<InstanceInfo> applicationsInstances = application.getInstances();
-            for (InstanceInfo applicationsInstance : applicationsInstances) {
-                url = applicationsInstance.getHomePageUrl();
-            }
-        }
-        return url;
-    }
-
 }

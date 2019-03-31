@@ -12,6 +12,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -245,8 +246,9 @@ public class VolumeResource {
                     example = "0ac92987eeeb0d89c42a3ecf778356a9b52407a0b978b0fdbcf3b508ca2c9460",
                     required = true
                     )
-            @PathParam("uuid") String uuid) throws Exception {
-        File file = business.replicacao(uuid);
+            @PathParam("uuid") String uuid,
+            @QueryParam("instance_id") String instanceId) throws Exception {
+        File file = business.replicacao(uuid, instanceId);
         return Response.status(Response.Status.OK).entity(file).build();
     }
 

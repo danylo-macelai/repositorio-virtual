@@ -21,8 +21,8 @@ public class File implements Serializable {
     @Column(name = "tamanho", updatable = false, nullable = false)
     private Integer tamanho;
 
-    @Column(name = "host", updatable = false, nullable = false)
-    private String  host;
+    @Column(name = "instance_id", updatable = false, nullable = false)
+    private String  instanceId;
 
     @Column(name = "replica", updatable = false, nullable = false)
     private Boolean replica;
@@ -31,14 +31,14 @@ public class File implements Serializable {
 
     }
 
-    public File(String uuid, Integer tamanho, String host) {
-        this(uuid, tamanho, host, false);
+    public File(String uuid, Integer tamanho, String instanceId) {
+        this(uuid, tamanho, instanceId, false);
     }
 
-    public File(String uuid, Integer tamanho, String host, Boolean replica) {
+    public File(String uuid, Integer tamanho, String instanceId, Boolean replica) {
         this.uuid = uuid;
         this.tamanho = tamanho;
-        this.host = host;
+        this.instanceId = instanceId;
         this.replica = replica;
     }
 
@@ -58,12 +58,12 @@ public class File implements Serializable {
         this.tamanho = tamanho;
     }
 
-    public String getHost() {
-        return host;
+    public String getInstanceId() {
+        return instanceId;
     }
 
-    public void setHost(String host) {
-        this.host = host;
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
     }
 
     public Boolean getReplica() {

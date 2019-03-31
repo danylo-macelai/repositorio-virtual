@@ -1,7 +1,5 @@
 package br.com.slave.configuration;
 
-import java.util.Iterator;
-
 import org.springframework.core.env.Environment;
 
 import com.netflix.appinfo.ApplicationInfoManager;
@@ -40,7 +38,6 @@ public final class SlaveEurekaClient {
     private int                 port;
     private EurekaClient        eurekaClient;
     private String              instanceId;
-    private String              dirtyInstanceId;
 
     public SlaveEurekaClient(Environment env) {
         this.env = env;
@@ -73,24 +70,18 @@ public final class SlaveEurekaClient {
         return instance.getHomePageUrl();
     }
 
-    public final String getReplicacaoUrl() {
-        Long now = System.currentTimeMillis();
-        Iterator<InstanceInfo> instances = getApplications().getInstances().iterator();
+    public String getInstanceId() {
+        return instanceId;
+    }
+
+    public final String getReplicacaoUrl(String dirtyInstanceId) {
         InstanceInfo dirty = null;
         if (dirtyInstanceId != null) {
-            dirty =  getApplications().getByInstanceId(dirtyInstanceId);
-        }
-        while (instances.hasNext()) {
-            InstanceInfo info = instances.next();
-            if (!info.getInstanceId().equals(instanceId) && !info.getInstanceId().equals(dirtyInstanceId) && info.getLastDirtyTimestamp() < now) {
-                now = info.getLastDirtyTimestamp();
-                dirty = info;
-            }
+            dirty = getApplications().getByInstanceId(dirtyInstanceId);
         }
         if (dirty == null) {
             throw new SlaveException("Não existe replicas!!!!!");
         }
-        dirtyInstanceId = dirty.getInstanceId();
         return dirty.getHomePageUrl();
     }
 
@@ -110,11 +101,10 @@ public final class SlaveEurekaClient {
             return registeredApplications;
         }
     }
-    
+
     private InstanceInfo info(String serviceRootUrl, DataCenterInfo dataCenterInfo) {
 
-        InstanceInfo instanceInfo = new InstanceInfo(
-                instanceId,                                                                     /* instanceId */
+        InstanceInfo instanceInfo = new InstanceInfo(instanceId,                                /* instanceId */
                 appName,                                                                        /* appName */
                 "",                                                                             /* appGroupName */
                 serviceIp,                                                                      /* ipAddr */

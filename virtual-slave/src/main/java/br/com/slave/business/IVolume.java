@@ -47,10 +47,11 @@ public interface IVolume extends IBusiness<VolumeTO> {
      * Cria uma cópia do bloco
      *
      * @param uuid
+     * @param instanceId
      * @return FileTO
      * @throws SlaveException
      */
-    File replicacao(String uuid) throws SlaveException;
+    File replicacao(String uuid, String instanceId) throws SlaveException;
 
     /**
      * Exclui apenas o bloco com uuid informado.

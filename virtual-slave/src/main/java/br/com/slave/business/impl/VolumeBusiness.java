@@ -111,9 +111,9 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
         volume.incrementar(tamanho);
         _alterar(volume);
 
-        String host = eurekaClient.getHomePageUrl();
+        String instanceId = eurekaClient.getInstanceId();
 
-        return new File(uuid, tamanho, host);
+        return new File(uuid, tamanho, instanceId);
     }
 
     /**
@@ -129,13 +129,13 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
      * {@inheritDoc}
      */
     @Override
-    public File replicacao(String uuid) throws SlaveException {
+    public File replicacao(String uuid, String instanceId) throws SlaveException {
         try {
             Path path = Paths.get(buscar().getLocalizacao(), uuid + BLOCO_EXTENSION);
             if (!path.toFile().exists()) {
                 throw new CommonException("common.file.nao.existe").args(uuid).status(Status.BAD_REQUEST);
             }
-            String host = eurekaClient.getReplicacaoUrl();
+            String host = eurekaClient.getReplicacaoUrl(instanceId);
             if (host == null) {
                 throw new CommonException("slave.nao.registrado.discovery").status(Status.BAD_REQUEST);
             }

@@ -1,6 +1,8 @@
 spring:
   application:
     name: eureka-server
+  main:
+    allow-bean-definition-overriding: true
 
 server:
   port: 8761
@@ -18,5 +20,3 @@ logging:
             eureka: ON
             discovery: OFF
 org.springframework.cloud: 'WARN'
-
-

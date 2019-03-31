@@ -72,6 +72,11 @@ public class MasterConfiguration extends CommonConfiguration {
             }
         };
     }
+    
+    @Bean(name = "masterBalance")
+    MasterBalance masterBalance(Environment env) {
+        return new MasterBalance(env);
+    }
 
     private void configuracaoPopulator(ConfiguracaoBusiness configuracaoBusiness, Environment env) {
         ConfiguracaoTO configuracao = new ConfiguracaoTO();

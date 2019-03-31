@@ -153,6 +153,9 @@ public abstract class Utils {
         return HttpUtils.post(stream, host, service);
     }
 
+    public static Response httpGet(String host) throws CommonException {
+        return httpGet(host, "", "");
+    }
     public static Response httpGet(String host, String service, String path) throws CommonException {
         return HttpUtils.get(host, service, path);
     }

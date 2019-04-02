@@ -38,7 +38,7 @@ abstract class FileUtils {
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int read = -1;
                 while ((read = in.read(buffer)) != -1) {
-                    if ((tamanho += read) > capacidade) {
+                    if ((tamanho += (read / 1024 / 1024)) > capacidade) {
                         throw new CommonException("common.capacidade.excedida");
                     }
                     os.write(buffer, 0, read);

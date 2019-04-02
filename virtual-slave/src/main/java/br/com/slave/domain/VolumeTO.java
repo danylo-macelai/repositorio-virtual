@@ -20,9 +20,11 @@ public class VolumeTO extends Domain {
     @Column(name = "localizacao", nullable = false)
     private String  localizacao;
 
+    // Tamanho em Megabytes (MB)
     @Column(name = "capacidade", nullable = false)
     private Integer capacidade;
 
+    // Tamanho em Megabytes (MB)
     @Column(name = "tamanho", nullable = false)
     private Integer tamanho;
 
@@ -32,14 +34,16 @@ public class VolumeTO extends Domain {
     @Column(name = "disponibilidade", nullable = false)
     private Boolean disponibilidade;
 
-    public final void incrementar(int read) {
+    public final void incrementar(int bytes) {
         contem++;
-        tamanho += read;
+        // Converter Bytes em Megabytes (byte → MB)
+        tamanho += ((bytes / 1024) / 1024);
     }
 
-    public final void decrementar(int read) {
+    public final void decrementar(int bytes) {
         contem--;
-        tamanho -= read;
+        // Converter Bytes em Megabytes (byte → MB)
+        tamanho -= ((bytes / 1024) / 1024);
     }
 
     public String getLocalizacao() {

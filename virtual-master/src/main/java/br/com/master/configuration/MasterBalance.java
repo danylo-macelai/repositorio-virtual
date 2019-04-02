@@ -76,7 +76,7 @@ public class MasterBalance {
 
     private void init() {
         usageChecker = new Timer();
-        usageChecker.schedule(new UsageChecker(), 60 * 1000, 10 * 1000);
+        usageChecker.schedule(new UsageChecker(), 30 * 1000, 1 * 60 * 1000);
 
         slaves = new HashSet<>();
 
@@ -96,19 +96,21 @@ public class MasterBalance {
         @Override
         public void run() {
             Application registeredApplications = registry.getApplications().getRegisteredApplications(appName);
-            for (InstanceInfo applicationsInstance : registeredApplications.getInstances()) {
-                Predicate<Instance> isQualified = v -> v.getInstanceId().equals(applicationsInstance.getInstanceId());
-                try {
-                    Response response = Utils.httpGet(applicationsInstance.getHomePageUrl());
-                    Instance volume = mapper.readValue(response.body().string(), Instance.class);
-                    volume.setInstanceId(applicationsInstance.getInstanceId());
-                    if (!slaves.add(volume)) {
-                        slaves.stream().filter(isQualified).forEach(v -> {
-                            v.setContem(volume.getContem());
-                        });
+            if (registeredApplications != null) {
+                for (InstanceInfo applicationsInstance : registeredApplications.getInstances()) {
+                    Predicate<Instance> isQualified = v -> v.getInstanceId().equals(applicationsInstance.getInstanceId());
+                    try {
+                        Response response = Utils.httpGet(applicationsInstance.getHomePageUrl());
+                        Instance volume = mapper.readValue(response.body().string(), Instance.class);
+                        volume.setInstanceId(applicationsInstance.getInstanceId());
+                        if (!slaves.add(volume)) {
+                            slaves.stream().filter(isQualified).forEach(v -> {
+                                v.setContem(volume.getContem());
+                            });
+                        }
+                    } catch (Exception e) {
+                        slaves.removeIf(isQualified);
                     }
-                } catch (Exception e) {
-                    slaves.removeIf(isQualified);
                 }
             }
         }

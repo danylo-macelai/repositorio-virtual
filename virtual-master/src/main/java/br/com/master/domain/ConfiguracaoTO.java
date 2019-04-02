@@ -18,6 +18,7 @@ import br.com.common.domain.Domain;
 @Table(name = "RV_CONFIGURACAO")
 public class ConfiguracaoTO extends Domain {
 
+    // Tamanho em Quilobyte (kB)
     @Column(name = "tamanho_bloco", nullable = false)
     private Integer tamanhoBloco;
 

@@ -181,6 +181,6 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
             throw new SlaveException("slave.volume.inativado").status(Status.BAD_REQUEST);
         }
         super.alterar(volume);
-        INSTANCE = null;
+        INSTANCE = volume;
     }
 }

@@ -1,17 +1,20 @@
 package br.com.master.business.impl;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +24,8 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
-
 import br.com.common.business.DBusiness;
 import br.com.common.utils.Utils;
-import br.com.common.wrappers.File;
 import br.com.master.business.IArquivo;
 import br.com.master.business.IBloco;
 import br.com.master.business.IConfiguracao;
@@ -49,21 +48,28 @@ import okhttp3.Response;
 public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
 
     @Autowired
-    ArquivoDAO                persistence;
+    ArquivoDAO    persistence;
 
     @Autowired
-    IConfiguracao             configuracaoBusiness;
+    IConfiguracao configuracaoBusiness;
 
     @Autowired
-    IBloco                    blocoBusiness;
+    IBloco        blocoBusiness;
 
     @Autowired
-    MasterBalance             masterBalance;
+    MasterBalance masterBalance;
+
+    String        pathTmpDirectory = null;
 
     @Autowired
-    PeerAwareInstanceRegistry registry;
-
-    ObjectMapper              mapper = new ObjectMapper();
+    public ArquivoBusiness(ServletContext servletContext) {
+        File servletTempDir = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+        if (servletTempDir != null) {
+            pathTmpDirectory = servletTempDir.getAbsolutePath();
+        } else {
+            pathTmpDirectory = new File(System.getProperty("java.io.tmpdir")).getAbsolutePath();
+        }
+    }
 
     /**
      * {@inheritDoc}
@@ -89,7 +95,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
             Iterator<BlocoTO> blocoIterator = blocos.iterator();
             while (blocoIterator.hasNext()) {
                 BlocoTO bloco = blocoIterator.next();
-                Response response = Utils.httpDelete(masterBalance.volumeUrlSlave(bloco.getFile().getInstanceId()), "/exclusao/", bloco.getFile().getUuid());
+                Response response = Utils.httpDelete(masterBalance.volumeUrlSlave(bloco.getInstanceId()), "/exclusao/", bloco.getUuid());
                 if (Status.OK.getStatusCode() != response.code()) {
                     throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
                 }
@@ -116,36 +122,19 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
         int tamanhoBloco = configuracao.getTamanhoBloco() * 1024;
         int miniBloco = arquivo.getTamanho() % tamanhoBloco;
         int qtdeBloco = arquivo.getTamanho() / tamanhoBloco;
-        int pecas = 0;
+        int qtdePecas = 0;
         try (FileChannel channel = ((FileInputStream) multipartFile.getInputStream()).getChannel()) {
-            while (pecas < qtdeBloco) {
-                File file = blocoUuid(masterBalance.nextVolumeUrlSlave(), channel, ((pecas++) * tamanhoBloco), tamanhoBloco);
-                arquivo.getBlocos().add(new BlocoTO(pecas, file, arquivo));
+            while (qtdePecas < qtdeBloco) {
+                BlocoTO bloco = createBlocoOffline(channel, ((qtdePecas++) * tamanhoBloco), tamanhoBloco, qtdePecas);
+                bloco.setArquivo(arquivo);
+                arquivo.getBlocos().add(bloco);
             }
             if (miniBloco > 0) {
-                File file = blocoUuid(masterBalance.nextVolumeUrlSlave(), channel, (pecas * tamanhoBloco), miniBloco);
-                arquivo.getBlocos().add(new BlocoTO(++pecas, file, arquivo));
+                BlocoTO bloco = createBlocoOffline(channel, (qtdePecas * tamanhoBloco), miniBloco, ++qtdePecas);
+                bloco.setArquivo(arquivo);
+                arquivo.getBlocos().add(bloco);
             }
-            arquivo.setPecas(pecas);
-
-            Integer qtdeReplicacao = configuracao.getQtdeReplicacao();
-            if (qtdeReplicacao > 0) {
-                Iterator<BlocoTO> blocos = arquivo.getBlocos().iterator();
-                List<BlocoTO> replicacoes = new ArrayList<>();
-                while (blocos.hasNext()) {
-                    BlocoTO bloco = blocos.next();
-                    for (int i = 0; i < qtdeReplicacao; i++) {
-                        String params = "?instance_id=" + masterBalance.nextVolumeInstanceIdSlave();
-                        Response response = Utils.httpPost(masterBalance.volumeUrlSlave(bloco.getFile().getInstanceId()), "/replicacao", "/" + bloco.getFile().getUuid() + params);
-                        if (Status.OK.getStatusCode() != response.code()) {
-                            throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
-                        }
-                        File file = mapper.readValue(response.body().string(), File.class);
-                        replicacoes.add(new BlocoTO(bloco.getNumero(), file, arquivo));
-                    }
-                }
-                arquivo.getBlocos().addAll(replicacoes);
-            }
+            arquivo.setPecas(qtdePecas);
 
             TransactionStatus status = txManager.getTransaction(getTransactionDefinition());
             try {
@@ -183,11 +172,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
                 BlocoTO bloco = blocoIterator.next();
                 if (pecas.add(bloco.getNumero())) {
                     try {
-                        Response response = Utils.httpGet(masterBalance.volumeUrlSlave(bloco.getFile().getInstanceId()), "/leitura/", bloco.getFile().getUuid());
-                        if (Status.OK.getStatusCode() != response.code()) {
-                            throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
-                        }
-                        vector.add(response.body().byteStream());
+                        vector.add(new FileInputStream(new File(bloco.getDiretorioOffLine())));
                     } catch (Exception e) {
                         pecas.remove(bloco.getNumero());
                     }
@@ -209,13 +194,19 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
         }
     }
 
+    private BlocoTO createBlocoOffline(FileChannel channel, long position, long byteSize, int numero) {
+        String uuid = Utils.gerarIdentificador();
+        Path path = Paths.get(pathTmpDirectory);
+        path = path.resolve(uuid + Utils.BLOCO_EXTENSION);
+        int tamanho = Utils.fileEscrever(path, Utils.fileParticionar(channel, position, byteSize));
 
-    private File blocoUuid(String host, FileChannel channel, long position, long byteSize) throws IOException {
-        InputStream stream = Utils.fileParticionar(channel, position, byteSize);
-        Response response = Utils.httpPost(stream, host, "/gravacao");
-        if (Status.OK.getStatusCode() != response.code()) {
-            throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
-        }
-        return mapper.readValue(response.body().string(), File.class);
+        BlocoTO bloco = new BlocoTO();
+        bloco.setNumero(numero);
+        bloco.setUuid(uuid);
+        bloco.setTamanho(tamanho);
+        bloco.setReplica(false);
+        bloco.setDiretorioOffLine(path.toFile().getAbsolutePath());
+
+        return bloco;
     }
 }

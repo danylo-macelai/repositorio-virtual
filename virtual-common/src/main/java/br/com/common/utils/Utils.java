@@ -23,6 +23,8 @@ import okhttp3.Response;
  */
 public abstract class Utils {
 
+    public static final String BLOCO_EXTENSION = ".rvf";
+
     /**
      * O método {@link Utils#actualType(Object)} retorna o tipo parametrizado da classe genérica.
      *
@@ -96,6 +98,9 @@ public abstract class Utils {
      * @param capacidade - capacidade máxima do storage
      * @throws CommonException
      */
+    public static int fileEscrever(Path path, InputStream stream) throws CommonException {
+       return fileEscrever(path, stream, 0, Long.MAX_VALUE);
+    }
     public static int fileEscrever(Path path, InputStream stream, long tamanho, long capacidade) throws CommonException {
         return FileUtils.escrever(path, stream, tamanho, capacidade);
     }

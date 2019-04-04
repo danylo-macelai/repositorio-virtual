@@ -1,7 +1,6 @@
 package br.com.master.domain;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -10,7 +9,6 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.com.common.domain.Domain;
-import br.com.common.wrappers.File;
 
 /**
  * <b>Description:</b> <br>
@@ -27,8 +25,20 @@ public class BlocoTO extends Domain {
     @Column(name = "numero", updatable = false, nullable = false)
     private Integer   numero;
 
-    @Embedded
-    private File      file;
+    @Column(name = "uuid", updatable = false, nullable = false)
+    private String    uuid;
+
+    @Column(name = "tamanho", updatable = false, nullable = false)
+    private Integer   tamanho;
+
+    @Column(name = "instance_id")
+    private String    instanceId;
+
+    @Column(name = "dir_off_line", updatable = false, nullable = false)
+    private String    diretorioOffLine;
+
+    @Column(name = "replica", updatable = false, nullable = false)
+    private Boolean   replica;
 
     @JsonIgnore
     @ManyToOne
@@ -39,12 +49,6 @@ public class BlocoTO extends Domain {
 
     }
 
-    public BlocoTO(Integer numero, File file, ArquivoTO arquivo) {
-        this.numero = numero;
-        this.file = file;
-        this.arquivo = arquivo;
-    }
-
     public Integer getNumero() {
         return numero;
     }
@@ -53,12 +57,44 @@ public class BlocoTO extends Domain {
         this.numero = numero;
     }
 
-    public File getFile() {
-        return file;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setFile(File file) {
-        this.file = file;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public Integer getTamanho() {
+        return tamanho;
+    }
+
+    public void setTamanho(Integer tamanho) {
+        this.tamanho = tamanho;
+    }
+
+    public String getInstanceId() {
+        return instanceId;
+    }
+
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
+    }
+
+    public String getDiretorioOffLine() {
+        return diretorioOffLine;
+    }
+
+    public void setDiretorioOffLine(String diretorioOffLine) {
+        this.diretorioOffLine = diretorioOffLine;
+    }
+
+    public Boolean getReplica() {
+        return replica;
+    }
+
+    public void setReplica(Boolean replica) {
+        this.replica = replica;
     }
 
     public ArquivoTO getArquivo() {

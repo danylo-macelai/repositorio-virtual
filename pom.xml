@@ -30,7 +30,8 @@
         <zjsonpatch.version>0.4.3</zjsonpatch.version>
         <postgresql.version>9.4-1200-jdbc41</postgresql.version>
         <hsqldb.version>1.8.0.10</hsqldb.version>
-        <okhttp3.version>3.11.0</okhttp3.version>
+        <okhttp3.version>3.14.0</okhttp3.version>
+        <moshi.version>1.8.0</moshi.version>
     </properties>
 
     <dependencies>
@@ -117,6 +118,12 @@
             <artifactId>okhttp</artifactId>
             <version>${okhttp3.version}</version>
         </dependency>
+        
+		<dependency>
+		    <groupId>com.squareup.moshi</groupId>
+		    <artifactId>moshi</artifactId>
+		    <version>${moshi.version}</version>
+		</dependency>
     </dependencies>
 
     <build>

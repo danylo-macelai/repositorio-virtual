@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -104,7 +105,6 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      * {@inheritDoc}
      */
     @Override
-    @Transactional
     public ArquivoTO upload(MultipartFile multipartFile) throws MasterException {
         ConfiguracaoTO configuracao = configuracaoBusiness.buscar();
 
@@ -147,7 +147,16 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
                 arquivo.getBlocos().addAll(replicacoes);
             }
 
-            super.incluir(arquivo);
+            TransactionStatus status = txManager.getTransaction(getTransactionDefinition());
+            try {
+                super.incluir(arquivo);
+                txManager.commit(status);
+            } catch (Throwable e) {
+                if (!status.isCompleted()) {
+                    txManager.rollback(status);
+                }
+                e.printStackTrace();
+            }
 
             return arquivo;
         } catch (Exception e) {

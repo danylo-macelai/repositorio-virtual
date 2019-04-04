@@ -7,7 +7,10 @@ import javax.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import br.com.common.domain.Domain;
 
@@ -22,6 +25,16 @@ public abstract class DBusiness<D extends Domain> implements IBusiness<D> {
 
     @Autowired
     JpaRepository<D, Long> persistence;
+
+    @Autowired
+    protected JpaTransactionManager txManager;
+
+    protected final TransactionDefinition getTransactionDefinition() {
+        DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+        definition.setName("Controle manual de Transaction");
+        definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        return definition;
+    }
 
     /**
      * {@inheritDoc}

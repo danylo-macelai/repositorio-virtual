@@ -29,7 +29,7 @@ Quando o cliente solicitar a leitura do arquivo o Master deverá recuperar os bl
 
 ## Virtual Master
 
-* O Master é um micros-serviço que interage diretamente com os clientes através da leitura, gravação e exclusão de arquivos, os arquivos enviados serão divididos em blocos de tamanho fixo e replicados entres os vários nós Slave registrados no service discovery Eureka usado no Spring Cloud. Ao receber uma solicitação de leitura o Master recupera todos os blocos de arquivos inclusive as réplicas que estão espalhadas entre os diversos nós Slave inciando assim processo de reconstrução do arquivo que será devolvido ao cliente. Além disso mantém uma estratégia para migração de blocos e balanceamento de carga de cada Slave.
+* O master é um micros-serviço que interage diretamente com os clientes através da leitura, gravação e exclusão de arquivos. Os arquivos enviados serão divididos em blocos de tamanho fixo e armazenados no diretório temporário da aplicação, assim que alguma instância Slave estiver registrada no serviço de descoberta os jobs inicializara o processo de gravação e replicação destes blocos entres os vários nós Slave. Ao receber uma solicitação de leitura o Master recupera todos os blocos de arquivos inclusive as réplicas que estão espalhadas entre os diversos nós Slave iniciando assim processo de reconstrução do arquivo que será devolvido ao cliente. Diariamente um job manterá uma estratégia para migração de blocos e balanceamento de carga de cada Slave.
 
 ## Virtual Slave
 

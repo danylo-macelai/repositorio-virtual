@@ -5,6 +5,7 @@ import static br.com.slave.resource.VolumeResource.RESOURCE_ROOT_URL;
 import java.io.IOException;
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.POST;
@@ -12,7 +13,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flipkart.zjsonpatch.JsonPatch;
 
-import br.com.common.wrappers.File;
 import br.com.common.wrappers.PatchForm;
 import br.com.slave.business.IVolume;
 import br.com.slave.configuration.SlaveException;
@@ -184,13 +183,12 @@ public class VolumeResource {
     }
 
     @POST
-    @Path("/gravacao")
+    @Path("/gravacao/{uuid}")
     @Produces({ MediaType.APPLICATION_JSON })
     @ApiOperation(
             value = "Envia um bloco para o volume",
             nickname = "gravacao",
             notes = "<p>A gravaço é usada para fazer o upoload dos <strong>blocos</strong> no servidor, que será identificado de for única e salvo no volume. Se a operaço for realizada com sucesso, retorna os <strong>metadados</strong> de identificaço caso contrário, a mensagem de erro</p>",
-            response = File.class,
             produces = MediaType.APPLICATION_JSON)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "<p>Gravaço foi realizada com sucesso</p>"),
@@ -198,9 +196,16 @@ public class VolumeResource {
             @ApiResponse(code = 409, message = "<p>O bloco (108cf...079ad), já existe no volume.</p>")
             }
     )
-    public Response gravacao(@Context Request request) {
-        File file = business.upload(request);
-        return Response.status(Response.Status.OK).entity(file).build();
+    public Response gravacao(@Context Request request,
+                             @ApiParam(
+                                     name = "uuid",
+                                     value = "<p>Identificador único do bloco</p>",
+                                     example = "0ac92987eeeb0d89c42a3ecf778356a9b52407a0b978b0fdbcf3b508ca2c9460",
+                                     required = true
+                                     )
+                             @PathParam("uuid") String uuid) {
+        business.upload(request, uuid);
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @GET
@@ -247,9 +252,9 @@ public class VolumeResource {
                     required = true
                     )
             @PathParam("uuid") String uuid,
-            @QueryParam("instance_id") String instanceId) throws Exception {
-        File file = business.replicacao(uuid, instanceId);
-        return Response.status(Response.Status.OK).entity(file).build();
+            @FormParam("instance_id") String instanceId) throws Exception {
+        business.replicacao(uuid, instanceId);
+        return Response.status(Response.Status.NO_CONTENT).build();
     }
 
     @DELETE

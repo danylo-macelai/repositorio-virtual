@@ -1,5 +1,6 @@
 package br.com.master.business.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import br.com.common.business.DBusiness;
 import br.com.master.business.IBloco;
+import br.com.master.configuration.MasterBalance;
 import br.com.master.configuration.MasterException;
 import br.com.master.domain.ArquivoTO;
 import br.com.master.domain.BlocoTO;
@@ -24,7 +26,10 @@ import br.com.master.persistence.BlocoDAO;
 public class BlocoBusiness extends DBusiness<BlocoTO> implements IBloco {
 
     @Autowired
-    BlocoDAO persistence;
+    BlocoDAO      persistence;
+
+    @Autowired
+    MasterBalance balance;
 
     /**
      * {@inheritDoc}
@@ -33,6 +38,64 @@ public class BlocoBusiness extends DBusiness<BlocoTO> implements IBloco {
     @Transactional(readOnly = true)
     public List<BlocoTO> carregarTodosPor(ArquivoTO arquivo) throws MasterException {
         return persistence.findByArquivoOrderByNumeroAsc(arquivo);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<BlocoTO> carregarParaGravacao() throws MasterException {
+        List<BlocoTO> itens = new ArrayList<>();
+        for (Object[] values : persistence.carregarParaGracacao()) {
+            BlocoTO bloco = new BlocoTO();
+            bloco.setId(Long.valueOf(values[0].toString()));
+            bloco.setUuid(values[1].toString());
+            bloco.setDiretorioOffLine(values[2].toString());
+            itens.add(bloco);
+        }
+        return itens;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<BlocoTO> carregarParaReplicacao() throws MasterException {
+        List<BlocoTO> itens = new ArrayList<>();
+        for (Object[] values : persistence.carregarParaReplicacao()) {
+            BlocoTO bloco = new BlocoTO();
+            bloco.setNumero(Integer.valueOf(values[1].toString()));
+            bloco.setUuid(values[2].toString());
+            bloco.setTamanho(Integer.valueOf(values[3].toString()));
+            bloco.setDiretorioOffLine(values[4].toString());
+            bloco.setInstanceId(values[5].toString());
+            bloco.setReplica(true);
+            ArquivoTO arquivo = new ArquivoTO();
+            arquivo.setId(Long.valueOf(values[6].toString()));
+            bloco.setArquivo(arquivo);
+            itens.add(bloco);
+        }
+        return itens;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public boolean exists(String uuid, String instanceId) {
+        return persistence.existsByUuidAndInstanceId(uuid, instanceId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public void updateBloco(BlocoTO bloco) {
+        persistence.updateBloco(bloco.getInstanceId(), bloco.getId());
     }
 
 }

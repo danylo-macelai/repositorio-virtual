@@ -3,6 +3,14 @@ spring:
     name: eureka-server
   main:
     allow-bean-definition-overriding: true
+  batch:
+    job:
+      enabled: false
+    initialize-schema: always
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always 
 
 server:
   port: 8761
@@ -11,6 +19,7 @@ eureka:
   client:
     registerWithEureka: false
     fetchRegistry: false
+    
   server:
     waitTimeInMsWhenSyncEmpty: 0
   
@@ -19,4 +28,3 @@ logging:
     com.netflix:
             eureka: ON
             discovery: OFF
-org.springframework.cloud: 'WARN'

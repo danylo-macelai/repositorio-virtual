@@ -37,15 +37,10 @@ public final class SlaveEurekaClient {
     private String              appName;
     private int                 port;
     private EurekaClient        eurekaClient;
-    private String              instanceId;
 
     public SlaveEurekaClient(Environment env) {
         this.env = env;
         init();
-    }
-
-    public EurekaClient getEurekaClient() {
-        return eurekaClient;
     }
 
     public void register(String resourceRootUrl) {
@@ -65,15 +60,6 @@ public final class SlaveEurekaClient {
         });
     }
 
-    public final String getHomePageUrl() {
-        InstanceInfo instance = getApplications().getByInstanceId(instanceId);
-        return instance.getHomePageUrl();
-    }
-
-    public String getInstanceId() {
-        return instanceId;
-    }
-
     public final String getReplicacaoUrl(String dirtyInstanceId) {
         InstanceInfo dirty = null;
         if (dirtyInstanceId != null) {
@@ -89,7 +75,6 @@ public final class SlaveEurekaClient {
         serviceIp = env.getProperty(EUREKA_CLIENT_HOST);
         port = Integer.valueOf(env.getProperty(EUREKA_CLIENT_PORT));
         appName = env.getProperty(EUREKA_APP_NAME);
-        instanceId = String.format("%s:%s:%s", serviceIp, appName, port);
 
         ConfigurationManager.getConfigInstance().setProperty(EUREKA_REGION, env.getProperty(EUREKA_REGION));
         ConfigurationManager.getConfigInstance().setProperty(EUREKA_SERVER_URL, env.getProperty(EUREKA_SERVER_URL));
@@ -104,32 +89,32 @@ public final class SlaveEurekaClient {
 
     private InstanceInfo info(String serviceRootUrl, DataCenterInfo dataCenterInfo) {
 
-        InstanceInfo instanceInfo = new InstanceInfo(instanceId,                                /* instanceId */
-                appName,                                                                        /* appName */
-                "",                                                                             /* appGroupName */
-                serviceIp,                                                                      /* ipAddr */
-                "na",                                                                           /* sid */
-                new InstanceInfo.PortWrapper(true, port),                                       /* port */
-                new InstanceInfo.PortWrapper(false, 443),                                       /* securePort */
-                String.format("http://%s:%s%s", serviceIp, port, serviceRootUrl),               /* homePageUrl */
-                String.format("http://%s:%s%s/status", serviceIp, port, serviceRootUrl),        /* statusPageUrl */
-                String.format("http://%s:%s%s/healthCheck", serviceIp, port, serviceRootUrl),   /* healthCheckUrl */
-                null,                                                                           /* secureHealthCheckUrl */
-                appName,                                                                        /* vipAddress */
-                appName,                                                                        /* secureVipAddress */
-                1,                                                                              /* countryId */
-                dataCenterInfo,                                                                 /* dataCenterInfo */
-                serviceIp,                                                                      /* hostName */
-                InstanceInfo.InstanceStatus.UP,                                                 /* status */
-                InstanceInfo.InstanceStatus.UNKNOWN,                                            /* overriddenStatus */
-                null,                                                                           /* overriddenStatusAlt */
-                LeaseInfo.Builder.newBuilder().setDurationInSecs(10).build(),                   /* leaseInfo */
-                false,                                                                          /* isCoordinatingDiscoveryServer */
-                null,                                                                           /* metadata */
-                null,                                                                           /* lastUpdatedTimestamp */
-                null,                                                                           /* lastDirtyTimestamp */
-                InstanceInfo.ActionType.ADDED,                                                  /* actionType */
-                ""                                                                              /* asgName */
+        InstanceInfo instanceInfo = new InstanceInfo(String.format("%s:%s:%s", serviceIp, appName, port), /* instanceId */
+                appName,                                                                                  /* appName */
+                "",                                                                                       /* appGroupName */
+                serviceIp,                                                                                /* ipAddr */
+                "na",                                                                                     /* sid */
+                new InstanceInfo.PortWrapper(true, port),                                                 /* port */
+                new InstanceInfo.PortWrapper(false, 443),                                                 /* securePort */
+                String.format("http://%s:%s%s", serviceIp, port, serviceRootUrl),                         /* homePageUrl */
+                String.format("http://%s:%s%s/status", serviceIp, port, serviceRootUrl),                  /* statusPageUrl */
+                String.format("http://%s:%s%s/healthCheck", serviceIp, port, serviceRootUrl),             /* healthCheckUrl */
+                null,                                                                                     /* secureHealthCheckUrl */
+                appName,                                                                                  /* vipAddress */
+                appName,                                                                                  /* secureVipAddress */
+                1,                                                                                        /* countryId */
+                dataCenterInfo,                                                                           /* dataCenterInfo */
+                serviceIp,                                                                                /* hostName */
+                InstanceInfo.InstanceStatus.UP,                                                           /* status */
+                InstanceInfo.InstanceStatus.UNKNOWN,                                                      /* overriddenStatus */
+                null,                                                                                     /* overriddenStatusAlt */
+                LeaseInfo.Builder.newBuilder().setDurationInSecs(10).build(),                             /* leaseInfo */
+                false,                                                                                    /* isCoordinatingDiscoveryServer */
+                null,                                                                                     /* metadata */
+                null,                                                                                     /* lastUpdatedTimestamp */
+                null,                                                                                     /* lastDirtyTimestamp */
+                InstanceInfo.ActionType.ADDED,                                                            /* actionType */
+                ""                                                                                        /* asgName */
         );
         return instanceInfo;
     }

@@ -2,7 +2,6 @@ package br.com.common.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -36,9 +35,13 @@ abstract class HttpUtils {
             if (params.length > 0) {
                 joinParams = StringUtils.join(params, "&");
             }
+            String joinPath = "";
+            if (path != null) {
+                joinPath = "/" + path;
+            }
             RequestBody body = RequestBody.create(form_urlencoded, joinParams);
-            Request request = new Request.Builder().url(host + service + Objects.toString(path, "")).post(body)
-                    .addHeader("content-type", form_urlencoded.type()).build();
+            Request request = new Request.Builder().url(host + service + joinPath).post(body).addHeader("content-type", form_urlencoded.type())
+                    .build();
             
             Response response = client.newCall(request).execute();
             return response;
@@ -47,7 +50,7 @@ abstract class HttpUtils {
         }
     }
     
-    public static Response post(InputStream stream, String host, String service) throws CommonException {
+    public static Response post(InputStream stream, String host, String service, String path) throws CommonException {
         try (InputStream inputStream = stream) {
             RequestBody body = new RequestBody() {
                 @Override
@@ -62,7 +65,11 @@ abstract class HttpUtils {
                     }
                 }
             };
-            Request request = new Request.Builder().url(host + service).post(body).build();
+            String joinPath = "";
+            if (path != null) {
+                joinPath = "/" + path;
+            }
+            Request request = new Request.Builder().url(host + service + joinPath).post(body).build();
             Response response = client.newCall(request).execute();
             return response;
         } catch (Exception e) {

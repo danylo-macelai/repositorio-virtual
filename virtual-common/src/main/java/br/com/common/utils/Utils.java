@@ -154,8 +154,8 @@ public abstract class Utils {
         return HttpUtils.post(host, service, path, params);
     }
 
-    public static Response httpPost(InputStream stream, String host, String service) throws CommonException {
-        return HttpUtils.post(stream, host, service);
+    public static Response httpPost(InputStream stream, String host, String service, String path) throws CommonException {
+        return HttpUtils.post(stream, host, service, path);
     }
 
     public static Response httpGet(String host) throws CommonException {

@@ -1,25 +1,20 @@
 package br.com.master.configuration;
 
-import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.function.Predicate;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.shared.Application;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 
-import br.com.common.utils.Utils;
-import okhttp3.Response;
+import br.com.master.wrappers.Slave;
 
 /**
  * <b>Description:</b> <br>
@@ -33,9 +28,7 @@ public class MasterBalance {
 
     private static final String EUREKA_APP_CLIENT_NAME = "eureka.app.client.name";
 
-    private Timer               usageChecker;
-    private ObjectMapper        mapper;
-    private Set<Instance>       slaves;
+    private Set<Slave>          slaves;
     private Environment         env;
     private String              appName;
 
@@ -47,15 +40,27 @@ public class MasterBalance {
         init();
     }
 
-    public String nextVolumeUrlSlave() {
-        return volumeUrlSlave(nextVolumeInstanceIdSlave());
+    /**
+     * Obtém uma instanceId.
+     * <p>
+     * Observe que o tráfego será direcionado para a instância que possui maior capacidade de armazenamento. </ p>
+     *
+     * @return String página inicial
+     */
+    public final String nextVolumeInstanceIdSlave() {
+        return slaves.stream().sorted((x, y) -> {
+            return Integer.compare(x.getContem(), y.getContem());
+        }).findFirst().orElse(new Slave()).usage().getInstanceId();
+
     }
 
-    public String nextVolumeInstanceIdSlave() {
-        return next().getInstanceId();
-    }
-
-    public String volumeUrlSlave(String instanceId) {
+    /**
+     * Obtém a home page definida para esta instância.
+     *
+     * @param instanceId
+     * @return String página inicial
+     */
+    public final String volumeUrlSlave(String instanceId) {
         InstanceInfo instance = registry.getInstanceByAppAndId(appName, instanceId);
         if (instance == null) {
             throw new MasterException("instance.id.e.invalido");
@@ -64,112 +69,53 @@ public class MasterBalance {
     }
 
     /**
-     * @return Volume
-     */
-    private Instance next() {
-        Instance volume = slaves.stream().sorted((x, y) -> {
-            System.out.println(x.getInstanceId() + " : " + x.getContem() + " - " + y.getInstanceId() + " : " + y.getContem());
-            return Integer.compare(x.getContem(), y.getContem());
-        }).findFirst().orElse(new Instance()).usage();
-        return volume;
-    }
-
-    private void init() {
-        usageChecker = new Timer();
-        usageChecker.schedule(new UsageChecker(), 30 * 1000, 1 * 60 * 1000);
-
-        slaves = new HashSet<>();
-
-        mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        appName = env.getProperty(EUREKA_APP_CLIENT_NAME);
-    }
-
-    /**
-     * <b>Description:</b> <br>
-     * <b>Project:</b> virtual-master <br>
+     * Preenche a lista de instâncias registadas para Virtual-Slave
+     * <p>
+     * Observe que se a instância já existir sua quantidade/capacidade será atualizada.
+     * </p>
      *
-     * @author macelai
-     * @date: 27 de mar de 2019
+     * @param function - função responsável por atualizar as instâncias
      */
-    private class UsageChecker extends TimerTask {
-        @Override
-        public void run() {
-            Application registeredApplications = registry.getApplications().getRegisteredApplications(appName);
-            if (registeredApplications != null) {
-                for (InstanceInfo applicationsInstance : registeredApplications.getInstances()) {
-                    Predicate<Instance> isQualified = v -> v.getInstanceId().equals(applicationsInstance.getInstanceId());
-                    try {
-                        Response response = Utils.httpGet(applicationsInstance.getHomePageUrl());
-                        Instance volume = mapper.readValue(response.body().string(), Instance.class);
-                        volume.setInstanceId(applicationsInstance.getInstanceId());
-                        if (!slaves.add(volume)) {
-                            slaves.stream().filter(isQualified).forEach(v -> {
-                                v.setContem(volume.getContem());
-                            });
-                        }
-                    } catch (Exception e) {
-                        slaves.removeIf(isQualified);
+    public final void atualizarInstanceId(Function<InstanceInfo, Slave> function) {
+        Application registeredApplications = registry.getApplications().getRegisteredApplications(appName);
+        if (registeredApplications != null) {
+            for (InstanceInfo info : registeredApplications.getInstances()) {
+                try {
+                    Slave slave = function.apply(info);
+                    if (!slaves.add(slave)) {
+                        slaves.stream().filter(v -> v.getInstanceId().equals(slave.getInstanceId())).forEach(s -> {
+                            s.setContem(slave.getContem());
+                        });
                     }
+                } catch (Exception e) {
+                    slaves.removeIf(v -> v.getInstanceId().equals(info.getInstanceId()));
                 }
             }
         }
     }
 
     /**
-     * <b>Description:</b> <br>
-     * <b>Project:</b> virtual-master <br>
+     * Percorre todas as instâncias que estão associadas ao Virtual-Slave.
+     * <p>
+     * Observe que as instâncias serão ordenadas por quantidade/capacidade de arquivos para direcionar o tráfego para a instância que possui maior
+     * capacidade de armazenamento. </ p>
      *
-     * @author macelai
-     * @date: 29 de mar de 2019
+     * @param function - função responsável por consumir as informações
      */
-    @SuppressWarnings("serial")
-    private static class Instance implements Serializable {
-
-        private int    contem;
-        private String instanceId;
-
-        public Instance usage() {
-            contem++;
-            return this;
-        }
-
-        public int getContem() {
-            return contem;
-        }
-
-        public void setContem(int contem) {
-            this.contem = contem;
-        }
-
-        public String getInstanceId() {
-            return instanceId;
-        }
-
-        public void setInstanceId(String instanceId) {
-            this.instanceId = instanceId;
-        }
-
-        @Override
-        public final boolean equals(Object other) {
-            if ((other == null) || !this.getClass().equals(other.getClass())) {
-                return false;
+    public final void percorrerInstanceId(Function<String, Boolean> function) {
+        List<Slave> instances = slaves.stream().sorted((s1, s2) -> Integer.compare(s1.getContem(), s2.getContem())).collect(Collectors.toList());
+        for (Slave slave : instances) {
+            if (function.apply(slave.getInstanceId())) {
+                break;
             }
-            EqualsBuilder builder = new EqualsBuilder();
-            builder.append(instanceId, ((Instance) other).getInstanceId());
-            return builder.isEquals();
         }
+    }
 
-        /**
-         * @return
-         */
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((instanceId == null) ? 0 : instanceId.hashCode());
-            return result;
-        }
+    private void init() {
+
+        slaves = new HashSet<>();
+
+        appName = env.getProperty(EUREKA_APP_CLIENT_NAME);
     }
 
 }

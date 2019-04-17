@@ -13,12 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.wso2.msf4j.Request;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import br.com.common.business.Business;
 import br.com.common.configuration.CommonException;
 import br.com.common.utils.Utils;
-import br.com.common.wrappers.File;
 import br.com.slave.business.IVolume;
 import br.com.slave.configuration.SlaveEurekaClient;
 import br.com.slave.configuration.SlaveException;
@@ -99,9 +96,8 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
      */
     @Override
     @Transactional
-    public File upload(Request request) throws SlaveException {
+    public void upload(Request request, String uuid) throws SlaveException {
         VolumeTO volume = buscar();
-        String uuid = Utils.gerarIdentificador();
         Path path = Paths.get(volume.getLocalizacao());
         if (!path.toFile().exists()) {
             throw new CommonException("slave.paths.invalido").args(volume.getLocalizacao()).status(Status.BAD_REQUEST);
@@ -110,10 +106,6 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
         int tamanho = Utils.fileEscrever(path, request.getMessageContentStream(), volume.getTamanho(), volume.getCapacidade());
         volume.incrementar(tamanho);
         _alterar(volume);
-
-        String instanceId = eurekaClient.getInstanceId();
-
-        return new File(uuid, tamanho, instanceId);
     }
 
     /**
@@ -129,7 +121,7 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
      * {@inheritDoc}
      */
     @Override
-    public File replicacao(String uuid, String instanceId) throws SlaveException {
+    public void replicacao(String uuid, String instanceId) throws SlaveException {
         try {
             Path path = Paths.get(buscar().getLocalizacao(), uuid + BLOCO_EXTENSION);
             if (!path.toFile().exists()) {
@@ -139,14 +131,11 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
             if (host == null) {
                 throw new CommonException("slave.nao.registrado.discovery").status(Status.BAD_REQUEST);
             }
-            Response response = Utils.httpPost(new FileInputStream(path.toFile()), host, "/gravacao");
-            if (Status.OK.getStatusCode() != response.code()) {
-                throw new SlaveException(response.body().string()).status(Status.BAD_REQUEST);
+            try (Response response = Utils.httpPost(new FileInputStream(path.toFile()), host, "/gravacao", uuid)) {
+                if (Status.NO_CONTENT.getStatusCode() != response.code()) {
+                    throw new SlaveException(response.body().string()).status(Status.BAD_REQUEST);
+                }
             }
-            ObjectMapper mapper = new ObjectMapper();
-            File file = mapper.readValue(response.body().string(), File.class);
-            file.setReplica(true);
-            return file;
         } catch (Exception e) {
             throw new SlaveException(e.getMessage(), e);
         }

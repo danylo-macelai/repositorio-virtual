@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -19,7 +20,7 @@ import br.com.common.domain.Domain;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "RV_BLOCO")
+@Table(name = "RV_BLOCO", uniqueConstraints = { @UniqueConstraint(columnNames = { "uuid", "instance_id" }) })
 public class BlocoTO extends Domain {
 
     @Column(name = "numero", updatable = false, nullable = false)

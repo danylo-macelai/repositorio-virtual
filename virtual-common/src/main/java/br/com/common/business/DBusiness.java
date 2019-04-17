@@ -24,12 +24,18 @@ import br.com.common.domain.Domain;
 public abstract class DBusiness<D extends Domain> implements IBusiness<D> {
 
     @Autowired
-    JpaRepository<D, Long> persistence;
+    JpaRepository<D, Long>          persistence;
 
     @Autowired
     protected JpaTransactionManager txManager;
 
-    protected final TransactionDefinition getTransactionDefinition() {
+    /**
+     * Crie uma nova transaction com o dado comportamento de propagação, suspendendo a transação atual, se houver.
+     *
+     * @return TransactionDefinition
+     * @throws DataAccessException
+     */
+    protected final TransactionDefinition getTransactionDefinition() throws DataAccessException {
         DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
         definition.setName("Controle manual de Transaction");
         definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);

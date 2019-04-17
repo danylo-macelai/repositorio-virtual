@@ -5,7 +5,6 @@ import javax.ws.rs.core.StreamingOutput;
 import org.wso2.msf4j.Request;
 
 import br.com.common.business.IBusiness;
-import br.com.common.wrappers.File;
 import br.com.slave.configuration.SlaveException;
 import br.com.slave.domain.VolumeTO;
 
@@ -29,10 +28,10 @@ public interface IVolume extends IBusiness<VolumeTO> {
      * Gera um identificador único para o bloco que será salvo no volume
      *
      * @param request
-     * @return File
+     * @param uuid
      * @throws SlaveException
      */
-    File upload(Request request) throws SlaveException;
+    void upload(Request request, String uuid) throws SlaveException;
 
     /**
      * Realiza o download do bloco com o uuid informado
@@ -48,10 +47,9 @@ public interface IVolume extends IBusiness<VolumeTO> {
      *
      * @param uuid
      * @param instanceId
-     * @return FileTO
      * @throws SlaveException
      */
-    File replicacao(String uuid, String instanceId) throws SlaveException;
+    void replicacao(String uuid, String instanceId) throws SlaveException;
 
     /**
      * Exclui apenas o bloco com uuid informado.

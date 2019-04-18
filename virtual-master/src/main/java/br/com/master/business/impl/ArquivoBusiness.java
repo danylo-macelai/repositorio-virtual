@@ -4,15 +4,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.SequenceInputStream;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.Vector;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Response.Status;
@@ -157,38 +156,54 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
     public InputStreamResource download(ArquivoTO arquivo) throws MasterException {
         try {
-            List<BlocoTO> blocos = blocoBusiness.carregarTodosPor(arquivo);
+            List<BlocoTO> blocos = new ArrayList<>();
+            TransactionStatus status = txManager.getTransaction(getTransactionDefinition());
+            try {
+                blocos = blocoBusiness.carregarTodosPor(arquivo);
+                txManager.commit(status);
+            } catch (Throwable e) {
+                if (!status.isCompleted()) {
+                    txManager.rollback(status);
+                }
+                throw e;
+            }
             if (blocos.isEmpty()) {
                 throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
             }
 
-            Vector<InputStream> vector = new Vector<>();
+            Path path = Paths.get(pathTmpDirectory);
+            path = path.resolve(arquivo.getNome());
             Iterator<BlocoTO> blocoIterator = blocos.iterator();
-            Set<Integer> pecas = new HashSet<>();
-            while (blocoIterator.hasNext()) {
-                BlocoTO bloco = blocoIterator.next();
-                if (pecas.add(bloco.getNumero())) {
-                    try {
-                        vector.add(new FileInputStream(new File(bloco.getDiretorioOffLine())));
-                    } catch (Exception e) {
-                        pecas.remove(bloco.getNumero());
+            try (OutputStream os = Files.newOutputStream(path)) {
+                byte[] buffer = new byte[4096];
+                while (blocoIterator.hasNext()) {
+                    BlocoTO bloco = blocoIterator.next();
+                    if (bloco.getInstanceId() != null) {
+                        try(Response response = Utils.httpGet(masterBalance.volumeUrlSlave(bloco.getInstanceId()), "/leitura/", bloco.getUuid())) {
+                            if (Status.OK.getStatusCode() != response.code()) {
+                                throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
+                            }
+                            try(InputStream in = response.body().byteStream()) {
+                                int read = -1;
+                                while ((read = in.read(buffer)) != -1) {
+                                    os.write(buffer, 0, read);
+                                }
+                            }
+                        }
+                    } else {
+                        try(InputStream in = new FileInputStream(bloco.getDiretorioOffLine())) {
+                            int read = -1;
+                            while ((read = in.read(buffer)) != -1) {
+                                os.write(buffer, 0, read);
+                            }
+                        }
                     }
                 }
+                os.flush();
             }
-            if (!arquivo.getPecas().equals(pecas.size())) {
-                Iterator<InputStream> vectorIterator = vector.iterator();
-                while (vectorIterator.hasNext()) {
-                    InputStream inputStream = vectorIterator.next();
-                    inputStream.close();
-                }
-                throw new MasterException("master.montar.blocos.qtde").args(arquivo.getPecas().toString(), String.valueOf(pecas.size()))
-                        .status(Status.BAD_REQUEST);
-            }
-
-            return new InputStreamResource(new SequenceInputStream(vector.elements()));
+            return new InputStreamResource(new FileInputStream(path.toFile()));
         } catch (Exception e) {
             throw new MasterException(e.getMessage(), e);
         }

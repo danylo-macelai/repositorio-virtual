@@ -29,7 +29,11 @@ Quando o cliente solicitar a leitura do arquivo o Master deverá recuperar os bl
 
 ## Virtual Master
 
-* O master é um micros-serviço que interage diretamente com os clientes através da leitura, gravação e exclusão de arquivos. Os arquivos enviados serão divididos em blocos de tamanho fixo e armazenados no diretório temporário da aplicação, assim que alguma instância Slave estiver registrada no serviço de descoberta os jobs inicializara o processo de gravação e replicação destes blocos entres os vários nós Slave. Ao receber uma solicitação de leitura o Master recupera todos os blocos de arquivos inclusive as réplicas que estão espalhadas entre os diversos nós Slave iniciando assim processo de reconstrução do arquivo que será devolvido ao cliente. Diariamente um job manterá uma estratégia para migração de blocos e balanceamento de carga de cada Slave.
+* O master é um micros-serviço que interage diretamente com os clientes através da leitura, gravação e exclusão de arquivos. Os arquivos enviados serão divididos em blocos de tamanho fixo e armazenados no diretório temporário da aplicação, assim que alguma instância Slave estiver registrada no service discovery a tarefa de gravação de blocos será executada para que posteriormente seja realizada a replicação entre os nós Slave.
+
+* Ao receber uma solicitação de leitura o Master recupera todos os blocos espalhados entre os diversos nós incluindo as replicas que serão necessárias para a reconstrução do arquivo no diretório temporário da aplicação, após a entrega uma tarefa será responsável pela exclusão.
+
+* Diariamente será executada uma tarefa que mantem uma estratégia para migração de blocos e balanceamento entre os nós Slaves.
 
 ## Virtual Slave
 

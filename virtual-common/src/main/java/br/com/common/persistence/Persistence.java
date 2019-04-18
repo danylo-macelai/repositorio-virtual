@@ -1,5 +1,7 @@
 package br.com.common.persistence;
 
+import static br.com.common.utils.Utils.actualType;
+
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,7 +16,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import br.com.common.domain.Domain;
-import br.com.common.utils.Utils;
 
 /**
  * <b>Project:</b> virtual-common <br>
@@ -35,7 +36,7 @@ public abstract class Persistence<D extends Domain> implements IPersistence<D> {
 
     @Autowired
     public Persistence(DataSource dataSource) {
-        this.dominioClass = Utils.actualType(this);
+        this.dominioClass = actualType(this);
         this.jdbcInsert = new SimpleJdbcInsert(dataSource).withTableName(dominioClass.getAnnotation(Table.class).name())
                 .usingGeneratedKeyColumns("id");
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);

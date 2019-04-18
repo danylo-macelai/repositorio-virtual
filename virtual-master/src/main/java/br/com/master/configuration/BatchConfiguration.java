@@ -2,6 +2,7 @@ package br.com.master.configuration;
 
 import static br.com.master.configuration.QuartzConfiguration.JOB_GRAVACAO;
 import static br.com.master.configuration.QuartzConfiguration.JOB_INSTANCE;
+import static br.com.master.configuration.QuartzConfiguration.JOB_LIMPAR;
 import static br.com.master.configuration.QuartzConfiguration.JOB_REPLICACAO;
 
 import org.springframework.batch.core.Job;
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import br.com.master.business.IMasterTask;
 import br.com.master.task.TaskGravacaoSlave;
 import br.com.master.task.TaskInstanceSlave;
+import br.com.master.task.TaskLimparDiretorio;
 import br.com.master.task.TaskReplicacaoSlave;
 
 /**
@@ -31,7 +33,7 @@ public class BatchConfiguration {
     private static final String STEP_INSTANCE   = "stepInstance";
     private static final String STEP_GRAVACAO   = "stepGravacao";
     private static final String STEP_REPLICACAO = "stepReplicacao";
-
+    private static final String STEP_LIMPAR     = "stepLimpar";
     @Autowired
     private JobBuilderFactory   jobs;
 
@@ -70,6 +72,19 @@ public class BatchConfiguration {
                 flow( //
                         steps.get(STEP_REPLICACAO). //
                                 tasklet(new TaskReplicacaoSlave(masterTaskBusiness)). //
+                                build()
+
+                ). //
+                build(). //
+                build();
+    }
+
+    @Bean
+    public Job jobLimparDiretorio(IMasterTask masterTaskBusiness) {
+        return jobs.get(JOB_LIMPAR). //
+                flow( //
+                        steps.get(STEP_LIMPAR). //
+                                tasklet(new TaskLimparDiretorio(masterTaskBusiness)). //
                                 build()
 
                 ). //

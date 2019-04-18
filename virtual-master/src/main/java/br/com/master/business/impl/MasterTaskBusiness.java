@@ -1,5 +1,13 @@
 package br.com.master.business.impl;
 
+import static br.com.common.utils.Utils.DELAY_3_SEGUNDO;
+import static br.com.common.utils.Utils.VIRTUAL_EXTENSION;
+import static br.com.common.utils.Utils.delay;
+import static br.com.common.utils.Utils.fileRemover;
+import static br.com.common.utils.Utils.httpGet;
+import static br.com.common.utils.Utils.httpPost;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.Iterator;
 
@@ -13,7 +21,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.common.business.DBusiness;
-import br.com.common.utils.Utils;
 import br.com.master.business.IBloco;
 import br.com.master.business.IMasterTask;
 import br.com.master.configuration.MasterBalance;
@@ -32,8 +39,7 @@ import okhttp3.Response;
 @Service
 public class MasterTaskBusiness extends DBusiness<BlocoTO> implements IMasterTask {
 
-    static final Integer      DELAY_SEGUNDO = 3;
-    static final ObjectMapper mapper        = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    static final ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     @Autowired
     IBloco                    business;
@@ -47,7 +53,7 @@ public class MasterTaskBusiness extends DBusiness<BlocoTO> implements IMasterTas
     @Override
     public void instance() throws MasterException {
         balance.atualizarInstanceId(info -> {
-            try (Response response = Utils.httpGet(info.getHomePageUrl())) {
+            try (Response response = httpGet(info.getHomePageUrl())) {
                 Slave slave = mapper.readValue(response.body().string(), Slave.class);
                 slave.setInstanceId(info.getInstanceId());
                 return slave;
@@ -70,14 +76,11 @@ public class MasterTaskBusiness extends DBusiness<BlocoTO> implements IMasterTas
             if (bloco.getInstanceId() == null) {
                 break;
             }
-            try {
-                Thread.sleep(DELAY_SEGUNDO * 1000);
-            } catch (Exception e) {
-            }
+            delay(DELAY_3_SEGUNDO);
             TransactionStatus status = txManager.getTransaction(getTransactionDefinition());
             try {
                 business.updateBloco(bloco);
-                try (Response response = Utils.httpPost(new FileInputStream(bloco.getDiretorioOffLine()),
+                try (Response response = httpPost(new FileInputStream(bloco.getDiretorioOffLine()),
                         balance.volumeUrlSlave(bloco.getInstanceId()), "/gravacao", bloco.getUuid())) {
                     if (Status.NO_CONTENT.getStatusCode() != response.code()) {
                         throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
@@ -103,18 +106,14 @@ public class MasterTaskBusiness extends DBusiness<BlocoTO> implements IMasterTas
         while (blocos.hasNext()) {
             BlocoTO bloco = blocos.next();
             String instanceIdOrigem = bloco.getInstanceId();
-            try {
-                Thread.sleep(DELAY_SEGUNDO * 1000);
-            } catch (Exception e) {
-            }
-
+            delay(DELAY_3_SEGUNDO);
             balance.percorrerInstanceId(instanceId -> {
                 if (!instanceIdOrigem.equals(instanceId) && !business.exists(bloco.getUuid(), instanceId)) {
                     TransactionStatus status = txManager.getTransaction(getTransactionDefinition());
                     try {
                         bloco.setInstanceId(instanceId);
                         business.incluir(bloco);
-                        try (Response response = Utils.httpPost(balance.volumeUrlSlave(instanceIdOrigem), "/replicacao", bloco.getUuid(),
+                        try (Response response = httpPost(balance.volumeUrlSlave(instanceIdOrigem), "/replicacao", bloco.getUuid(),
                                 "instance_id=" + bloco.getInstanceId())) {
                             if (Status.NO_CONTENT.getStatusCode() != response.code()) {
                                 throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
@@ -131,6 +130,18 @@ public class MasterTaskBusiness extends DBusiness<BlocoTO> implements IMasterTas
                 }
                 return false;
             });
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void limpar() throws MasterException {
+        File directory = new File(balance.getPathTmpDirectory());
+        File[] files = directory.listFiles(file -> !file.getName().toLowerCase().endsWith(VIRTUAL_EXTENSION));
+        for (File file : files) {
+            fileRemover(file);
         }
     }
 

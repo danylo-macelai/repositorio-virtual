@@ -1,5 +1,7 @@
 package br.com.common.configuration;
 
+import static br.com.common.utils.Utils.concat;
+
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -13,8 +15,6 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import br.com.common.utils.Utils;
 
 @EnableTransactionManagement
 public abstract class CommonConfiguration {
@@ -74,7 +74,7 @@ public abstract class CommonConfiguration {
         LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(dataSource);
         entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        entityManagerFactoryBean.setPackagesToScan(Utils.concat(packagesToScan(), PACKAGES));
+        entityManagerFactoryBean.setPackagesToScan(concat(packagesToScan(), PACKAGES));
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setShowSql(true);

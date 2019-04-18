@@ -1,5 +1,11 @@
 package br.com.slave.business.impl;
 
+import static br.com.common.utils.Utils.VIRTUAL_EXTENSION;
+import static br.com.common.utils.Utils.fileEscrever;
+import static br.com.common.utils.Utils.fileLer;
+import static br.com.common.utils.Utils.fileRemover;
+import static br.com.common.utils.Utils.httpPost;
+
 import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,7 +21,6 @@ import org.wso2.msf4j.Request;
 
 import br.com.common.business.Business;
 import br.com.common.configuration.CommonException;
-import br.com.common.utils.Utils;
 import br.com.slave.business.IVolume;
 import br.com.slave.configuration.SlaveEurekaClient;
 import br.com.slave.configuration.SlaveException;
@@ -33,8 +38,6 @@ import okhttp3.Response;
 @Service
 public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
 
-    static final int    BUFFER_SIZE     = 4096;
-    static final String BLOCO_EXTENSION = ".rvf";
     OkHttpClient        client          = new OkHttpClient();
     VolumeTO            INSTANCE;
 
@@ -102,8 +105,8 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
         if (!path.toFile().exists()) {
             throw new CommonException("slave.paths.invalido").args(volume.getLocalizacao()).status(Status.BAD_REQUEST);
         }
-        path = path.resolve(uuid + BLOCO_EXTENSION);
-        int tamanho = Utils.fileEscrever(path, request.getMessageContentStream(), volume.getTamanho(), volume.getCapacidade());
+        path = path.resolve(uuid + VIRTUAL_EXTENSION);
+        int tamanho = fileEscrever(path, request.getMessageContentStream(), volume.getTamanho(), volume.getCapacidade());
         volume.incrementar(tamanho);
         _alterar(volume);
     }
@@ -113,8 +116,8 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
      */
     @Override
     public StreamingOutput download(String uuid) throws SlaveException {
-        Path path = Paths.get(buscar().getLocalizacao(), uuid + BLOCO_EXTENSION);
-        return Utils.fileLer(path);
+        Path path = Paths.get(buscar().getLocalizacao(), uuid + VIRTUAL_EXTENSION);
+        return fileLer(path);
     }
 
     /**
@@ -123,7 +126,7 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
     @Override
     public void replicacao(String uuid, String instanceId) throws SlaveException {
         try {
-            Path path = Paths.get(buscar().getLocalizacao(), uuid + BLOCO_EXTENSION);
+            Path path = Paths.get(buscar().getLocalizacao(), uuid + VIRTUAL_EXTENSION);
             if (!path.toFile().exists()) {
                 throw new CommonException("common.file.nao.existe").args(uuid).status(Status.BAD_REQUEST);
             }
@@ -131,7 +134,7 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
             if (host == null) {
                 throw new CommonException("slave.nao.registrado.discovery").status(Status.BAD_REQUEST);
             }
-            try (Response response = Utils.httpPost(new FileInputStream(path.toFile()), host, "/gravacao", uuid)) {
+            try (Response response = httpPost(new FileInputStream(path.toFile()), host, "/gravacao", uuid)) {
                 if (Status.NO_CONTENT.getStatusCode() != response.code()) {
                     throw new SlaveException(response.body().string()).status(Status.BAD_REQUEST);
                 }
@@ -149,9 +152,9 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
     public void excluir(String uuid) throws SlaveException {
         try {
             VolumeTO volume = buscar();
-            Path path = Paths.get(volume.getLocalizacao(), uuid + BLOCO_EXTENSION);
+            Path path = Paths.get(volume.getLocalizacao(), uuid + VIRTUAL_EXTENSION);
             long read = Files.size(path);
-            if (Utils.fileRemover(path)) {
+            if (fileRemover(path)) {
                 volume.decrementar((int) read);
                 _alterar(volume);
             }

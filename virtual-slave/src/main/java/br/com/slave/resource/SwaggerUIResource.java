@@ -1,5 +1,6 @@
 package br.com.slave.resource;
 
+import static br.com.common.utils.Utils.fileLer;
 import static br.com.slave.resource.SwaggerUIResource.RESOURCE_ROOT_URL;
 
 import javax.ws.rs.GET;
@@ -14,7 +15,6 @@ import javax.ws.rs.core.StreamingOutput;
 import org.springframework.stereotype.Component;
 import org.wso2.msf4j.Request;
 
-import br.com.common.utils.Utils;
 import br.com.slave.configuration.SlaveException;
 
 /**
@@ -98,7 +98,7 @@ public class SwaggerUIResource {
     public Response resources(@PathParam("nome") String nome) {
         try {
             ClassLoader classLoader = getClass().getClassLoader();
-            StreamingOutput stream = Utils.fileLer(classLoader.getResource("swagger_ui/" + nome).openStream());
+            StreamingOutput stream = fileLer(classLoader.getResource("swagger_ui/" + nome).openStream());
             return Response.status(Response.Status.OK).entity(stream).build();
         } catch (Exception e) {
             throw new SlaveException(e.getMessage(), e);

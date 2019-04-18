@@ -39,19 +39,21 @@ import br.com.master.wrappers.MasterJob;
 @Configuration
 public class QuartzConfiguration {
 
-    public static final String  JOB_INSTANCE          = "jobInstance";
-    public static final String  JOB_GRAVACAO          = "JobGravacao";
-    public static final String  JOB_REPLICACAO        = "jobReplicacao";
+    public static final String  JOB_INSTANCE             = "jobInstance";
+    public static final String  JOB_GRAVACAO             = "JobGravacao";
+    public static final String  JOB_REPLICACAO           = "jobReplicacao";
+    public static final String  JOB_LIMPAR               = "jobLimpar";
 
-    public static final String  TRIGGER_INSTANCE      = "triggerInstance";
-    public static final String  TRIGGER_GRAVACAO      = "triggerGravacao";
-    public static final String  TRIGGER_REPLICACAO    = "triggerReplicacao";
+    public static final String  TRIGGER_INSTANCE         = "triggerInstance";
+    public static final String  TRIGGER_GRAVACAO         = "triggerGravacao";
+    public static final String  TRIGGER_REPLICACAO       = "triggerReplicacao";
+    public static final String  TRIGGER_LIMPAR_DIRETORIO = "triggerLimparDiretorio";
 
-    public static final String  APPLICATION_CONTEXT   = "APPLICATION_CONTEXT";
-
-    private static final String CRON_INSTANCE_SLAVE   = "cron.instance.slave";
-    private static final String CRON_GRAVACAO_SLAVE   = "cron.gravacao.slave";
-    private static final String CRON_REPLICACAO_SLAVE = "cron.replicacao.slave";
+    private static final String CRON_INSTANCE_SLAVE      = "cron.instance.slave";
+    private static final String CRON_GRAVACAO_SLAVE      = "cron.gravacao.slave";
+    private static final String CRON_REPLICACAO_SLAVE    = "cron.replicacao.slave";
+    private static final String CRON_LIMPAR_DIRETORIO    = "cron.limpar.diretorio";
+    public static final String  APPLICATION_CONTEXT      = "APPLICATION_CONTEXT";
 
     @Autowired
     private Environment         env;
@@ -104,6 +106,11 @@ public class QuartzConfiguration {
         return jobBuilder(JOB_REPLICACAO);
     }
 
+    @Bean(JOB_LIMPAR)
+    public JobDetail jobLimpar() {
+        return jobBuilder(JOB_LIMPAR);
+    }
+
     @Bean(TRIGGER_GRAVACAO)
     public Trigger triggerGravacao(@Qualifier(JOB_GRAVACAO) JobDetail job) {
         return triggerBuilder(TRIGGER_GRAVACAO, job, env.getRequiredProperty(CRON_GRAVACAO_SLAVE));
@@ -117,6 +124,11 @@ public class QuartzConfiguration {
     @Bean(TRIGGER_REPLICACAO)
     public Trigger triggerReplicacao(@Qualifier(JOB_REPLICACAO) JobDetail job) {
         return triggerBuilder(TRIGGER_REPLICACAO, job, env.getRequiredProperty(CRON_REPLICACAO_SLAVE));
+    }
+
+    @Bean(TRIGGER_LIMPAR_DIRETORIO)
+    public Trigger triggerLimparDiretorio(@Qualifier(JOB_LIMPAR) JobDetail job) {
+        return triggerBuilder(TRIGGER_LIMPAR_DIRETORIO, job, env.getRequiredProperty(CRON_LIMPAR_DIRETORIO));
     }
 
     private Trigger triggerBuilder(String id, JobDetail job, String cron) {

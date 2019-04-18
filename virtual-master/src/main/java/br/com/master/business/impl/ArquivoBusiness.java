@@ -1,6 +1,12 @@
 package br.com.master.business.impl;
 
-import java.io.File;
+import static br.com.common.utils.Utils.VIRTUAL_EXTENSION;
+import static br.com.common.utils.Utils.fileEscrever;
+import static br.com.common.utils.Utils.fileParticionar;
+import static br.com.common.utils.Utils.gerarIdentificador;
+import static br.com.common.utils.Utils.httpDelete;
+import static br.com.common.utils.Utils.httpGet;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.common.business.DBusiness;
-import br.com.common.utils.Utils;
 import br.com.master.business.IArquivo;
 import br.com.master.business.IBloco;
 import br.com.master.business.IConfiguracao;
@@ -58,18 +62,6 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
     @Autowired
     MasterBalance masterBalance;
 
-    String        pathTmpDirectory = null;
-
-    @Autowired
-    public ArquivoBusiness(ServletContext servletContext) {
-        File servletTempDir = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-        if (servletTempDir != null) {
-            pathTmpDirectory = servletTempDir.getAbsolutePath();
-        } else {
-            pathTmpDirectory = new File(System.getProperty("java.io.tmpdir")).getAbsolutePath();
-        }
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -94,7 +86,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
             Iterator<BlocoTO> blocoIterator = blocos.iterator();
             while (blocoIterator.hasNext()) {
                 BlocoTO bloco = blocoIterator.next();
-                Response response = Utils.httpDelete(masterBalance.volumeUrlSlave(bloco.getInstanceId()), "/exclusao/", bloco.getUuid());
+                Response response = httpDelete(masterBalance.volumeUrlSlave(bloco.getInstanceId()), "/exclusao/", bloco.getUuid());
                 if (Status.OK.getStatusCode() != response.code()) {
                     throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
                 }
@@ -173,7 +165,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
                 throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
             }
 
-            Path path = Paths.get(pathTmpDirectory);
+            Path path = Paths.get(masterBalance.getPathTmpDirectory());
             path = path.resolve(arquivo.getNome());
             Iterator<BlocoTO> blocoIterator = blocos.iterator();
             try (OutputStream os = Files.newOutputStream(path)) {
@@ -181,7 +173,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
                 while (blocoIterator.hasNext()) {
                     BlocoTO bloco = blocoIterator.next();
                     if (bloco.getInstanceId() != null) {
-                        try(Response response = Utils.httpGet(masterBalance.volumeUrlSlave(bloco.getInstanceId()), "/leitura/", bloco.getUuid())) {
+                        try(Response response = httpGet(masterBalance.volumeUrlSlave(bloco.getInstanceId()), "/leitura/", bloco.getUuid())) {
                             if (Status.OK.getStatusCode() != response.code()) {
                                 throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
                             }
@@ -210,10 +202,10 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
     }
 
     private BlocoTO createBlocoOffline(FileChannel channel, long position, long byteSize, int numero) {
-        String uuid = Utils.gerarIdentificador();
-        Path path = Paths.get(pathTmpDirectory);
-        path = path.resolve(uuid + Utils.BLOCO_EXTENSION);
-        int tamanho = Utils.fileEscrever(path, Utils.fileParticionar(channel, position, byteSize));
+        String uuid = gerarIdentificador();
+        Path path = Paths.get(masterBalance.getPathTmpDirectory());
+        path = path.resolve(uuid + VIRTUAL_EXTENSION);
+        int tamanho = fileEscrever(path, fileParticionar(channel, position, byteSize));
 
         BlocoTO bloco = new BlocoTO();
         bloco.setNumero(numero);

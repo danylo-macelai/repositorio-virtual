@@ -1,10 +1,12 @@
 package br.com.common.utils;
 
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.UUID;
@@ -23,7 +25,9 @@ import okhttp3.Response;
  */
 public abstract class Utils {
 
-    public static final String BLOCO_EXTENSION = ".rvf";
+    public static final int    BUFFER_SIZE       = 4096;
+    public static final String VIRTUAL_EXTENSION = ".rvf";
+    public static final int    DELAY_3_SEGUNDO   = 3;
 
     /**
      * O método {@link Utils#actualType(Object)} retorna o tipo parametrizado da classe genérica.
@@ -99,8 +103,9 @@ public abstract class Utils {
      * @throws CommonException
      */
     public static int fileEscrever(Path path, InputStream stream) throws CommonException {
-       return fileEscrever(path, stream, 0, Long.MAX_VALUE);
+        return fileEscrever(path, stream, 0, Long.MAX_VALUE);
     }
+
     public static int fileEscrever(Path path, InputStream stream, long tamanho, long capacidade) throws CommonException {
         return FileUtils.escrever(path, stream, tamanho, capacidade);
     }
@@ -141,13 +146,35 @@ public abstract class Utils {
     }
 
     /**
-     * Remove o arquivo do diretório
+     * Remove o arquivo se não for possível excluir nenhuma exceção será lançada.
      *
-     * @param path
-     * @return boolean
+     * @param path para excluir
+     * @return {@code true} se o arquivo foi excluído, caso contrário {@code false}
      */
-    public static boolean fileRemover(Path path) {
+    public static boolean fileRemover(final Path path) {
         return FileUtils.remover(path);
+    }
+
+    /**
+     * Remove o arquivo se não for possível excluir nenhuma exceção será lançada.
+     *
+     * @param file para excluir
+     * @return {@code true} se o arquivo foi excluído, caso contrário {@code false}
+     */
+    public static boolean fileRemover(final File file) {
+        return fileRemover(Paths.get(file.toURI()));
+    }
+
+    /**
+     * Faz a execução parar temporariamente o processamento por alguns segundos informados.
+     *
+     * @param segundos da duração de espera
+     */
+    public static void delay(int segundos) {
+        try {
+            Thread.sleep(segundos * 1000);
+        } catch (Exception e) {
+        }
     }
 
     public static Response httpPost(String host, String service, String path, String... params) throws CommonException {
@@ -161,6 +188,7 @@ public abstract class Utils {
     public static Response httpGet(String host) throws CommonException {
         return httpGet(host, "", "");
     }
+
     public static Response httpGet(String host, String service, String path) throws CommonException {
         return HttpUtils.get(host, service, path);
     }
@@ -168,4 +196,5 @@ public abstract class Utils {
     public static Response httpDelete(String host, String service, String path) throws CommonException {
         return HttpUtils.delete(host, service, path);
     }
+
 }

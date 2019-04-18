@@ -1,10 +1,13 @@
 package br.com.master.configuration;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -25,21 +28,20 @@ import br.com.master.wrappers.Slave;
  */
 @Component
 public class MasterBalance {
-
+    
     private static final String EUREKA_APP_CLIENT_NAME = "eureka.app.client.name";
-
+    
     private Set<Slave>          slaves;
-    private Environment         env;
     private String              appName;
-
+    private String              pathTmpDirectory       = null;
+    
     @Autowired
     PeerAwareInstanceRegistry   registry;
-
-    public MasterBalance(Environment env) {
-        this.env = env;
-        init();
+    
+    protected MasterBalance(Environment env, ServletContext context) {
+        init(env, context);
     }
-
+    
     /**
      * Obtém uma instanceId.
      * <p>
@@ -51,9 +53,9 @@ public class MasterBalance {
         return slaves.stream().sorted((x, y) -> {
             return Integer.compare(x.getContem(), y.getContem());
         }).findFirst().orElse(new Slave()).usage().getInstanceId();
-
+        
     }
-
+    
     /**
      * Obtém a home page definida para esta instância.
      *
@@ -67,7 +69,7 @@ public class MasterBalance {
         }
         return instance.getHomePageUrl();
     }
-
+    
     /**
      * Preenche a lista de instâncias registadas para Virtual-Slave
      * <p>
@@ -93,7 +95,7 @@ public class MasterBalance {
             }
         }
     }
-
+    
     /**
      * Percorre todas as instâncias que estão associadas ao Virtual-Slave.
      * <p>
@@ -110,12 +112,27 @@ public class MasterBalance {
             }
         }
     }
-
-    private void init() {
-
-        slaves = new HashSet<>();
-
-        appName = env.getProperty(EUREKA_APP_CLIENT_NAME);
+    
+    /**
+     * Retorna o diretório temporário para a aplicação Master, conforme fornecido pelo contêiner do servlet.
+     *
+     * @return o arquivo que representa o diretório temporário
+     */
+    public final String getPathTmpDirectory() {
+        return pathTmpDirectory;
     }
-
+    
+    private void init(Environment env, ServletContext context) {
+        slaves = new HashSet<>();
+        
+        appName = env.getProperty(EUREKA_APP_CLIENT_NAME);
+        
+        File servletTempDir = (File) context.getAttribute("javax.servlet.context.tempdir");
+        if (servletTempDir != null) {
+            pathTmpDirectory = servletTempDir.getAbsolutePath();
+        } else {
+            pathTmpDirectory = new File(System.getProperty("java.io.tmpdir")).getAbsolutePath();
+        }
+    }
+    
 }

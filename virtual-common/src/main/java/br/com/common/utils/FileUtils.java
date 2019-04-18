@@ -1,5 +1,7 @@
 package br.com.common.utils;
 
+import static br.com.common.utils.Utils.BUFFER_SIZE;
+
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -21,9 +23,7 @@ import br.com.common.configuration.CommonException;
  * @date: 20 de nov de 2018
  */
 abstract class FileUtils {
-    
-    static final int BUFFER_SIZE = 4096;
-    
+
     private FileUtils() {
         
     }
@@ -98,11 +98,17 @@ abstract class FileUtils {
         }
     }
 
+    /**
+     * Remove o arquivo se não for possível excluir nenhuma exceção será lançada.
+     *
+     * @param path para excluir
+     * @return {@code true} se o arquivo foi excluído, caso contrário {@code false}
+     */
     public final static boolean remover(Path path) throws CommonException {
         try {
             return Files.deleteIfExists(path);
         } catch (Exception e) {
-            throw new CommonException(e.getMessage(), e);
+            return false;
         }
     }
 

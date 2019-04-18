@@ -1,5 +1,7 @@
 package br.com.master.configuration;
 
+import javax.servlet.ServletContext;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -72,10 +74,10 @@ public class MasterConfiguration extends CommonConfiguration {
             }
         };
     }
-    
+
     @Bean(name = "masterBalance")
-    MasterBalance masterBalance(Environment env) {
-        return new MasterBalance(env);
+    MasterBalance masterBalance(Environment env, ServletContext context) {
+        return new MasterBalance(env, context);
     }
 
     private void configuracaoPopulator(ConfiguracaoBusiness configuracaoBusiness, Environment env) {

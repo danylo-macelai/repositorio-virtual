@@ -85,6 +85,22 @@ public class BlocoBusiness extends DBusiness<BlocoTO> implements IBloco {
      */
     @Override
     @Transactional(readOnly = true)
+    public List<BlocoTO> carregarParaExclusao() throws MasterException {
+        List<BlocoTO> itens = new ArrayList<>();
+        for (Object[] values : persistence.carregarParaExclusao()) {
+            BlocoTO bloco = new BlocoTO();
+            bloco.setUuid(values[0].toString());
+            bloco.setInstanceId(values[1].toString());
+            itens.add(bloco);
+        }
+        return itens;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
     public boolean exists(String uuid, String instanceId) {
         return persistence.existsByUuidAndInstanceId(uuid, instanceId);
     }
@@ -93,9 +109,18 @@ public class BlocoBusiness extends DBusiness<BlocoTO> implements IBloco {
      * {@inheritDoc}
      */
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = false)
     public void updateBloco(BlocoTO bloco) {
         persistence.updateBloco(bloco.getInstanceId(), bloco.getId());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public void excluiBloco(BlocoTO bloco) {
+        persistence.deleteByUuidAndInstanceId(bloco.getUuid(), bloco.getInstanceId());
     }
 
 }

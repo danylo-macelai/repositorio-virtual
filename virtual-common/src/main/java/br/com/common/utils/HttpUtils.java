@@ -89,9 +89,12 @@ abstract class HttpUtils {
 
     public static Response delete(String host, String service, String path) throws CommonException {
         try {
-
+            String joinPath = "";
+            if (path != null) {
+                joinPath = "/" + path;
+            }
             Request request = new Request.Builder()
-                    .url(host + service + path)
+                    .url(host + service + joinPath)
                     .delete()
                     .addHeader("content-type", form_urlencoded.type())
                     .build();

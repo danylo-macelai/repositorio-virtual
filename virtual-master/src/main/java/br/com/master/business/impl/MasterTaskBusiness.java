@@ -4,6 +4,7 @@ import static br.com.common.utils.Utils.DELAY_3_SEGUNDO;
 import static br.com.common.utils.Utils.VIRTUAL_EXTENSION;
 import static br.com.common.utils.Utils.delay;
 import static br.com.common.utils.Utils.fileRemover;
+import static br.com.common.utils.Utils.httpDelete;
 import static br.com.common.utils.Utils.httpGet;
 import static br.com.common.utils.Utils.httpPost;
 
@@ -80,8 +81,8 @@ public class MasterTaskBusiness extends DBusiness<BlocoTO> implements IMasterTas
             TransactionStatus status = txManager.getTransaction(getTransactionDefinition());
             try {
                 business.updateBloco(bloco);
-                try (Response response = httpPost(new FileInputStream(bloco.getDiretorioOffLine()),
-                        balance.volumeUrlSlave(bloco.getInstanceId()), "/gravacao", bloco.getUuid())) {
+                try (Response response = httpPost(new FileInputStream(bloco.getDiretorioOffLine()), balance.volumeUrlSlave(bloco.getInstanceId()),
+                        "/gravacao", bloco.getUuid())) {
                     if (Status.NO_CONTENT.getStatusCode() != response.code()) {
                         throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
                     }
@@ -143,6 +144,43 @@ public class MasterTaskBusiness extends DBusiness<BlocoTO> implements IMasterTas
         for (File file : files) {
             fileRemover(file);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void exclusao() throws MasterException {
+        Iterator<BlocoTO> blocos = business.carregarParaExclusao().iterator();
+        while (blocos.hasNext()) {
+            BlocoTO bloco = blocos.next();
+            delay(DELAY_3_SEGUNDO);
+            TransactionStatus status = txManager.getTransaction(getTransactionDefinition());
+            try {
+                business.excluiBloco(bloco);
+                try (Response response = httpDelete(balance.volumeUrlSlave(bloco.getInstanceId()), "/exclusao",  bloco.getUuid())) {
+                    if (Status.NO_CONTENT.getStatusCode() != response.code()) {
+                        throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
+                    }
+                }
+                txManager.commit(status);
+            } catch (Throwable e) {
+                if (!status.isCompleted()) {
+                    txManager.rollback(status);
+                }
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void balancear() throws MasterException {
+
+        System.out.println("\n\n\n NÃO IMPLEMENTADO[MasterTaskBusiness.balancear()]! \n\n\n");
+
     }
 
 }

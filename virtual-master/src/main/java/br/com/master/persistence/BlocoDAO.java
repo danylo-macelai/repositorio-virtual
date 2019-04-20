@@ -35,6 +35,7 @@ public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
      * @return List<BlocoTO>
      * @throws MasterException List<BlocoTO>
      */
+    @Modifying(clearAutomatically = true)
     @Query("" //
             + " SELECT id, " // ------------------------------ 0
             + "        uuid," // ----------------------------- 1
@@ -55,7 +56,7 @@ public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
             "        B.uuid, " + // -------------------------- 2
             "        B.tamanho, " + // ----------------------- 3
             "        B.dir_off_line, " + // ------------------ 4
-            "        B.instance_id, " + // ------------------- 5
+            "        MAX(B.instance_id), " + // -------------- 5
             "        B.id_arquivo, " + // -------------------- 6
             "        C.qtde_replicacao, " + // --------------- 7
             "        COUNT(*) " + // ------------------------- 8
@@ -66,12 +67,32 @@ public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
             "      B.uuid, " + //
             "      B.tamanho, " + //
             "      B.dir_off_line, " + //
-            "      B.instance_id, " + //
             "      B.id_arquivo, " + //
             "      C.qtde_replicacao " + //
-            " HAVING COUNT(*) < C.qtde_replicacao ", //
+            " HAVING COUNT(*) <= C.qtde_replicacao ", //
             nativeQuery = true) //
     List<Object[]> carregarParaReplicacao() throws MasterException;
+
+    /**
+     * Carrega os blocos que deverão ser excluídos das instâncias slaves
+     *
+     * @return List<Object[]>
+     * @throws MasterException
+     */
+    @Query(value = " " + //
+            " SELECT B.uuid, " + // -------------------------- 0
+            "        MAX(B.instance_id), " + // -------------- 1
+            "        C.qtde_replicacao, " + // --------------- 2
+            "        COUNT(*) " + // ------------------------- 3
+            " FROM RV_BLOCO B " + //
+            " LEFT JOIN RV_CONFIGURACAO C ON C.id = C.id " + //
+            " WHERE B.instance_id IS NOT NULL " + //
+            " AND   B.replica IS TRUE " + //
+            " GROUP BY B.uuid, " + //
+            "      C.qtde_replicacao " + //
+            " HAVING COUNT(*) > C.qtde_replicacao ", //
+            nativeQuery = true) //
+    List<Object[]> carregarParaExclusao() throws MasterException;
 
     /**
      * Atualiza algumas informações do bloco
@@ -94,5 +115,14 @@ public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
      * @return boolean
      */
     boolean existsByUuidAndInstanceId(String uuid, String instanceId) throws MasterException;
+
+    /**
+     * Exclui o bloco que tem o uuid e instanceId informado
+     *
+     * @param uuid
+     * @param instanceId
+     * void
+     */
+    void deleteByUuidAndInstanceId(String uuid, String instanceId);
 
 }

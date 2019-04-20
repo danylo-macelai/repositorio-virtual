@@ -42,6 +42,14 @@ public interface IBloco extends IBusiness<BlocoTO> {
     List<BlocoTO> carregarParaReplicacao() throws MasterException;
 
     /**
+     * Carrega os blocos que deverão ser replicados em outras instâncias slaves
+     *
+     * @return List<BlocoTO>
+     * @throws MasterException
+     */
+    List<BlocoTO> carregarParaExclusao() throws MasterException;
+
+    /**
      * Verifica se já existe um bloco na instância
      *
      * @param uuid
@@ -56,5 +64,14 @@ public interface IBloco extends IBusiness<BlocoTO> {
      * @param bloco
      */
     void updateBloco(BlocoTO bloco);
+
+    /**
+     * O método exclui apenas o bloco informado.
+     * <p>
+     * Exclui o bloco que tem o uuid e instanceId informado. </ p>
+     *
+     * @param bloco void
+     */
+    void excluiBloco(BlocoTO bloco);
 
 }

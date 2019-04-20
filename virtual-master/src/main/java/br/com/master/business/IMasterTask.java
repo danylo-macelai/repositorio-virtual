@@ -39,4 +39,18 @@ public interface IMasterTask {
      */
     void limpar() throws MasterException;
 
+    /**
+     * Remove os últimos blocos que foram replicados dos arquivos
+     *
+     * @throws MasterException
+     */
+    void exclusao() throws MasterException;
+
+    /**
+     * Realiza o balanceamento de blocos entre as instâncias
+     *
+     * @throws MasterException
+     */
+    void balancear() throws MasterException;
+
 }

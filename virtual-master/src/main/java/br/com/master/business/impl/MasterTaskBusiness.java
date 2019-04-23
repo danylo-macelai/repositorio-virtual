@@ -1,8 +1,6 @@
 package br.com.master.business.impl;
 
-import static br.com.common.utils.Utils.DELAY_3_SEGUNDO;
 import static br.com.common.utils.Utils.VIRTUAL_EXTENSION;
-import static br.com.common.utils.Utils.delay;
 import static br.com.common.utils.Utils.fileRemover;
 import static br.com.common.utils.Utils.httpDelete;
 import static br.com.common.utils.Utils.httpGet;
@@ -10,13 +8,14 @@ import static br.com.common.utils.Utils.httpPost;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,7 +61,6 @@ public class MasterTaskBusiness extends DBusiness<BlocoTO> implements IMasterTas
                 throw new RuntimeException(e);
             }
         });
-
     }
 
     /**
@@ -70,31 +68,28 @@ public class MasterTaskBusiness extends DBusiness<BlocoTO> implements IMasterTas
      */
     @Override
     public void gravacao() throws MasterException {
-        Iterator<BlocoTO> blocos = business.carregarParaGravacao().iterator();
+        Iterator<BlocoTO> blocos = programmaticTransaction(() -> {
+            return business.carregarParaGravacao().iterator();
+        });
+
         while (blocos.hasNext()) {
             BlocoTO bloco = blocos.next();
             bloco.setInstanceId(balance.nextVolumeInstanceIdSlave());
             if (bloco.getInstanceId() == null) {
                 break;
             }
-            delay(DELAY_3_SEGUNDO);
-            TransactionStatus status = txManager.getTransaction(getTransactionDefinition());
-            try {
-                business.updateBloco(bloco);
+
+            programmaticTransaction(() -> {
                 try (Response response = httpPost(new FileInputStream(bloco.getDiretorioOffLine()), balance.volumeUrlSlave(bloco.getInstanceId()),
-                        "/gravacao", bloco.getUuid())) {
+                        "gravacao", bloco.getUuid())) {
                     if (Status.NO_CONTENT.getStatusCode() != response.code()) {
                         throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
                     }
+                } catch (Exception e) {
+                    throw new MasterException(e.getMessage());
                 }
-                txManager.commit(status);
-            } catch (Throwable e) {
-                if (!status.isCompleted()) {
-                    txManager.rollback(status);
-                }
-                e.printStackTrace();
-            }
-
+                business.updateBloco(bloco);
+            });
         }
     }
 
@@ -103,31 +98,35 @@ public class MasterTaskBusiness extends DBusiness<BlocoTO> implements IMasterTas
      */
     @Override
     public void replicacao() throws MasterException {
-        Iterator<BlocoTO> blocos = business.carregarParaReplicacao().iterator();
+        Iterator<BlocoTO> blocos = programmaticTransaction(() -> {
+            return business.carregarParaReplicacao().iterator();
+        });
+
+        Map<String, String> params = new HashMap<>();
         while (blocos.hasNext()) {
             BlocoTO bloco = blocos.next();
             String instanceIdOrigem = bloco.getInstanceId();
-            delay(DELAY_3_SEGUNDO);
             balance.percorrerInstanceId(instanceId -> {
-                if (!instanceIdOrigem.equals(instanceId) && !business.exists(bloco.getUuid(), instanceId)) {
-                    TransactionStatus status = txManager.getTransaction(getTransactionDefinition());
-                    try {
-                        bloco.setInstanceId(instanceId);
-                        business.incluir(bloco);
-                        try (Response response = httpPost(balance.volumeUrlSlave(instanceIdOrigem), "/replicacao", bloco.getUuid(),
-                                "instance_id=" + bloco.getInstanceId())) {
-                            if (Status.NO_CONTENT.getStatusCode() != response.code()) {
-                                throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
+                if (!instanceIdOrigem.equals(instanceId)) {
+                    boolean exists = programmaticTransaction(() -> {
+                        return business.exists(bloco.getUuid(), instanceId);
+                    });
+                    if (!exists) {
+                        params.clear();
+                        params.put("instance_id", bloco.getInstanceId());
+                        return programmaticTransaction(() -> {
+                            try (Response response = httpPost(balance.volumeUrlSlave(instanceIdOrigem), "replicacao", bloco.getUuid(), params)) {
+                                if (Status.NO_CONTENT.getStatusCode() != response.code()) {
+                                    throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
+                                }
+                            } catch (Exception e) {
+                                throw new MasterException(e.getMessage());
                             }
-                        }
-                        txManager.commit(status);
-                    } catch (Throwable e) {
-                        if (!status.isCompleted()) {
-                            txManager.rollback(status);
-                        }
-                        e.printStackTrace();
+                            bloco.setInstanceId(instanceId);
+                            business.incluir(bloco);
+                            return true;
+                        });
                     }
-                    return true;
                 }
                 return false;
             });
@@ -151,25 +150,22 @@ public class MasterTaskBusiness extends DBusiness<BlocoTO> implements IMasterTas
      */
     @Override
     public void exclusao() throws MasterException {
-        Iterator<BlocoTO> blocos = business.carregarParaExclusao().iterator();
+        Iterator<BlocoTO> blocos = programmaticTransaction(() -> {
+            return business.carregarParaExclusao().iterator();
+        });
+
         while (blocos.hasNext()) {
             BlocoTO bloco = blocos.next();
-            delay(DELAY_3_SEGUNDO);
-            TransactionStatus status = txManager.getTransaction(getTransactionDefinition());
-            try {
-                business.excluiBloco(bloco);
-                try (Response response = httpDelete(balance.volumeUrlSlave(bloco.getInstanceId()), "/exclusao",  bloco.getUuid())) {
+            programmaticTransaction(() -> {
+                try (Response response = httpDelete(balance.volumeUrlSlave(bloco.getInstanceId()), "exclusao", bloco.getUuid())) {
                     if (Status.NO_CONTENT.getStatusCode() != response.code()) {
                         throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
                     }
+                } catch (Exception e) {
+                    throw new MasterException(e.getMessage());
                 }
-                txManager.commit(status);
-            } catch (Throwable e) {
-                if (!status.isCompleted()) {
-                    txManager.rollback(status);
-                }
-                e.printStackTrace();
-            }
+                business.excluiBloco(bloco);
+            });
         }
     }
 

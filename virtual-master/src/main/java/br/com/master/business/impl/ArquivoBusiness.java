@@ -15,7 +15,6 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,7 +23,6 @@ import javax.ws.rs.core.Response.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -86,7 +84,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
             Iterator<BlocoTO> blocoIterator = blocos.iterator();
             while (blocoIterator.hasNext()) {
                 BlocoTO bloco = blocoIterator.next();
-                Response response = httpDelete(masterBalance.volumeUrlSlave(bloco.getInstanceId()), "/exclusao/", bloco.getUuid());
+                Response response = httpDelete(masterBalance.volumeUrlSlave(bloco.getInstanceId()), "exclusao", bloco.getUuid());
                 if (Status.OK.getStatusCode() != response.code()) {
                     throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
                 }
@@ -127,16 +125,9 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
             }
             arquivo.setPecas(qtdePecas);
 
-            TransactionStatus status = txManager.getTransaction(getTransactionDefinition());
-            try {
+            programmaticTransaction(() -> {
                 super.incluir(arquivo);
-                txManager.commit(status);
-            } catch (Throwable e) {
-                if (!status.isCompleted()) {
-                    txManager.rollback(status);
-                }
-                e.printStackTrace();
-            }
+            });
 
             return arquivo;
         } catch (Exception e) {
@@ -150,17 +141,10 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
     @Override
     public InputStreamResource download(ArquivoTO arquivo) throws MasterException {
         try {
-            List<BlocoTO> blocos = new ArrayList<>();
-            TransactionStatus status = txManager.getTransaction(getTransactionDefinition());
-            try {
-                blocos = blocoBusiness.carregarTodosPor(arquivo);
-                txManager.commit(status);
-            } catch (Throwable e) {
-                if (!status.isCompleted()) {
-                    txManager.rollback(status);
-                }
-                throw e;
-            }
+            List<BlocoTO> blocos = programmaticTransaction(() ->  {
+                return blocoBusiness.carregarTodosPor(arquivo);
+            });
+
             if (blocos.isEmpty()) {
                 throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
             }
@@ -173,7 +157,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
                 while (blocoIterator.hasNext()) {
                     BlocoTO bloco = blocoIterator.next();
                     if (bloco.getInstanceId() != null) {
-                        try(Response response = httpGet(masterBalance.volumeUrlSlave(bloco.getInstanceId()), "/leitura/", bloco.getUuid())) {
+                        try(Response response = httpGet(masterBalance.volumeUrlSlave(bloco.getInstanceId()), "leitura", bloco.getUuid())) {
                             if (Status.OK.getStatusCode() != response.code()) {
                                 throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
                             }

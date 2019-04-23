@@ -134,7 +134,7 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
             if (host == null) {
                 throw new CommonException("slave.nao.registrado.discovery").status(Status.BAD_REQUEST);
             }
-            try (Response response = httpPost(new FileInputStream(path.toFile()), host, "/gravacao", uuid)) {
+            try (Response response = httpPost(new FileInputStream(path.toFile()), host, "gravacao", uuid)) {
                 if (Status.NO_CONTENT.getStatusCode() != response.code()) {
                     throw new SlaveException(response.body().string()).status(Status.BAD_REQUEST);
                 }

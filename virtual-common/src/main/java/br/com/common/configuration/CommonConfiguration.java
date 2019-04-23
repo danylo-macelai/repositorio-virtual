@@ -10,11 +10,14 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.DataAccessException;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.support.TransactionTemplate;
 
 @EnableTransactionManagement
 public abstract class CommonConfiguration {
@@ -89,6 +92,20 @@ public abstract class CommonConfiguration {
         entityManagerFactoryBean.setJpaProperties(jpaProperties);
 
         return entityManagerFactoryBean;
+    }
+
+    /**
+     * Crie uma nova transaction com o dado comportamento de propagação, suspendendo a transação atual, se houver.
+     *
+     * @return TransactionDefinition
+     * @throws DataAccessException
+     */
+    @Bean
+    TransactionTemplate transactionTemplate(JpaTransactionManager transactionManager) throws DataAccessException {
+        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        template.setTimeout(300);
+        return template;
     }
 
 }

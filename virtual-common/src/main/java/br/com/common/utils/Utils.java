@@ -9,6 +9,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -177,12 +179,12 @@ public abstract class Utils {
         }
     }
 
-    public static Response httpPost(String host, String service, String path, String... params) throws CommonException {
-        return HttpUtils.post(host, service, path, params);
+    public static Response httpPost(String host, String service, String path, Map<String, String> formParams) throws CommonException {
+        return HttpUtils.getInstance().post(host, service, path, formParams, new HashMap<>());
     }
 
     public static Response httpPost(InputStream stream, String host, String service, String path) throws CommonException {
-        return HttpUtils.post(stream, host, service, path);
+        return HttpUtils.getInstance().post(stream, host, service, path);
     }
 
     public static Response httpGet(String host) throws CommonException {
@@ -190,11 +192,11 @@ public abstract class Utils {
     }
 
     public static Response httpGet(String host, String service, String path) throws CommonException {
-        return HttpUtils.get(host, service, path);
+        return HttpUtils.getInstance().get(host, service, path, new HashMap<>());
     }
 
     public static Response httpDelete(String host, String service, String path) throws CommonException {
-        return HttpUtils.delete(host, service, path);
+        return HttpUtils.getInstance().delete(host, service, path);
     }
 
 }

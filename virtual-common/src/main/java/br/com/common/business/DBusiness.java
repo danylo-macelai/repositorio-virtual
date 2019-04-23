@@ -7,12 +7,15 @@ import javax.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import br.com.common.domain.Domain;
+import br.com.common.wrappers.WithResult;
+import br.com.common.wrappers.WithoutResult;
 
 /**
  * <b>Description:</b>  <br>
@@ -24,22 +27,27 @@ import br.com.common.domain.Domain;
 public abstract class DBusiness<D extends Domain> implements IBusiness<D> {
 
     @Autowired
-    JpaRepository<D, Long>          persistence;
+    JpaRepository<D, Long> persistence;
 
     @Autowired
-    protected JpaTransactionManager txManager;
+    TransactionTemplate    transactionTemplate;
 
-    /**
-     * Crie uma nova transaction com o dado comportamento de propagação, suspendendo a transação atual, se houver.
-     *
-     * @return TransactionDefinition
-     * @throws DataAccessException
-     */
-    protected final TransactionDefinition getTransactionDefinition() throws DataAccessException {
-        DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
-        definition.setName("Controle manual de Transaction");
-        definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-        return definition;
+    protected <T> T programmaticTransaction(WithResult<T> with) {
+        return transactionTemplate.execute(new TransactionCallback<T>() {
+            @Override
+            public T doInTransaction(TransactionStatus status) {
+                return with.get();
+            }
+        });
+    }
+
+    protected void programmaticTransaction(WithoutResult without) {
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                without.get();
+            }
+        });
     }
 
     /**

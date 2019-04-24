@@ -80,7 +80,7 @@ public class ArquivoResource {
             @ApiResponse(code = 404, message = "Nenhum registro foi encontrado para a consulta.")
             }
     )
-    public ResponseEntity<Resource> leitura(
+    public ResponseEntity<Resource> leitura (
             @ApiParam(
                     name = "id",
                     value = "Id é um número utilizado para a identificação do arquivo",
@@ -93,7 +93,7 @@ public class ArquivoResource {
             throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
         }
 
-        InputStreamResource stream = arquivoBusiness.download(arquivo);
+        InputStreamResource stream = arquivoBusiness.ler(arquivo);
 
         return ResponseEntity.ok()
                 .contentLength(arquivo.getTamanho())
@@ -118,7 +118,7 @@ public class ArquivoResource {
                     required = true
             )
             @RequestParam("file") MultipartFile file) {
-        ArquivoTO arquivo = arquivoBusiness.upload(file);
+        ArquivoTO arquivo = arquivoBusiness.gravar(file);
         return ResponseEntity.ok(arquivo);
     }
 

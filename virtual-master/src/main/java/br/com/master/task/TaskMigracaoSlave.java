@@ -16,12 +16,12 @@ import br.com.master.business.IMasterTask;
  * @author macelai
  * @date: 19 de abr de 2019
  */
-public class TaskBalancearSlave implements Tasklet {
+public class TaskMigracaoSlave implements Tasklet {
 
     static AtomicBoolean running = new AtomicBoolean(false);
     IMasterTask           business;
 
-    public TaskBalancearSlave(IMasterTask masterTaskBusiness) {
+    public TaskMigracaoSlave(IMasterTask masterTaskBusiness) {
         business = masterTaskBusiness;
     }
 
@@ -29,7 +29,7 @@ public class TaskBalancearSlave implements Tasklet {
     public RepeatStatus execute(StepContribution step, ChunkContext chunk) throws Exception {
         if (!running.getAndSet(true)) {
             try {
-                business.balancear();
+                business.migracao();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {

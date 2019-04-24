@@ -99,7 +99,7 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
      */
     @Override
     @Transactional
-    public void upload(Request request, String uuid) throws SlaveException {
+    public void gravar(Request request, String uuid) throws SlaveException {
         VolumeTO volume = buscar();
         Path path = Paths.get(volume.getLocalizacao());
         if (!path.toFile().exists()) {
@@ -115,7 +115,7 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
      * {@inheritDoc}
      */
     @Override
-    public StreamingOutput download(String uuid) throws SlaveException {
+    public StreamingOutput ler(String uuid) throws SlaveException {
         Path path = Paths.get(buscar().getLocalizacao(), uuid + VIRTUAL_EXTENSION);
         return fileLer(path);
     }
@@ -124,7 +124,7 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
      * {@inheritDoc}
      */
     @Override
-    public void replicacao(String uuid, String instanceId) throws SlaveException {
+    public void replicar(String uuid, String instanceId) throws SlaveException {
         try {
             Path path = Paths.get(buscar().getLocalizacao(), uuid + VIRTUAL_EXTENSION);
             if (!path.toFile().exists()) {

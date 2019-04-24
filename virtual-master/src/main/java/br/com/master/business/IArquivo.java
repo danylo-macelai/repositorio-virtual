@@ -33,7 +33,7 @@ public interface IArquivo extends IBusiness<ArquivoTO> {
      *
      * @param file
      */
-    ArquivoTO upload(MultipartFile file) throws MasterException;
+    ArquivoTO gravar(MultipartFile file) throws MasterException;
 
     /**
      * Realiza o download do arquivo enviado
@@ -42,6 +42,6 @@ public interface IArquivo extends IBusiness<ArquivoTO> {
      * @return InputStreamResource
      * @throws MasterException
      */
-    InputStreamResource download(ArquivoTO arquivo) throws MasterException;
+    InputStreamResource ler(ArquivoTO arquivo) throws MasterException;
 
 }

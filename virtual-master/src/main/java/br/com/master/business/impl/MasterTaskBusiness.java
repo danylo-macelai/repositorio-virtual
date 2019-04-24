@@ -173,9 +173,9 @@ public class MasterTaskBusiness extends DBusiness<BlocoTO> implements IMasterTas
      * {@inheritDoc}
      */
     @Override
-    public void balancear() throws MasterException {
+    public void migracao() throws MasterException {
 
-        System.out.println("\n\n\n NÃO IMPLEMENTADO[MasterTaskBusiness.balancear()]! \n\n\n");
+        System.out.println("\n\n\n NÃO IMPLEMENTADO[MasterTaskBusiness.migracao()]! \n\n\n");
 
     }
 

@@ -43,19 +43,19 @@ public class QuartzConfiguration {
     public static final String  JOB_GRAVACAO             = "JobGravacao";
     public static final String  JOB_REPLICACAO           = "jobReplicacao";
     public static final String  JOB_LIMPAR               = "jobLimpar";
-    public static final String  JOB_BALANCEAR            = "jobBalancear";
+    public static final String  JOB_MIGRACAO             = "jobMigracao";
 
     public static final String  TRIGGER_INSTANCE         = "triggerInstance";
     public static final String  TRIGGER_GRAVACAO         = "triggerGravacao";
     public static final String  TRIGGER_REPLICACAO       = "triggerReplicacao";
     public static final String  TRIGGER_LIMPAR_DIRETORIO = "triggerLimparDiretorio";
-    public static final String  TRIGGER_BALANCEAR        = "triggerBalancear";
+    public static final String  TRIGGER_MIGRACAO         = "triggerMigracao";
 
     private static final String CRON_INSTANCE_SLAVE      = "cron.instance.slave";
     private static final String CRON_GRAVACAO_SLAVE      = "cron.gravacao.slave";
     private static final String CRON_REPLICACAO_SLAVE    = "cron.replicacao.slave";
+    private static final String CRON_MIGRACAO            = "cron.migracao.slave";
     private static final String CRON_LIMPAR_DIRETORIO    = "cron.limpar.diretorio";
-    private static final String CRON_BALANCEAR           = "cron.balancear.diretorio";
 
     public static final String  APPLICATION_CONTEXT      = "APPLICATION_CONTEXT";
 
@@ -115,9 +115,9 @@ public class QuartzConfiguration {
         return jobBuilder(JOB_LIMPAR);
     }
 
-    @Bean(JOB_BALANCEAR)
-    public JobDetail jobBalancear() {
-        return jobBuilder(JOB_BALANCEAR);
+    @Bean(JOB_MIGRACAO)
+    public JobDetail jobMigracao() {
+        return jobBuilder(JOB_MIGRACAO);
     }
 
     @Bean(TRIGGER_GRAVACAO)
@@ -140,9 +140,9 @@ public class QuartzConfiguration {
         return triggerBuilder(TRIGGER_LIMPAR_DIRETORIO, job, env.getRequiredProperty(CRON_LIMPAR_DIRETORIO));
     }
 
-    @Bean(TRIGGER_BALANCEAR)
-    public Trigger triggerBalancear(@Qualifier(JOB_BALANCEAR) JobDetail job) {
-        return triggerBuilder(TRIGGER_BALANCEAR, job, env.getRequiredProperty(CRON_BALANCEAR));
+    @Bean(TRIGGER_MIGRACAO)
+    public Trigger triggerMigracao(@Qualifier(JOB_MIGRACAO) JobDetail job) {
+        return triggerBuilder(TRIGGER_MIGRACAO, job, env.getRequiredProperty(CRON_MIGRACAO));
     }
 
     private Trigger triggerBuilder(String id, JobDetail job, String cron) {

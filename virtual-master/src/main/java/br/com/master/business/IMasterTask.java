@@ -47,10 +47,10 @@ public interface IMasterTask {
     void exclusao() throws MasterException;
 
     /**
-     * Realiza o balanceamento de blocos entre as instâncias
+     * Realiza a migração de blocos entre as instâncias
      *
      * @throws MasterException
      */
-    void balancear() throws MasterException;
+    void migracao() throws MasterException;
 
 }

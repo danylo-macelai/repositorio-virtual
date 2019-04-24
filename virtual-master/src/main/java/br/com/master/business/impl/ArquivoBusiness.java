@@ -100,7 +100,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      * {@inheritDoc}
      */
     @Override
-    public ArquivoTO upload(MultipartFile multipartFile) throws MasterException {
+    public ArquivoTO gravar(MultipartFile multipartFile) throws MasterException {
         ConfiguracaoTO configuracao = configuracaoBusiness.buscar();
 
         ArquivoTO arquivo = new ArquivoTO();
@@ -139,7 +139,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      * {@inheritDoc}
      */
     @Override
-    public InputStreamResource download(ArquivoTO arquivo) throws MasterException {
+    public InputStreamResource ler(ArquivoTO arquivo) throws MasterException {
         try {
             List<BlocoTO> blocos = programmaticTransaction(() ->  {
                 return blocoBusiness.carregarTodosPor(arquivo);

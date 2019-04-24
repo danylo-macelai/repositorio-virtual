@@ -31,7 +31,7 @@ public interface IVolume extends IBusiness<VolumeTO> {
      * @param uuid
      * @throws SlaveException
      */
-    void upload(Request request, String uuid) throws SlaveException;
+    void gravar(Request request, String uuid) throws SlaveException;
 
     /**
      * Realiza o download do bloco com o uuid informado
@@ -40,7 +40,7 @@ public interface IVolume extends IBusiness<VolumeTO> {
      * @param stream
      * @throws SlaveException
      */
-    StreamingOutput download(String uuid) throws SlaveException;
+    StreamingOutput ler(String uuid) throws SlaveException;
 
     /**
      * Cria uma cópia do bloco
@@ -49,7 +49,7 @@ public interface IVolume extends IBusiness<VolumeTO> {
      * @param instanceId
      * @throws SlaveException
      */
-    void replicacao(String uuid, String instanceId) throws SlaveException;
+    void replicar(String uuid, String instanceId) throws SlaveException;
 
     /**
      * Exclui apenas o bloco com uuid informado.

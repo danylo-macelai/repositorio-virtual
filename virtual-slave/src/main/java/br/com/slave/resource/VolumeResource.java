@@ -204,7 +204,7 @@ public class VolumeResource {
                                      required = true
                                      )
                              @PathParam("uuid") String uuid) {
-        business.upload(request, uuid);
+        business.gravar(request, uuid);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
@@ -228,7 +228,7 @@ public class VolumeResource {
                     required = true
                     )
             @PathParam("uuid") String uuid) {
-        StreamingOutput stream = business.download(uuid);
+        StreamingOutput stream = business.ler(uuid);
         return Response.status(Response.Status.OK).entity(stream).build();
     }
 
@@ -253,7 +253,7 @@ public class VolumeResource {
                     )
             @PathParam("uuid") String uuid,
             @FormParam("instance_id") String instanceId) throws Exception {
-        business.replicacao(uuid, instanceId);
+        business.replicar(uuid, instanceId);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 

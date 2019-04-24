@@ -1,6 +1,6 @@
 package br.com.master.configuration;
 
-import static br.com.master.configuration.QuartzConfiguration.JOB_BALANCEAR;
+import static br.com.master.configuration.QuartzConfiguration.JOB_MIGRACAO;
 import static br.com.master.configuration.QuartzConfiguration.JOB_GRAVACAO;
 import static br.com.master.configuration.QuartzConfiguration.JOB_INSTANCE;
 import static br.com.master.configuration.QuartzConfiguration.JOB_LIMPAR;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import br.com.master.business.IMasterTask;
-import br.com.master.task.TaskBalancearSlave;
+import br.com.master.task.TaskMigracaoSlave;
 import br.com.master.task.TaskGravacaoSlave;
 import br.com.master.task.TaskInstanceSlave;
 import br.com.master.task.TaskLimparDiretorio;
@@ -37,9 +37,9 @@ public class BatchConfiguration {
     private static final String STEP_GRAVACAO   = "stepGravacao";
     private static final String STEP_REPLICACAO = "stepReplicacao";
     private static final String STEP_LIMPAR     = "stepLimpar";
-    private static final String STEP_EXCLUSAO    = "stepRemover";
-    private static final String STEP_BALANCEAR  = "stepBalancear";
-
+    private static final String STEP_EXCLUSAO   = "stepRemover";
+    private static final String STEP_MIGRACAO   = "stepBalancear";
+    
     @Autowired
     private JobBuilderFactory   jobs;
 
@@ -99,8 +99,8 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Job jobBalancearSlave(IMasterTask masterTaskBusiness) {
-        return jobs.get(JOB_BALANCEAR). //
+    public Job jobMigracaoSlave(IMasterTask masterTaskBusiness) {
+        return jobs.get(JOB_MIGRACAO). //
 
                 start( //
                         steps.get(STEP_EXCLUSAO). //
@@ -109,8 +109,8 @@ public class BatchConfiguration {
 
                 ). //
                 next( //
-                        steps.get(STEP_BALANCEAR). //
-                                tasklet(new TaskBalancearSlave(masterTaskBusiness)). //
+                        steps.get(STEP_MIGRACAO). //
+                                tasklet(new TaskMigracaoSlave(masterTaskBusiness)). //
                                 build()
 
                 ). //

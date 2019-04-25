@@ -12,9 +12,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.StreamingOutput;
 
-import br.com.common.configuration.CommonException;
+import br.com.common.wrappers.CommonException;
+
+import javax.ws.rs.core.StreamingOutput;
 
 /**
  * <b>Project:</b> virtual-common <br>

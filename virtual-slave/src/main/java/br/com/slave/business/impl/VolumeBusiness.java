@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.wso2.msf4j.Request;
 
 import br.com.common.business.Business;
-import br.com.common.configuration.CommonException;
+import br.com.common.wrappers.CommonException;
 import br.com.slave.business.IVolume;
 import br.com.slave.configuration.SlaveEurekaClient;
 import br.com.slave.configuration.SlaveException;

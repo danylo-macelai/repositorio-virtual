@@ -1,6 +1,6 @@
 package br.com.master.configuration;
 
-import br.com.common.configuration.CommonException;
+import br.com.common.wrappers.CommonException;
 
 /**
  * <b>Description:</b>  <br>

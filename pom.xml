@@ -32,6 +32,7 @@
         <hsqldb.version>1.8.0.10</hsqldb.version>
         <okhttp3.version>3.14.0</okhttp3.version>
         <moshi.version>1.8.0</moshi.version>
+        <quartz.version>2.3.0</quartz.version>
     </properties>
 
     <dependencies>
@@ -124,6 +125,12 @@
 		    <artifactId>moshi</artifactId>
 		    <version>${moshi.version}</version>
 		</dependency>
+
+        <dependency>
+            <artifactId>quartz</artifactId>
+            <groupId>org.quartz-scheduler</groupId>
+            <version>${quartz.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

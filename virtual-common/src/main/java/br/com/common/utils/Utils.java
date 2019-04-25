@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 import javax.ws.rs.core.StreamingOutput;
 
-import br.com.common.configuration.CommonException;
+import br.com.common.wrappers.CommonException;
 import okhttp3.Response;
 
 /**

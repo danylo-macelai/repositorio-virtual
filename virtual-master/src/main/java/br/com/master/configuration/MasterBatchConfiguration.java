@@ -1,10 +1,10 @@
 package br.com.master.configuration;
 
-import static br.com.master.configuration.QuartzConfiguration.JOB_MIGRACAO;
-import static br.com.master.configuration.QuartzConfiguration.JOB_GRAVACAO;
-import static br.com.master.configuration.QuartzConfiguration.JOB_INSTANCE;
-import static br.com.master.configuration.QuartzConfiguration.JOB_LIMPAR;
-import static br.com.master.configuration.QuartzConfiguration.JOB_REPLICACAO;
+import static br.com.master.configuration.MasterQuartzConfiguration.JOB_MIGRACAO;
+import static br.com.master.configuration.MasterQuartzConfiguration.JOB_GRAVACAO;
+import static br.com.master.configuration.MasterQuartzConfiguration.JOB_INSTANCE;
+import static br.com.master.configuration.MasterQuartzConfiguration.JOB_LIMPAR;
+import static br.com.master.configuration.MasterQuartzConfiguration.JOB_REPLICACAO;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -31,7 +31,7 @@ import br.com.master.task.TaskReplicacaoSlave;
  */
 @Configuration
 @EnableBatchProcessing
-public class BatchConfiguration {
+public class MasterBatchConfiguration {
 
     private static final String STEP_INSTANCE   = "stepInstance";
     private static final String STEP_GRAVACAO   = "stepGravacao";

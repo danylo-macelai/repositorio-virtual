@@ -6,7 +6,7 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import br.com.common.configuration.CommonException;
+import br.com.common.wrappers.CommonException;
 import okhttp3.ConnectionPool;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;

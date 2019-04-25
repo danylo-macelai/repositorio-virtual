@@ -11,7 +11,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
-import br.com.common.configuration.CommonException;
+import br.com.common.wrappers.CommonException;
 
 /**
  * <b>Description:</b> <br>

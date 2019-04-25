@@ -19,7 +19,7 @@ import br.com.master.business.IMasterTask;
 public class TaskExclusaoSlave implements Tasklet {
 
     static AtomicBoolean running = new AtomicBoolean(false);
-    IMasterTask           business;
+    IMasterTask          business;
 
     public TaskExclusaoSlave(IMasterTask masterTaskBusiness) {
         business = masterTaskBusiness;

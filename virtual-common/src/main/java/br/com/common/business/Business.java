@@ -4,10 +4,16 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import br.com.common.domain.Domain;
 import br.com.common.persistence.IPersistence;
+import br.com.common.wrappers.WithResult;
+import br.com.common.wrappers.WithoutResult;
 
 /**
  * <b>Project:</b> virtual-common <br>
@@ -18,7 +24,28 @@ import br.com.common.persistence.IPersistence;
 public abstract class Business<D extends Domain> implements IBusiness<D> {
 
     @Autowired
-    IPersistence<D> persistence;
+    IPersistence<D>     persistence;
+
+    @Autowired
+    TransactionTemplate transactionTemplate;
+
+    protected <T> T programmaticTransaction(WithResult<T> with) {
+        return transactionTemplate.execute(new TransactionCallback<T>() {
+            @Override
+            public T doInTransaction(TransactionStatus status) {
+                return with.get();
+            }
+        });
+    }
+
+    protected void programmaticTransaction(WithoutResult without) {
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                without.get();
+            }
+        });
+    }
 
     /**
      * {@inheritDoc}

@@ -101,7 +101,7 @@ public class BlocoBusiness extends DBusiness<BlocoTO> implements IBloco {
      */
     @Override
     @Transactional(readOnly = true)
-    public boolean exists(String uuid, String instanceId) {
+    public boolean exists(String uuid, String instanceId) throws MasterException {
         return persistence.existsByUuidAndInstanceId(uuid, instanceId);
     }
 
@@ -110,8 +110,8 @@ public class BlocoBusiness extends DBusiness<BlocoTO> implements IBloco {
      */
     @Override
     @Transactional(readOnly = false)
-    public void updateBloco(BlocoTO bloco) {
-        persistence.updateBloco(bloco.getInstanceId(), bloco.getId());
+    public void update(BlocoTO bloco) throws MasterException {
+        persistence.update(bloco.getInstanceId(), bloco.getId());
     }
 
     /**
@@ -119,7 +119,7 @@ public class BlocoBusiness extends DBusiness<BlocoTO> implements IBloco {
      */
     @Override
     @Transactional(readOnly = true)
-    public void excluiBloco(BlocoTO bloco) {
+    public void excluiBloco(BlocoTO bloco) throws MasterException {
         persistence.deleteByUuidAndInstanceId(bloco.getUuid(), bloco.getInstanceId());
     }
 

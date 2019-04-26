@@ -22,17 +22,22 @@ public class VolumeTO extends Domain {
 
     // Tamanho em Megabytes (MB)
     @Column(name = "capacidade", nullable = false)
-    private Integer capacidade;
+    private Long    capacidade;
 
     // Tamanho em Megabytes (MB)
     @Column(name = "tamanho", nullable = false)
-    private Integer tamanho;
+    private Long    tamanho;
 
     @Column(name = "contem", nullable = false)
-    private Integer contem;
+    private Long    contem;
 
     @Column(name = "disponibilidade", nullable = false)
     private Boolean disponibilidade;
+
+    public final void reset(long count, long size) {
+        contem = count;
+        tamanho = ((size / 1024) / 1024);
+    }
 
     public final void incrementar(int bytes) {
         contem++;
@@ -54,27 +59,27 @@ public class VolumeTO extends Domain {
         this.localizacao = localizacao;
     }
 
-    public Integer getCapacidade() {
+    public Long getCapacidade() {
         return capacidade;
     }
 
-    public void setCapacidade(Integer capacidade) {
+    public void setCapacidade(Long capacidade) {
         this.capacidade = capacidade;
     }
 
-    public Integer getTamanho() {
+    public Long getTamanho() {
         return tamanho;
     }
 
-    public void setTamanho(Integer tamanho) {
+    public void setTamanho(Long tamanho) {
         this.tamanho = tamanho;
     }
 
-    public Integer getContem() {
+    public Long getContem() {
         return contem;
     }
 
-    public void setContem(Integer contem) {
+    public void setContem(Long contem) {
         this.contem = contem;
     }
 

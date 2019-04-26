@@ -56,14 +56,14 @@ public interface IBloco extends IBusiness<BlocoTO> {
      * @param instanceId
      * @return boolean
      */
-    boolean exists(String uuid, String instanceId);
+    boolean exists(String uuid, String instanceId) throws MasterException;
 
     /**
      * Atualiza algumas informações do bloco
      *
      * @param bloco
      */
-    void updateBloco(BlocoTO bloco);
+    void update(BlocoTO bloco) throws MasterException;
 
     /**
      * O método exclui apenas o bloco informado.
@@ -72,6 +72,6 @@ public interface IBloco extends IBusiness<BlocoTO> {
      *
      * @param bloco void
      */
-    void excluiBloco(BlocoTO bloco);
+    void excluiBloco(BlocoTO bloco) throws MasterException;
 
 }

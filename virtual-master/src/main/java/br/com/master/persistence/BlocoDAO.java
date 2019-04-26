@@ -105,7 +105,7 @@ public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
             " UPDATE BlocoTO " + //
             " SET instanceId =:blocoInstanceId " + //
             " WHERE id =:blocoId ")
-    void updateBloco(@Param("blocoInstanceId") String blocoInstanceId, @Param("blocoId") long blocoId) throws MasterException;
+    void update(@Param("blocoInstanceId") String blocoInstanceId, @Param("blocoId") long blocoId) throws MasterException;
 
     /**
      * Verifica se já existe um bloco na instância

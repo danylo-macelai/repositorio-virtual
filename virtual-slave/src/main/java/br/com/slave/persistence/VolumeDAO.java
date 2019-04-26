@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import br.com.common.persistence.Persistence;
+import br.com.slave.configuration.SlaveException;
 import br.com.slave.domain.VolumeTO;
 
 /**
@@ -35,6 +36,26 @@ public class VolumeDAO extends Persistence<VolumeTO> {
 
         Query query = query(hql);
         return (VolumeTO) query.getSingleResult();
+    }
+
+    /**
+     * Atualiza algumas informações do volume
+     *
+     * @param volume
+     * @throws SlaveException
+     */
+    public void update(VolumeTO volume) {
+        StringBuilder hql = new StringBuilder();
+        hql.append(" UPDATE ").append(VolumeTO.class.getName()).append(" V ");
+        hql.append(" SET V.tamanho = :paramTamanho, ");
+        hql.append("     V.contem = :paramContem ");
+        hql.append(" WHERE V.id = :paramId ");
+
+        Query query = query(hql);
+        query.setParameter("paramTamanho", volume.getTamanho());
+        query.setParameter("paramContem", volume.getContem());
+        query.setParameter("paramId", volume.getId());
+        query.executeUpdate();
     }
 
 }

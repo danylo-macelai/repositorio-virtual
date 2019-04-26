@@ -38,11 +38,11 @@ import okhttp3.Response;
 @Service
 public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
 
-    OkHttpClient        client          = new OkHttpClient();
-    VolumeTO            INSTANCE;
+    OkHttpClient      client = new OkHttpClient();
+    VolumeTO          INSTANCE;
 
     @Autowired
-    VolumeDAO           persistence;
+    VolumeDAO         persistence;
 
     @Autowired
     SlaveEurekaClient eurekaClient;
@@ -76,11 +76,22 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = false)
+    public void update(VolumeTO volume) throws SlaveException {
+        persistence.update(volume);
+        INSTANCE = null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Transactional
     public void alterar(VolumeTO volume) throws SlaveException {
         INSTANCE = null;
         if (volume.getCapacidade() < buscar().getTamanho()) {
-            throw new SlaveException("slave.capc.menor.tam").args(volume.getCapacidade().toString(), buscar().getTamanho().toString()).status(Status.BAD_REQUEST);
+            throw new SlaveException("slave.capc.menor.tam").args(volume.getCapacidade().toString(), buscar().getTamanho().toString())
+                    .status(Status.BAD_REQUEST);
         }
         if (!buscar().getTamanho().equals(volume.getTamanho())) {
             throw new SlaveException("slave.proibido.update.tam").status(Status.FORBIDDEN);
@@ -175,4 +186,5 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
         super.alterar(volume);
         INSTANCE = volume;
     }
+
 }

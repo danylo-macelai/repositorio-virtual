@@ -88,7 +88,7 @@ public class MasterTaskBusiness extends DBusiness<BlocoTO> implements IMasterTas
                 } catch (Exception e) {
                     throw new MasterException(e.getMessage());
                 }
-                business.updateBloco(bloco);
+                business.update(bloco);
             });
         }
     }

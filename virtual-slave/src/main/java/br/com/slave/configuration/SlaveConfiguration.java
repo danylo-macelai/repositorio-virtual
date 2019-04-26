@@ -84,9 +84,9 @@ public class SlaveConfiguration extends CommonConfiguration {
     private void volumePopulator(IVolume volumeBusiness, Environment env) {
         VolumeTO volume = new VolumeTO();
         volume.setLocalizacao(env.getRequiredProperty(VOLUME_LOCALIZACAO));
-        volume.setCapacidade(Integer.valueOf(env.getRequiredProperty(VOLUME_CAPACIDADE)));
-        volume.setTamanho(0);
-        volume.setContem(0);
+        volume.setCapacidade(Long.valueOf(env.getRequiredProperty(VOLUME_CAPACIDADE)));
+        volume.setTamanho(0L);
+        volume.setContem(0L);
         volume.setDisponibilidade(true);
         volumeBusiness.incluir(volume);
     }

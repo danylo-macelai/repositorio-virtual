@@ -25,6 +25,14 @@ public interface IVolume extends IBusiness<VolumeTO> {
     VolumeTO buscar() throws SlaveException;
 
     /**
+     * Atualiza algumas informações do volume
+     *
+     * @param volume
+     * @throws SlaveException
+     */
+    void update(VolumeTO volume) throws SlaveException;
+
+    /**
      * Gera um identificador único para o bloco que será salvo no volume
      *
      * @param request

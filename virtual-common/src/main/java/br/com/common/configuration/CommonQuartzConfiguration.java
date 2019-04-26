@@ -39,7 +39,7 @@ public abstract class CommonQuartzConfiguration {
     protected ApplicationContext applicationContext;
 
     @Autowired
-    private DataSource           dataSource;
+    protected DataSource         dataSource;
 
     @Bean
     public SchedulerFactoryBean quartzScheduler(Trigger[] triggers, JobDetail[] jobDetails) throws Exception {

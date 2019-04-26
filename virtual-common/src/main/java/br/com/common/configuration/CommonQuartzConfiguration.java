@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
@@ -33,13 +34,17 @@ import br.com.common.wrappers.CommonJob;
  */
 public abstract class CommonQuartzConfiguration {
 
-    public static final String   APPLICATION_CONTEXT = "APPLICATION_CONTEXT";
+    public static final String   APPLICATION_CONTEXT       = "APPLICATION_CONTEXT";
+    private static final String  JOB_DRIVER_DELEGATE_CLASS = "org.quartz.jobStore.driverDelegateClass";
 
     @Autowired
     protected ApplicationContext applicationContext;
 
     @Autowired
     protected DataSource         dataSource;
+
+    @Autowired
+    protected Environment        env;
 
     @Bean
     public SchedulerFactoryBean quartzScheduler(Trigger[] triggers, JobDetail[] jobDetails) throws Exception {
@@ -55,10 +60,13 @@ public abstract class CommonQuartzConfiguration {
 
     @Bean
     public Properties quartzProperties() throws IOException {
-        PropertiesFactoryBean properties = new PropertiesFactoryBean();
-        properties.setLocation(new ClassPathResource("/config/quartz.properties"));
-        properties.afterPropertiesSet();
-        return properties.getObject();
+        PropertiesFactoryBean factory = new PropertiesFactoryBean();
+        factory.setLocation(new ClassPathResource("/config/quartz.properties"));
+        factory.afterPropertiesSet();
+
+        Properties properties = factory.getObject();
+        properties.put(JOB_DRIVER_DELEGATE_CLASS, env.getProperty(JOB_DRIVER_DELEGATE_CLASS));
+        return properties;
     }
 
     protected final Trigger triggerBuilder(String id, JobDetail job, String cron) {

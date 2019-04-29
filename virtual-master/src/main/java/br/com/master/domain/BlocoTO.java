@@ -1,5 +1,7 @@
 package br.com.master.domain;
 
+import br.com.common.domain.Domain;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -9,14 +11,13 @@ import javax.persistence.UniqueConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import br.com.common.domain.Domain;
-
 /**
- * <b>Description:</b> <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-master <br>
  *
  * @author macelai
  * @date: 16 de nov de 2018
+ * @version $
  */
 @SuppressWarnings("serial")
 @Entity
@@ -24,22 +25,22 @@ import br.com.common.domain.Domain;
 public class BlocoTO extends Domain {
 
     @Column(name = "numero", updatable = false, nullable = false)
-    private Integer   numero;
+    private Integer numero;
 
     @Column(name = "uuid", updatable = false, nullable = false)
-    private String    uuid;
+    private String uuid;
 
     @Column(name = "tamanho", updatable = false, nullable = false)
-    private Integer   tamanho;
+    private Integer tamanho;
 
     @Column(name = "instance_id")
-    private String    instanceId;
+    private String instanceId;
 
     @Column(name = "dir_off_line", updatable = false, nullable = false)
-    private String    diretorioOffLine;
+    private String diretorioOffLine;
 
     @Column(name = "replica", updatable = false, nullable = false)
-    private Boolean   replica;
+    private Boolean replica;
 
     @JsonIgnore
     @ManyToOne

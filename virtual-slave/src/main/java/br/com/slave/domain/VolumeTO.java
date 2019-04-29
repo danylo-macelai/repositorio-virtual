@@ -1,16 +1,18 @@
 package br.com.slave.domain;
 
+import br.com.common.domain.Domain;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import br.com.common.domain.Domain;
-
 /**
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-slave <br>
  *
  * @author macelai
  * @date: 23 de out de 2018
+ * @version $
  */
 @SuppressWarnings("serial")
 @Entity
@@ -18,18 +20,18 @@ import br.com.common.domain.Domain;
 public class VolumeTO extends Domain {
 
     @Column(name = "localizacao", nullable = false)
-    private String  localizacao;
+    private String localizacao;
 
     // Tamanho em Megabytes (MB)
     @Column(name = "capacidade", nullable = false)
-    private Long    capacidade;
+    private Long capacidade;
 
     // Tamanho em Megabytes (MB)
     @Column(name = "tamanho", nullable = false)
-    private Long    tamanho;
+    private Long tamanho;
 
     @Column(name = "contem", nullable = false)
-    private Long    contem;
+    private Long contem;
 
     @Column(name = "disponibilidade", nullable = false)
     private Boolean disponibilidade;

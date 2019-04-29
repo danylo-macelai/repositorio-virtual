@@ -19,10 +19,12 @@ import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.discovery.shared.Application;
 
 /**
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-slave <br>
  *
  * @author macelai
  * @date: 14 de dez de 2018
+ * @version $
  */
 public final class SlaveEurekaClient {
 
@@ -32,11 +34,11 @@ public final class SlaveEurekaClient {
     private static final String EUREKA_SERVER_URL  = "eureka.serviceUrl.default";
     private static final String EUREKA_APP_NAME    = "eureka.app.name";
 
-    private Environment         env;
-    private String              serviceIp;
-    private String              appName;
-    private int                 port;
-    private EurekaClient        eurekaClient;
+    private final Environment env;
+    private String            serviceIp;
+    private String            appName;
+    private int               port;
+    private EurekaClient      eurekaClient;
 
     public SlaveEurekaClient(Environment env) {
         this.env = env;
@@ -45,14 +47,16 @@ public final class SlaveEurekaClient {
 
     public void register(String resourceRootUrl) {
 
-        DataCenterInfo dataCenterInfo = new MyDataCenterInfo(DataCenterInfo.Name.MyOwn);
-        EurekaInstanceConfig instanceConfig = new MyDataCenterInstanceConfig(CommonConstants.DEFAULT_CONFIG_NAMESPACE, dataCenterInfo);
+        final DataCenterInfo dataCenterInfo = new MyDataCenterInfo(DataCenterInfo.Name.MyOwn);
+        final EurekaInstanceConfig instanceConfig = new MyDataCenterInstanceConfig(
+                CommonConstants.DEFAULT_CONFIG_NAMESPACE,
+                dataCenterInfo);
 
-        InstanceInfo instanceInfo = info(resourceRootUrl, dataCenterInfo);
+        final InstanceInfo instanceInfo = info(resourceRootUrl, dataCenterInfo);
 
-        ApplicationInfoManager applicationInfoManager = new ApplicationInfoManager(instanceConfig, instanceInfo);
+        final ApplicationInfoManager applicationInfoManager = new ApplicationInfoManager(instanceConfig, instanceInfo);
 
-        EurekaClientConfig config = new DefaultEurekaClientConfig();
+        final EurekaClientConfig config = new DefaultEurekaClientConfig();
         eurekaClient = new DiscoveryClient(applicationInfoManager, config, (AbstractDiscoveryClientOptionalArgs) null);
 
         eurekaClient.registerHealthCheck(instanceStatus -> {
@@ -82,39 +86,42 @@ public final class SlaveEurekaClient {
 
     private Application getApplications() {
         synchronized (SlaveEurekaClient.class) {
-            Application registeredApplications = eurekaClient.getApplications().getRegisteredApplications(appName);
+            final Application registeredApplications = eurekaClient.getApplications()
+                    .getRegisteredApplications(appName);
             return registeredApplications;
         }
     }
 
     private InstanceInfo info(String serviceRootUrl, DataCenterInfo dataCenterInfo) {
 
-        InstanceInfo instanceInfo = new InstanceInfo(String.format("%s:%s:%s", serviceIp, appName, port), /* instanceId */
-                appName,                                                                                  /* appName */
-                "",                                                                                       /* appGroupName */
-                serviceIp,                                                                                /* ipAddr */
-                "na",                                                                                     /* sid */
-                new InstanceInfo.PortWrapper(true, port),                                                 /* port */
-                new InstanceInfo.PortWrapper(false, 443),                                                 /* securePort */
-                String.format("http://%s:%s%s", serviceIp, port, serviceRootUrl),                         /* homePageUrl */
-                String.format("http://%s:%s%s/status", serviceIp, port, serviceRootUrl),                  /* statusPageUrl */
-                String.format("http://%s:%s%s/healthCheck", serviceIp, port, serviceRootUrl),             /* healthCheckUrl */
-                null,                                                                                     /* secureHealthCheckUrl */
-                appName,                                                                                  /* vipAddress */
-                appName,                                                                                  /* secureVipAddress */
-                1,                                                                                        /* countryId */
-                dataCenterInfo,                                                                           /* dataCenterInfo */
-                serviceIp,                                                                                /* hostName */
-                InstanceInfo.InstanceStatus.UP,                                                           /* status */
-                InstanceInfo.InstanceStatus.UNKNOWN,                                                      /* overriddenStatus */
-                null,                                                                                     /* overriddenStatusAlt */
-                LeaseInfo.Builder.newBuilder().setDurationInSecs(10).build(),                             /* leaseInfo */
-                false,                                                                                    /* isCoordinatingDiscoveryServer */
-                null,                                                                                     /* metadata */
-                null,                                                                                     /* lastUpdatedTimestamp */
-                null,                                                                                     /* lastDirtyTimestamp */
-                InstanceInfo.ActionType.ADDED,                                                            /* actionType */
-                ""                                                                                        /* asgName */
+        final InstanceInfo instanceInfo = new InstanceInfo(String.format("%s:%s:%s", serviceIp, appName, port), /*
+                                                                                                                 * instanceId
+                                                                                                                 */
+                appName, /* appName */
+                "", /* appGroupName */
+                serviceIp, /* ipAddr */
+                "na", /* sid */
+                new InstanceInfo.PortWrapper(true, port), /* port */
+                new InstanceInfo.PortWrapper(false, 443), /* securePort */
+                String.format("http://%s:%s%s", serviceIp, port, serviceRootUrl), /* homePageUrl */
+                String.format("http://%s:%s%s/status", serviceIp, port, serviceRootUrl), /* statusPageUrl */
+                String.format("http://%s:%s%s/healthCheck", serviceIp, port, serviceRootUrl), /* healthCheckUrl */
+                null, /* secureHealthCheckUrl */
+                appName, /* vipAddress */
+                appName, /* secureVipAddress */
+                1, /* countryId */
+                dataCenterInfo, /* dataCenterInfo */
+                serviceIp, /* hostName */
+                InstanceInfo.InstanceStatus.UP, /* status */
+                InstanceInfo.InstanceStatus.UNKNOWN, /* overriddenStatus */
+                null, /* overriddenStatusAlt */
+                LeaseInfo.Builder.newBuilder().setDurationInSecs(10).build(), /* leaseInfo */
+                false, /* isCoordinatingDiscoveryServer */
+                null, /* metadata */
+                null, /* lastUpdatedTimestamp */
+                null, /* lastDirtyTimestamp */
+                InstanceInfo.ActionType.ADDED, /* actionType */
+                "" /* asgName */
         );
         return instanceInfo;
     }

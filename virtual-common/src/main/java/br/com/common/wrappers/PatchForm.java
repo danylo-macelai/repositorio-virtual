@@ -1,11 +1,12 @@
 package br.com.common.wrappers;
 
 /**
- * <b>Description:</b> <br>
- * <b>Project:</b> virtual-slave <br>
+ * <b>Description:</b> FIXME: Document this type <br>
+ * <b>Project:</b> virtual-common <br>
  *
  * @author macelai
  * @date: 3 de nov de 2018
+ * @version $
  */
 public class PatchForm {
 

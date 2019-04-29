@@ -54,10 +54,9 @@ public class MasterSpringFox {
                 .tags(new Tag(
                         "Arquivos",
                         "O serviço de arquivos envolve a leitura, gravação e exclusão."),
-                      new Tag(
-                        "Configuração",
-                        "O serviço de configuração envolve a cosulta e ateração.")
-                )
+                        new Tag(
+                                "Configuração",
+                                "O serviço de configuração envolve a cosulta e ateração."))
                 .apiInfo(apiInfo())
                 .useDefaultResponseMessages(false)
                 .globalResponseMessage(RequestMethod.DELETE, listGlobalResponseMessage)
@@ -65,20 +64,21 @@ public class MasterSpringFox {
                 .globalResponseMessage(RequestMethod.PATCH, listGlobalResponseMessage)
                 .globalResponseMessage(RequestMethod.POST, listGlobalResponseMessage)
                 .globalResponseMessage(RequestMethod.PUT, listGlobalResponseMessage)
-                .ignoredParameterTypes(File.class, InputStream.class, Resource.class, URI.class, URL.class, Response.class);
+                .ignoredParameterTypes(File.class, InputStream.class, Resource.class, URI.class, URL.class,
+                        Response.class);
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "Master RESTful Web Services" ,                                                         /* title */
-                "Manual de Integração." ,                                                               /* description */
-                "1.0",                                                                                  /* version */
-                "Terms of service" ,                                                                    /* termsOfServiceUrl */
-                new Contact("Danylo Macelai", "http://danylomacelai.com", "danylomacelai@gmail.com") ,  /* contactName */
-                "Apache 2.0",                                                                           /* license */
-                "http://www.apache.org/licenses/LICENSE-2.0",                                           /* licenseUrl */
-                Collections.emptyList()                                                                 /* vendorExtensions */
-                );
+                "Master RESTful Web Services", /* title */
+                "Manual de Integração.", /* description */
+                "1.0", /* version */
+                "Terms of service", /* termsOfServiceUrl */
+                new Contact("Danylo Macelai", "http://danylomacelai.com", "danylomacelai@gmail.com"), /* contactName */
+                "Apache 2.0", /* license */
+                "http://www.apache.org/licenses/LICENSE-2.0", /* licenseUrl */
+                Collections.emptyList() /* vendorExtensions */
+        );
     }
 
 }

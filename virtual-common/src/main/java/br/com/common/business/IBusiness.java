@@ -1,18 +1,20 @@
 package br.com.common.business;
 
+import br.com.common.domain.Domain;
+
 import java.util.List;
 
 import javax.persistence.NoResultException;
 
 import org.springframework.dao.DataAccessException;
 
-import br.com.common.domain.Domain;
-
 /**
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-common <br>
  *
  * @author macelai
  * @date: 22 de out de 2018
+ * @version $
  */
 public interface IBusiness<D extends Domain> {
 
@@ -38,7 +40,8 @@ public interface IBusiness<D extends Domain> {
     /**
      * O método {@link IBusiness#carregar(long)} lê o registro da tabela com base na chave primária.
      *
-     * @apiNote: Se a chave estiver contida no contexto de persistência, ele será retornada caso contrário uma {@link NoResultException}
+     * @apiNote: Se a chave estiver contida no contexto de persistência, ele será retornada caso contrário uma
+     *           {@link NoResultException}
      *
      * @param id
      * @return D

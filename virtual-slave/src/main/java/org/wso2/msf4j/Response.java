@@ -40,16 +40,17 @@ import io.netty.handler.codec.http.DefaultLastHttpContent;
  */
 public class Response {
 
-    private static final int NULL_STATUS_CODE = -1;
-    public static final int NO_CHUNK = 0;
-    public static final int DEFAULT_CHUNK_SIZE = -1;
+    private static final int NULL_STATUS_CODE   = -1;
+    public static final int  NO_CHUNK           = 0;
+    public static final int  DEFAULT_CHUNK_SIZE = -1;
 
     private final HTTPCarbonMessage httpCarbonMessage;
-    private int statusCode = NULL_STATUS_CODE;
-    private String mediaType = null;
-    private Object entity;
-    private int chunkSize = NO_CHUNK;
-    private Request request;
+    private int                     statusCode = NULL_STATUS_CODE;
+    private String                  mediaType  = null;
+    private Object                  entity;
+    private int                     chunkSize  = NO_CHUNK;
+    private Request                 request;
+
     public Response(HTTPCarbonMessage responder) {
         httpCarbonMessage = responder;
     }
@@ -94,7 +95,7 @@ public class Response {
     /**
      * Set a header in the response.
      *
-     * @param key   header name
+     * @param key header name
      * @param value value of the header
      * @return Response object
      */
@@ -132,7 +133,7 @@ public class Response {
     /**
      * Set a property in the underlining CarbonMessage object.
      *
-     * @param key   property key
+     * @param key property key
      * @param value property value
      */
     public void setProperty(String key, Object value) {
@@ -213,18 +214,18 @@ public class Response {
             javax.ws.rs.core.Response response = (javax.ws.rs.core.Response) entity;
             this.entity = response.getEntity();
 
-            //TODO: if you remove these lines, the tests fail.
-            /*MultivaluedMap<String, String> multivaluedMap = response.getStringHeaders();
-            if (multivaluedMap != null) {
-                multivaluedMap.forEach((key, strings) -> setHeader(key, String.join(COMMA_SEPARATOR, strings)));
-            }*/
+            // TODO: if you remove these lines, the tests fail.
+            /*
+             * MultivaluedMap<String, String> multivaluedMap = response.getStringHeaders(); if (multivaluedMap != null)
+             * { multivaluedMap.forEach((key, strings) -> setHeader(key, String.join(COMMA_SEPARATOR, strings))); }
+             */
             setStatus(response.getStatus());
 
-            //###### RV ######
+            // ###### RV ######
             // if (response.getMediaType() != null) {
-            //     setMediaType(response.getMediaType().toString());
+            // setMediaType(response.getMediaType().toString());
             // }
-            //###### RV ######
+            // ###### RV ######
         } else {
             this.entity = entity;
         }
@@ -234,8 +235,7 @@ public class Response {
     /**
      * Specify the chunk size to send the response.
      *
-     * @param chunkSize if 0 response will be sent without chunking
-     *                  if -1 a default chunk size will be applied
+     * @param chunkSize if 0 response will be sent without chunking if -1 a default chunk size will be applied
      */
     public void setChunkSize(int chunkSize) {
         this.chunkSize = chunkSize;
@@ -249,23 +249,23 @@ public class Response {
 
         List<String> cookiesHeaderValue = new ArrayList<>();
 
-        //###### jsr311-api ######
-        //if (jaxrsResponse != null) {
-        //    MultivaluedMap<String, String> multivaluedMap = jaxrsResponse.getStringHeaders();
-        //    if (multivaluedMap != null) {
-        //        multivaluedMap.forEach((key, strings) -> setHeader(key, String.join(COMMA_SEPARATOR, strings)));
-        //    }
+        // ###### jsr311-api ######
+        // if (jaxrsResponse != null) {
+        // MultivaluedMap<String, String> multivaluedMap = jaxrsResponse.getStringHeaders();
+        // if (multivaluedMap != null) {
+        // multivaluedMap.forEach((key, strings) -> setHeader(key, String.join(COMMA_SEPARATOR, strings)));
+        // }
         //
-        //    // String - cookie name
-        //    Map<String, NewCookie> cookies = jaxrsResponse.getCookies();
-        //    CookieHeaderProvider cookieProvider = new CookieHeaderProvider();
-        //    cookies.forEach((name, cookie) -> {
-        //        cookiesHeaderValue.add(cookieProvider.toString(cookie));
-        //    });
-        //}
-        //###### jsr311-api ######
+        // // String - cookie name
+        // Map<String, NewCookie> cookies = jaxrsResponse.getCookies();
+        // CookieHeaderProvider cookieProvider = new CookieHeaderProvider();
+        // cookies.forEach((name, cookie) -> {
+        // cookiesHeaderValue.add(cookieProvider.toString(cookie));
+        // });
+        // }
+        // ###### jsr311-api ######
 
-        //Set-Cookie: session
+        // Set-Cookie: session
         Session session = request.getSessionInternal();
         if (session != null && session.isValid() && session.isNew()) {
             cookiesHeaderValue.add(MSF4JConstants.SESSION_ID + session.getId());

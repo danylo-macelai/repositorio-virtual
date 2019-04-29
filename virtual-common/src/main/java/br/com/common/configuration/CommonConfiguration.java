@@ -19,28 +19,36 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.support.TransactionTemplate;
 
+/**
+ * <b>Description:</b> FIXME: Document this type <br>
+ * <b>Project:</b> virtual-common <br>
+ *
+ * @author macelai
+ * @date: 29 de abr de 2019
+ * @version $
+ */
 @EnableTransactionManagement
 public abstract class CommonConfiguration {
 
-    private static final String[] PACKAGES                  = { "br.com.common" };
+    private static final String[] PACKAGES = { "br.com.common" };
 
-    private static final String   DB_DRIVER_CLASS           = "db.driver";
-    private static final String   DB_PASSWORD               = "db.password";
-    private static final String   DB_URL                    = "db.url";
-    private static final String   DB_USER                   = "db.username";
-    private static final String   DB_VALIDATION_QUERY       = "db.validation.query";
+    private static final String DB_DRIVER_CLASS     = "db.driver";
+    private static final String DB_PASSWORD         = "db.password";
+    private static final String DB_URL              = "db.url";
+    private static final String DB_USER             = "db.username";
+    private static final String DB_VALIDATION_QUERY = "db.validation.query";
 
-    private static final String   HIBERNATE_DIALECT         = "hibernate.dialect";
-    private static final String   HIBERNATE_FORMAT_SQL      = "hibernate.format_sql";
-    private static final String   HIBERNATE_HBM2DDL_AUTO    = "hibernate.hbm2ddl.auto";
-    private static final String   HIBERNATE_NAMING_STRATEGY = "hibernate.ejb.naming_strategy";
-    private static final String   HIBERNATE_SHOW_SQL        = "hibernate.show_sql";
+    private static final String HIBERNATE_DIALECT         = "hibernate.dialect";
+    private static final String HIBERNATE_FORMAT_SQL      = "hibernate.format_sql";
+    private static final String HIBERNATE_HBM2DDL_AUTO    = "hibernate.hbm2ddl.auto";
+    private static final String HIBERNATE_NAMING_STRATEGY = "hibernate.ejb.naming_strategy";
+    private static final String HIBERNATE_SHOW_SQL        = "hibernate.show_sql";
 
     protected abstract String[] packagesToScan();
 
     @Bean(destroyMethod = "close")
     DataSource dataSource(Environment env) {
-        BasicDataSource dataSource = new BasicDataSource();
+        final BasicDataSource dataSource = new BasicDataSource();
         dataSource.setUsername(env.getRequiredProperty(DB_USER));
         dataSource.setPassword(env.getRequiredProperty(DB_PASSWORD));
         dataSource.setUrl(env.getRequiredProperty(DB_URL));
@@ -67,23 +75,23 @@ public abstract class CommonConfiguration {
 
     @Bean
     JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        final JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory);
         return transactionManager;
     }
 
     @Bean
     LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, Environment env) {
-        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+        final LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(dataSource);
         entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         entityManagerFactoryBean.setPackagesToScan(concat(packagesToScan(), PACKAGES));
 
-        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        final HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setShowSql(true);
         entityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);
 
-        Properties jpaProperties = new Properties();
+        final Properties jpaProperties = new Properties();
         jpaProperties.put(HIBERNATE_DIALECT, env.getRequiredProperty(HIBERNATE_DIALECT));
         jpaProperties.put(HIBERNATE_HBM2DDL_AUTO, env.getRequiredProperty(HIBERNATE_HBM2DDL_AUTO));
         jpaProperties.put(HIBERNATE_NAMING_STRATEGY, env.getRequiredProperty(HIBERNATE_NAMING_STRATEGY));
@@ -102,7 +110,7 @@ public abstract class CommonConfiguration {
      */
     @Bean
     TransactionTemplate transactionTemplate(JpaTransactionManager transactionManager) throws DataAccessException {
-        TransactionTemplate template = new TransactionTemplate(transactionManager);
+        final TransactionTemplate template = new TransactionTemplate(transactionManager);
         template.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
         template.setTimeout(300);
         return template;

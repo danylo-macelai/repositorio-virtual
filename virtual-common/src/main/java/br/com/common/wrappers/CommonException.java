@@ -5,11 +5,12 @@ import javax.ws.rs.core.Response.Status;
 import org.springframework.dao.DataAccessException;
 
 /**
- * <b>Description:</b> <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-common <br>
  *
  * @author macelai
  * @date: 4 de nov de 2018
+ * @version $
  */
 @SuppressWarnings("serial")
 public class CommonException extends DataAccessException {

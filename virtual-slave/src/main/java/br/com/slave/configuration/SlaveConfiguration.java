@@ -1,5 +1,11 @@
 package br.com.slave.configuration;
 
+import br.com.common.configuration.CommonConfiguration;
+
+import br.com.slave.business.IVolume;
+import br.com.slave.domain.VolumeTO;
+import br.com.slave.resource.VolumeResource;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -13,17 +19,13 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.wso2.msf4j.spring.MSF4JSpringConfiguration;
 
-import br.com.common.configuration.CommonConfiguration;
-import br.com.slave.business.IVolume;
-import br.com.slave.domain.VolumeTO;
-import br.com.slave.resource.VolumeResource;
-
 /**
- * <b>Description:</b> <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-slave <br>
  *
  * @author macelai
  * @date: 24 de out de 2018
+ * @version $
  */
 @Configuration
 @ComponentScans(value = {
@@ -54,7 +56,7 @@ public class SlaveConfiguration extends CommonConfiguration {
 
     @Bean
     MessageSource messageSource() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        final ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename(MESSAGE_BASE_NAME);
         messageSource.setUseCodeAsDefaultMessage(true);
         return messageSource;
@@ -73,7 +75,7 @@ public class SlaveConfiguration extends CommonConfiguration {
     @Bean
     InitializingBean initializing(IVolume volumeBusiness, SlaveEurekaClient eurekaClient, Environment env) {
         return () -> {
-            long init = volumeBusiness.count();
+            final long init = volumeBusiness.count();
             if (init == 0) {
                 volumePopulator(volumeBusiness, env);
             }
@@ -82,7 +84,7 @@ public class SlaveConfiguration extends CommonConfiguration {
     }
 
     private void volumePopulator(IVolume volumeBusiness, Environment env) {
-        VolumeTO volume = new VolumeTO();
+        final VolumeTO volume = new VolumeTO();
         volume.setLocalizacao(env.getRequiredProperty(VOLUME_LOCALIZACAO));
         volume.setCapacidade(Long.valueOf(env.getRequiredProperty(VOLUME_CAPACIDADE)));
         volume.setTamanho(0L);

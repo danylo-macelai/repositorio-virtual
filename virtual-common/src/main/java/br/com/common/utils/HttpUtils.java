@@ -1,12 +1,13 @@
 package br.com.common.utils;
 
+import br.com.common.wrappers.CommonException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import br.com.common.wrappers.CommonException;
 import okhttp3.ConnectionPool;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
@@ -20,10 +21,12 @@ import okio.Okio;
 import okio.Source;
 
 /**
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-common <br>
  *
  * @author macelai
  * @date: 20 de nov de 2018
+ * @version $
  */
 final class HttpUtils {
 
@@ -45,10 +48,11 @@ final class HttpUtils {
         return new HttpUtils();
     }
 
-    public Response post(String host, String service, String path, Map<String, String> formParams, Map<String, String> queryParams)
+    public Response post(String host, String service, String path, Map<String, String> formParams,
+            Map<String, String> queryParams)
             throws CommonException {
         try {
-            HttpUrl.Builder url = HttpUrl.parse(host).newBuilder();
+            final HttpUrl.Builder url = HttpUrl.parse(host).newBuilder();
             url.addPathSegment(service);
             url.addPathSegment(path);
 
@@ -58,9 +62,9 @@ final class HttpUtils {
                 });
             }
 
-            Request.Builder request = new Request.Builder().url(url.build());
+            final Request.Builder request = new Request.Builder().url(url.build());
 
-            FormBody.Builder builder = new FormBody.Builder();
+            final FormBody.Builder builder = new FormBody.Builder();
             if (formParams != null && !formParams.isEmpty()) {
                 formParams.forEach((k, v) -> {
                     builder.add(k, v);
@@ -68,26 +72,27 @@ final class HttpUtils {
 
                 request.post(builder.build());
             }
-            Response response = client.newCall(request.build()).execute();
+            final Response response = client.newCall(request.build()).execute();
             if (response.isSuccessful()) {
                 return response;
             } else {
-                throw new CommonException("common.resposta.http.status").args(String.valueOf(response.code()), url.build().toString());
+                throw new CommonException("common.resposta.http.status").args(String.valueOf(response.code()),
+                        url.build().toString());
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new CommonException(e.getMessage(), e);
         }
     }
 
     public Response post(InputStream stream, String host, String service, String path) throws CommonException {
         try (InputStream inputStream = stream) {
-            HttpUrl.Builder url = HttpUrl.parse(host).newBuilder();
+            final HttpUrl.Builder url = HttpUrl.parse(host).newBuilder();
             url.addPathSegment(service);
             url.addPathSegment(path);
 
-            Request.Builder request = new Request.Builder().url(url.build());
+            final Request.Builder request = new Request.Builder().url(url.build());
 
-            RequestBody body = new RequestBody() {
+            final RequestBody body = new RequestBody() {
                 @Override
                 public MediaType contentType() {
                     return form_urlencoded;
@@ -102,20 +107,21 @@ final class HttpUtils {
             };
             request.post(body);
 
-            Response response = client.newCall(request.build()).execute();
+            final Response response = client.newCall(request.build()).execute();
             if (response.isSuccessful()) {
                 return response;
             } else {
-                throw new CommonException("common.resposta.http.status").args(String.valueOf(response.code()), url.build().toString());
+                throw new CommonException("common.resposta.http.status").args(String.valueOf(response.code()),
+                        url.build().toString());
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new CommonException(e.getMessage(), e);
         }
     }
 
     public Response get(String host, String service, String path, Map<String, String> params) throws CommonException {
         try {
-            HttpUrl.Builder url = HttpUrl.parse(host).newBuilder();
+            final HttpUrl.Builder url = HttpUrl.parse(host).newBuilder();
             url.addPathSegment(service);
             url.addPathSegment(path);
 
@@ -124,14 +130,15 @@ final class HttpUtils {
                     url.addQueryParameter(k, v);
                 });
             }
-            Request.Builder request = new Request.Builder().url(url.build());
-            Response response = client.newCall(request.build()).execute();
+            final Request.Builder request = new Request.Builder().url(url.build());
+            final Response response = client.newCall(request.build()).execute();
             if (response.isSuccessful()) {
                 return response;
             } else {
-                throw new CommonException("common.resposta.http.status").args(String.valueOf(response.code()), url.build().toString());
+                throw new CommonException("common.resposta.http.status").args(String.valueOf(response.code()),
+                        url.build().toString());
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new CommonException(e.getMessage(), e);
         }
     }
@@ -139,19 +146,21 @@ final class HttpUtils {
     public Response delete(String host, String service, String path) throws CommonException {
 
         try {
-            HttpUrl.Builder url = HttpUrl.parse(host).newBuilder();
+            final HttpUrl.Builder url = HttpUrl.parse(host).newBuilder();
             url.addPathSegment(service);
             url.addPathSegment(path);
 
-            Request request = new Request.Builder().url(url.build()).delete().addHeader("content-type", form_urlencoded.toString()).build();
+            final Request request = new Request.Builder().url(url.build()).delete()
+                    .addHeader("content-type", form_urlencoded.toString()).build();
 
-            Response response = client.newCall(request).execute();
+            final Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 return response;
             } else {
-                throw new CommonException("common.resposta.http.status").args(String.valueOf(response.code()), url.build().toString());
+                throw new CommonException("common.resposta.http.status").args(String.valueOf(response.code()),
+                        url.build().toString());
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new CommonException(e.getMessage(), e);
         }
     }

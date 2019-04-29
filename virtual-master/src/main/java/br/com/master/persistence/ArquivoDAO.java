@@ -1,17 +1,18 @@
 package br.com.master.persistence;
 
+import br.com.master.domain.ArquivoTO;
+
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import br.com.master.domain.ArquivoTO;
-
 /**
- * <b>Description:</b>  <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-master <br>
-
+ *
  * @author macelai
  * @date: 18 de nov de 2018
+ * @version $
  */
 public interface ArquivoDAO extends JpaRepository<ArquivoTO, Long> {
 

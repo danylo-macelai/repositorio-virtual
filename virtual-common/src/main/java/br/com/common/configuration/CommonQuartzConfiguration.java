@@ -1,5 +1,7 @@
 package br.com.common.configuration;
 
+import br.com.common.wrappers.CommonJob;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
@@ -23,32 +25,31 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
-import br.com.common.wrappers.CommonJob;
-
 /**
- * <b>Description:</b> <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-common <br>
  *
  * @author macelai
  * @date: 24 de abr de 2019
+ * @version $
  */
 public abstract class CommonQuartzConfiguration {
 
-    public static final String   APPLICATION_CONTEXT       = "APPLICATION_CONTEXT";
-    private static final String  JOB_DRIVER_DELEGATE_CLASS = "org.quartz.jobStore.driverDelegateClass";
+    public static final String  APPLICATION_CONTEXT       = "APPLICATION_CONTEXT";
+    private static final String JOB_DRIVER_DELEGATE_CLASS = "org.quartz.jobStore.driverDelegateClass";
 
     @Autowired
     protected ApplicationContext applicationContext;
 
     @Autowired
-    protected DataSource         dataSource;
+    protected DataSource dataSource;
 
     @Autowired
-    protected Environment        env;
+    protected Environment env;
 
     @Bean
     public SchedulerFactoryBean quartzScheduler(Trigger[] triggers, JobDetail[] jobDetails) throws Exception {
-        SchedulerFactoryBean scheduler = new SchedulerFactoryBean();
+        final SchedulerFactoryBean scheduler = new SchedulerFactoryBean();
         scheduler.setDataSource(dataSource);
         scheduler.setApplicationContextSchedulerContextKey(APPLICATION_CONTEXT);
         scheduler.setApplicationContext(applicationContext);
@@ -60,18 +61,18 @@ public abstract class CommonQuartzConfiguration {
 
     @Bean
     public Properties quartzProperties() throws IOException {
-        PropertiesFactoryBean factory = new PropertiesFactoryBean();
+        final PropertiesFactoryBean factory = new PropertiesFactoryBean();
         factory.setLocation(new ClassPathResource("/config/quartz.properties"));
         factory.afterPropertiesSet();
 
-        Properties properties = factory.getObject();
+        final Properties properties = factory.getObject();
         properties.put(JOB_DRIVER_DELEGATE_CLASS, env.getProperty(JOB_DRIVER_DELEGATE_CLASS));
         return properties;
     }
 
     protected final Trigger triggerBuilder(String id, JobDetail job, String cron) {
-        TriggerKey key = new TriggerKey(id, Scheduler.DEFAULT_GROUP);
-        TriggerBuilder<Trigger> trigger = TriggerBuilder.newTrigger().withIdentity(key);
+        final TriggerKey key = new TriggerKey(id, Scheduler.DEFAULT_GROUP);
+        final TriggerBuilder<Trigger> trigger = TriggerBuilder.newTrigger().withIdentity(key);
         trigger.withSchedule(CronScheduleBuilder.cronSchedule(cron));
         trigger.startAt(new Date(2));
         trigger.forJob(job);
@@ -79,10 +80,10 @@ public abstract class CommonQuartzConfiguration {
     }
 
     protected final <C extends CommonJob> JobDetail jobBuilder(String id, Class<C> task) {
-        JobKey key = new JobKey(id, Scheduler.DEFAULT_GROUP);
-        JobBuilder job = JobBuilder.newJob(task).withIdentity(key);
+        final JobKey key = new JobKey(id, Scheduler.DEFAULT_GROUP);
+        final JobBuilder job = JobBuilder.newJob(task).withIdentity(key);
         // Set Job data map
-        JobDataMap data = new JobDataMap();
+        final JobDataMap data = new JobDataMap();
         data.put("nome", id);
         job.setJobData(data);
         job.storeDurably();

@@ -1,17 +1,18 @@
 package br.com.master.domain;
 
+import br.com.common.domain.Domain;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import br.com.common.domain.Domain;
-
 /**
- * <b>Description:</b> <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-master <br>
  *
  * @author macelai
  * @date: 18 de nov de 2018
+ * @version $
  */
 @SuppressWarnings("serial")
 @Entity

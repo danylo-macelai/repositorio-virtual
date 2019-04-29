@@ -1,5 +1,7 @@
 package br.com.master.configuration;
 
+import br.com.common.wrappers.CommonException;
+
 import javax.persistence.NoResultException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +15,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import br.com.common.wrappers.CommonException;
-
 /**
- * <b>Description:</b>  <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-master <br>
-
+ *
  * @author macelai
  * @date: 18 de nov de 2018
+ * @version $
  */
 @ControllerAdvice
 public class MasterExceptionMapper extends ResponseEntityExceptionHandler {
@@ -39,7 +40,7 @@ public class MasterExceptionMapper extends ResponseEntityExceptionHandler {
         } else if (exception instanceof NoResultException) {
             code = "slave.obj.nao.localizado";
         }
-        String message = messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
+        final String message = messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
         return handleExceptionInternal(exception, message, new HttpHeaders(), status, request);
     }
 

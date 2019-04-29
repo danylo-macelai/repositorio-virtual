@@ -20,10 +20,12 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-common <br>
  *
  * @author macelai
  * @date: 22 de out de 2018
+ * @version $
  */
 @SuppressWarnings("serial")
 @MappedSuperclass
@@ -32,11 +34,11 @@ public abstract class Domain implements Serializable, Cloneable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false, unique = true)
-    private Long          id;
+    private Long id;
 
     @JsonIgnore
     @Column(name = "versao", nullable = false)
-    private long          versao;
+    private long versao;
 
     @JsonIgnore
     @Column(name = "criacao", insertable = true, updatable = false, nullable = false)
@@ -109,7 +111,7 @@ public abstract class Domain implements Serializable, Cloneable {
         if ((other == null) || !this.getClass().equals(other.getClass())) {
             return false;
         }
-        EqualsBuilder builder = new EqualsBuilder();
+        final EqualsBuilder builder = new EqualsBuilder();
         builder.append(id, ((Domain) other).id);
         return builder.isEquals();
     }

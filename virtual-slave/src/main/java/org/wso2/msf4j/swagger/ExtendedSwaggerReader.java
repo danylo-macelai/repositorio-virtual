@@ -89,17 +89,17 @@ import io.swagger.util.PathUtils;
 import io.swagger.util.ReflectionUtils;
 
 /**
- * This is borrowed from the swagger-jaxrs. We did some modifications to this since MSF4J support
- * registering same class with different paths.
+ * This is borrowed from the swagger-jaxrs. We did some modifications to this since MSF4J support registering same class
+ * with different paths.
  */
 class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExtendedSwaggerReader.class);
+    private static final Logger LOGGER               = LoggerFactory.getLogger(ExtendedSwaggerReader.class);
     private static final String SUCCESSFUL_OPERATION = "successful operation";
-    private static final String PATH_DELIMITER = "/";
+    private static final String PATH_DELIMITER       = "/";
 
-    private final ReaderConfig config;
-    private Swagger swagger;
-    private String basePath;
+    private final ReaderConfig            config;
+    private final Swagger                 swagger;
+    private final String                  basePath;
     private static io.swagger.models.Info info;
 
     ExtendedSwaggerReader(String basePath, Swagger swagger) {
@@ -110,9 +110,8 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
     }
 
     /**
-     * Scans a set of classes for both ReaderListeners and Swagger annotations. All found listeners will
-     * be instantiated before any of the classes are scanned for Swagger annotations - so they can be invoked
-     * accordingly.
+     * Scans a set of classes for both ReaderListeners and Swagger annotations. All found listeners will be instantiated
+     * before any of the classes are scanned for Swagger annotations - so they can be invoked accordingly.
      *
      * @param classes a set of classes to scan
      * @return the generated Swagger definition
@@ -138,7 +137,7 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
                 listener.beforeScan(this, swagger);
             } catch (Exception e) {
                 LOGGER.error("Unexpected error invoking beforeScan listener [" + listener.getClass().getName() + "]",
-                             e);
+                        e);
             }
         }
 
@@ -152,7 +151,7 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
 
         for (Class<?> cls : classes) {
             read(cls, "", null, false, new String[0], new String[0], new HashMap<>(), new ArrayList<>(),
-                 new HashSet<>());
+                    new HashSet<>());
         }
 
         for (ReaderListener listener : listeners.values()) {
@@ -187,20 +186,20 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
         }
 
         return read(cls, "", null, false, new String[0], new String[0], new HashMap<>(), new ArrayList<Parameter>(),
-                    new HashSet<Class<?>>());
+                new HashSet<Class<?>>());
     }
 
     @Override
     protected Swagger read(Class<?> cls, String parentPath, String parentMethod, boolean isSubresource,
-                           String[] parentConsumes, String[] parentProduces, Map<String, Tag> parentTags,
-                           List<Parameter> parentParameters) {
+            String[] parentConsumes, String[] parentProduces, Map<String, Tag> parentTags,
+            List<Parameter> parentParameters) {
         return read(cls, parentPath, parentMethod, isSubresource, parentConsumes, parentProduces, parentTags,
-                    parentParameters, new HashSet<>());
+                parentParameters, new HashSet<>());
     }
 
     private Swagger read(Class<?> cls, String parentPath, String parentMethod, boolean isSubresource,
-                         String[] parentConsumes, String[] parentProduces, Map<String, Tag> parentTags,
-                         List<Parameter> parentParameters, Set<Class<?>> scannedResources) {
+            String[] parentConsumes, String[] parentProduces, Map<String, Tag> parentTags,
+            List<Parameter> parentParameters, Set<Class<?>> scannedResources) {
         Map<String, Tag> tags = new HashMap<>();
         List<SecurityRequirement> securities = new ArrayList<>();
 
@@ -340,10 +339,10 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
                     }
                 }
                 operation.getParameters().stream().filter(param -> regexMap.get(param.getName()) != null)
-                         .forEach(param -> {
-                             String pattern = regexMap.get(param.getName());
-                             param.setPattern(pattern);
-                         });
+                        .forEach(param -> {
+                            String pattern = regexMap.get(param.getName());
+                            param.setPattern(pattern);
+                        });
 
                 if (apiOperation != null) {
                     for (Scheme scheme : parseSchemes(apiOperation.protocols())) {
@@ -380,7 +379,7 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
                 if (subResource != null && !scannedResources.contains(subResource)) {
                     scannedResources.add(subResource);
                     read(subResource, operationPath, httpMethod, true, apiConsumes, apiProduces, tags,
-                         operation.getParameters(), scannedResources);
+                            operation.getParameters(), scannedResources);
                     // remove the sub resource so that it can visit it later in another path
                     // but we have a room for optimization in the future to reuse the scanned result
                     // by caching the scanned resources in the reader instance to avoid actual scanning
@@ -400,7 +399,7 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
                         }
 
                         operation.getVendorExtensions()
-                                 .putAll(BaseReaderUtils.parseExtensions(apiOperation.extensions()));
+                                .putAll(BaseReaderUtils.parseExtensions(apiOperation.extensions()));
                     }
 
                     if (operation.getConsumes() == null) {
@@ -613,7 +612,7 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
             return type;
         }
 
-        // For sub-resources that are not annotated with  @Api, look for any HttpMethods.
+        // For sub-resources that are not annotated with @Api, look for any HttpMethods.
         for (Method m : type.getMethods()) {
             if (extractOperationMethod(null, m, null) != null) {
                 return type;
@@ -701,9 +700,9 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
             b.append(parentPath);
         }
         // if (classLevelPath != null) {
-             //###### RV ######
-             // b.append(classLevelPath);
-             //###### RV ######
+        // ###### RV ######
+        // b.append(classLevelPath);
+        // ###### RV ######
         // }
         if (methodLevelPath != null && !"/".equals(methodLevelPath.value())) {
             String methodPath = methodLevelPath.value();
@@ -743,7 +742,7 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
                         if (property != null) {
                             Property responseProperty = ContainerWrapper
                                     .wrapContainer(header.responseContainer(), property, ContainerWrapper.ARRAY,
-                                                   ContainerWrapper.LIST, ContainerWrapper.SET);
+                                            ContainerWrapper.LIST, ContainerWrapper.SET);
                             responseProperty.setDescription(description);
                             responseHeaders.put(name, responseProperty);
                             appendModels(cls);
@@ -761,7 +760,7 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
     }
 
     private Operation parseMethod(Class<?> cls, Method method, List<Parameter> globalParameters,
-                                  List<ApiResponse> classApiResponses) {
+            List<ApiResponse> classApiResponses) {
         Operation operation = new Operation();
 
         ApiOperation apiOperation = ReflectionUtils.getAnnotation(method, ApiOperation.class);
@@ -839,8 +838,8 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
                 final Property responseProperty = ContainerWrapper.wrapContainer(responseContainer, property);
                 final int responseCode = apiOperation == null ? 200 : apiOperation.code();
                 operation.response(responseCode,
-                                   new Response().description(SUCCESSFUL_OPERATION).schema(responseProperty)
-                                                 .headers(defaultResponseHeaders));
+                        new Response().description(SUCCESSFUL_OPERATION).schema(responseProperty)
+                                .headers(defaultResponseHeaders));
                 appendModels(responseType);
             }
         }
@@ -950,9 +949,9 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
         if (parameters.size() > 0) {
             final List<Parameter> processed = new ArrayList<>(parameters.size());
             processed.addAll(parameters.stream().filter(parameter -> ParameterProcessor
-                                                                             .applyAnnotations(swagger, parameter, type,
-                                                                                               annotations) != null)
-                                       .collect(Collectors.toList()));
+                    .applyAnnotations(swagger, parameter, type,
+                            annotations) != null)
+                    .collect(Collectors.toList()));
             return processed;
         } else {
             LOGGER.debug("no parameter found, looking at body params");
@@ -1069,17 +1068,20 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
             protected Property doWrap(Property property) {
                 return new ArrayProperty(property);
             }
-        }, ARRAY("array") {
+        },
+        ARRAY("array") {
             @Override
             protected Property doWrap(Property property) {
                 return new ArrayProperty(property);
             }
-        }, MAP("map") {
+        },
+        MAP("map") {
             @Override
             protected Property doWrap(Property property) {
                 return new MapProperty(property);
             }
-        }, SET("set") {
+        },
+        SET("set") {
             @Override
             protected Property doWrap(Property property) {
                 ArrayProperty arrayProperty = new ArrayProperty(property);
@@ -1095,8 +1097,8 @@ class ExtendedSwaggerReader extends io.swagger.jaxrs.Reader {
         }
 
         public static Property wrapContainer(String container, Property property, ContainerWrapper... allowed) {
-            final Set<ContainerWrapper> tmp =
-                    allowed.length > 0 ? EnumSet.copyOf(Arrays.asList(allowed)) : EnumSet.allOf(ContainerWrapper.class);
+            final Set<ContainerWrapper> tmp = allowed.length > 0 ? EnumSet.copyOf(Arrays.asList(allowed))
+                    : EnumSet.allOf(ContainerWrapper.class);
             for (ContainerWrapper wrapper : tmp) {
                 final Property prop = wrapper.wrap(container, property);
                 if (prop != null) {

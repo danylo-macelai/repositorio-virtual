@@ -1,18 +1,21 @@
 package br.com.slave.business;
 
+import br.com.common.business.IBusiness;
+
+import br.com.slave.configuration.SlaveException;
+import br.com.slave.domain.VolumeTO;
+
 import javax.ws.rs.core.StreamingOutput;
 
 import org.wso2.msf4j.Request;
 
-import br.com.common.business.IBusiness;
-import br.com.slave.configuration.SlaveException;
-import br.com.slave.domain.VolumeTO;
-
 /**
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-slave <br>
  *
  * @author macelai
  * @date: 23 de out de 2018
+ * @version $
  */
 public interface IVolume extends IBusiness<VolumeTO> {
 

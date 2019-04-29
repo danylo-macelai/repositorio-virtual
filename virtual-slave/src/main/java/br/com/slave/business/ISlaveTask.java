@@ -3,11 +3,12 @@ package br.com.slave.business;
 import br.com.slave.configuration.SlaveException;
 
 /**
- * <b>Description:</b>  <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-slave <br>
  *
  * @author macelai
  * @date: 24 de abr de 2019
+ * @version $
  */
 public interface ISlaveTask {
 

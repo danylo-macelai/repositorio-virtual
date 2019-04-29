@@ -1,10 +1,18 @@
 package br.com.master.configuration;
 
-import static br.com.master.configuration.MasterQuartzConfiguration.JOB_MIGRACAO;
 import static br.com.master.configuration.MasterQuartzConfiguration.JOB_GRAVACAO;
 import static br.com.master.configuration.MasterQuartzConfiguration.JOB_INSTANCE;
 import static br.com.master.configuration.MasterQuartzConfiguration.JOB_LIMPAR;
+import static br.com.master.configuration.MasterQuartzConfiguration.JOB_MIGRACAO;
 import static br.com.master.configuration.MasterQuartzConfiguration.JOB_REPLICACAO;
+
+import br.com.master.business.IMasterTask;
+import br.com.master.task.TaskExclusaoSlave;
+import br.com.master.task.TaskGravacaoSlave;
+import br.com.master.task.TaskInstanceSlave;
+import br.com.master.task.TaskLimparDiretorio;
+import br.com.master.task.TaskMigracaoSlave;
+import br.com.master.task.TaskReplicacaoSlave;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -14,20 +22,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import br.com.master.business.IMasterTask;
-import br.com.master.task.TaskMigracaoSlave;
-import br.com.master.task.TaskGravacaoSlave;
-import br.com.master.task.TaskInstanceSlave;
-import br.com.master.task.TaskLimparDiretorio;
-import br.com.master.task.TaskExclusaoSlave;
-import br.com.master.task.TaskReplicacaoSlave;
-
 /**
- * <b>Description:</b> <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-master <br>
  *
  * @author macelai
  * @date: 4 de abr de 2019
+ * @version $
  */
 @Configuration
 @EnableBatchProcessing
@@ -39,12 +40,12 @@ public class MasterBatchConfiguration {
     private static final String STEP_LIMPAR     = "stepLimpar";
     private static final String STEP_EXCLUSAO   = "stepRemover";
     private static final String STEP_MIGRACAO   = "stepBalancear";
-    
-    @Autowired
-    private JobBuilderFactory   jobs;
 
     @Autowired
-    private StepBuilderFactory  steps;
+    private JobBuilderFactory jobs;
+
+    @Autowired
+    private StepBuilderFactory steps;
 
     @Bean
     public Job jobInstanceSlave(IMasterTask masterTaskBusiness) {

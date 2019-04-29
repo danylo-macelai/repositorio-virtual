@@ -1,5 +1,9 @@
 package br.com.slave.configuration;
 
+import br.com.common.configuration.CommonQuartzConfiguration;
+
+import br.com.slave.task.TaskContagem;
+
 import java.sql.Connection;
 import java.sql.Statement;
 
@@ -14,15 +18,13 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
-import br.com.common.configuration.CommonQuartzConfiguration;
-import br.com.slave.task.TaskContagem;
-
 /**
- * <b>Description:</b> <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-slave <br>
  *
  * @author macelai
  * @date: 24 de abr de 2019
+ * @version $
  */
 @Configuration
 public class SlaveQuartzConfiguration extends CommonQuartzConfiguration {
@@ -33,19 +35,19 @@ public class SlaveQuartzConfiguration extends CommonQuartzConfiguration {
     private static final String JOB_STORE_PLATFORM   = "job.store.platform";
 
     @Autowired
-    ResourceLoader              resourceLoader;
+    ResourceLoader resourceLoader;
 
     @Configuration
     class InitializingQuartzDataSource {
         public InitializingQuartzDataSource() {
             try {
-                Connection connection = DataSourceUtils.getConnection(dataSource);
+                final Connection connection = DataSourceUtils.getConnection(dataSource);
                 try (Statement stmt = connection.createStatement()) {
                     stmt.execute("SELECT * FROM qrtz_job_details");
-                } catch (Exception e) {
-                    String platform = env.getProperty(JOB_STORE_PLATFORM);
-                    String schemaLocation = "classpath:org/quartz/impl/jdbcjobstore/tables_" + platform + ".sql";
-                    ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+                } catch (final Exception e) {
+                    final String platform = env.getProperty(JOB_STORE_PLATFORM);
+                    final String schemaLocation = "classpath:org/quartz/impl/jdbcjobstore/tables_" + platform + ".sql";
+                    final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
                     populator.addScript(resourceLoader.getResource(schemaLocation));
                     populator.setContinueOnError(true);
                     populator.setCommentPrefix("--");
@@ -53,7 +55,7 @@ public class SlaveQuartzConfiguration extends CommonQuartzConfiguration {
                 } finally {
                     DataSourceUtils.releaseConnection(connection, dataSource);
                 }
-            } catch (Throwable ex) {
+            } catch (final Throwable ex) {
                 throw new SlaveException("Failed to execute database script", ex);
             }
         }
@@ -61,7 +63,7 @@ public class SlaveQuartzConfiguration extends CommonQuartzConfiguration {
 
     @Bean
     public SpringBeanJobFactory springBeanJobFactory() {
-        SpringBeanJobFactory springBeanJobFactory = new SpringBeanJobFactory();
+        final SpringBeanJobFactory springBeanJobFactory = new SpringBeanJobFactory();
         springBeanJobFactory.setApplicationContext(applicationContext);
         return springBeanJobFactory;
     }

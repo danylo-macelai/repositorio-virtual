@@ -1,5 +1,7 @@
 package br.com.master.domain;
 
+import br.com.common.domain.Domain;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,14 +15,13 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import br.com.common.domain.Domain;
-
 /**
- * <b>Description:</b> <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-master <br>
  *
  * @author macelai
  * @date: 16 de nov de 2018
+ * @version $
  */
 @SuppressWarnings("serial")
 @Entity
@@ -28,16 +29,16 @@ import br.com.common.domain.Domain;
 public class ArquivoTO extends Domain {
 
     @Column(name = "tamanho", updatable = false, nullable = false)
-    private Integer      tamanho;
+    private Integer tamanho;
 
     @Column(name = "pecas", updatable = false, nullable = false)
-    private Integer      pecas;
+    private Integer pecas;
 
     @Column(name = "nome", nullable = false)
-    private String       nome;
+    private String nome;
 
     @Column(name = "mime_type", updatable = false, nullable = false)
-    private String       mimeType;
+    private String mimeType;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "arquivo")

@@ -1,5 +1,7 @@
 package br.com.common.utils;
 
+import br.com.common.wrappers.CommonException;
+
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.ParameterizedType;
@@ -16,14 +18,15 @@ import java.util.stream.Stream;
 
 import javax.ws.rs.core.StreamingOutput;
 
-import br.com.common.wrappers.CommonException;
 import okhttp3.Response;
 
 /**
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-common <br>
  *
  * @author macelai
  * @date: 22 de out de 2018
+ * @version $
  */
 public abstract class Utils {
 
@@ -39,7 +42,7 @@ public abstract class Utils {
      */
     @SuppressWarnings("unchecked")
     public static <T extends Object> Class<T> actualType(final Object object) {
-        ParameterizedType thisType = (ParameterizedType) object.getClass().getGenericSuperclass();
+        final ParameterizedType thisType = (ParameterizedType) object.getClass().getGenericSuperclass();
         return (Class<T>) thisType.getActualTypeArguments()[0];
     }
 
@@ -78,19 +81,19 @@ public abstract class Utils {
      */
     public static String gerarIdentificador() {
         try {
-            MessageDigest salt = MessageDigest.getInstance("SHA-256");
+            final MessageDigest salt = MessageDigest.getInstance("SHA-256");
             salt.update(UUID.randomUUID().toString().getBytes("UTF-8"));
-            byte[] hash = salt.digest();
-            StringBuffer uuid = new StringBuffer();
+            final byte[] hash = salt.digest();
+            final StringBuffer uuid = new StringBuffer();
             for (int i = 0; i < hash.length; i++) {
-                String hex = Integer.toHexString(0xff & hash[i]);
+                final String hex = Integer.toHexString(0xff & hash[i]);
                 if (hex.length() == 1) {
                     uuid.append('0');
                 }
                 uuid.append(hex);
             }
             return uuid.toString();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new CommonException("", e);
         }
     }
@@ -108,7 +111,8 @@ public abstract class Utils {
         return fileEscrever(path, stream, 0, Long.MAX_VALUE);
     }
 
-    public static int fileEscrever(Path path, InputStream stream, long tamanho, long capacidade) throws CommonException {
+    public static int fileEscrever(Path path, InputStream stream, long tamanho, long capacidade)
+            throws CommonException {
         return FileUtils.escrever(path, stream, tamanho, capacidade);
     }
 
@@ -143,7 +147,8 @@ public abstract class Utils {
      * @return InputStream
      * @throws CommonException
      */
-    public static InputStream fileParticionar(FileChannel channel, long position, long byteSize) throws CommonException {
+    public static InputStream fileParticionar(FileChannel channel, long position, long byteSize)
+            throws CommonException {
         return FileUtils.particionar(channel, position, byteSize);
     }
 
@@ -175,15 +180,17 @@ public abstract class Utils {
     public static void delay(int segundos) {
         try {
             Thread.sleep(segundos * 1000);
-        } catch (Exception e) {
+        } catch (final Exception e) {
         }
     }
 
-    public static Response httpPost(String host, String service, String path, Map<String, String> formParams) throws CommonException {
+    public static Response httpPost(String host, String service, String path, Map<String, String> formParams)
+            throws CommonException {
         return HttpUtils.getInstance().post(host, service, path, formParams, new HashMap<>());
     }
 
-    public static Response httpPost(InputStream stream, String host, String service, String path) throws CommonException {
+    public static Response httpPost(InputStream stream, String host, String service, String path)
+            throws CommonException {
         return HttpUtils.getInstance().post(stream, host, service, path);
     }
 

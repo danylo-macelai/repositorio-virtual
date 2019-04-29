@@ -1,23 +1,26 @@
 package br.com.common.persistence;
 
+import br.com.common.domain.Domain;
+
 import java.util.List;
 
 import javax.persistence.NoResultException;
 
 import org.springframework.dao.DataAccessException;
 
-import br.com.common.domain.Domain;
-
 /**
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-common <br>
  *
  * @author macelai
  * @date: 22 de out de 2018
+ * @version $
  */
 public interface IPersistence<D extends Domain> {
 
     /**
-     * Remove a entidade do contexto de persistência, fazendo com que as suas alterações não sejam sincronizadas com o banco de dados.
+     * Remove a entidade do contexto de persistência, fazendo com que as suas alterações não sejam sincronizadas com o
+     * banco de dados.
      *
      * @param dominio
      * @throws DataAccessException
@@ -32,8 +35,8 @@ public interface IPersistence<D extends Domain> {
     void flush() throws DataAccessException;
 
     /**
-     * Limpa o contexto de persistência, fazendo com que as alterações realizads nas entidades que ainda não foram persistidas em banco de dados sejam
-     * descatadas.
+     * Limpa o contexto de persistência, fazendo com que as alterações realizads nas entidades que ainda não foram
+     * persistidas em banco de dados sejam descatadas.
      *
      * @throws DataAccessException
      */
@@ -69,7 +72,8 @@ public interface IPersistence<D extends Domain> {
     /**
      * O método {@link IPersistence#carregar(long)} lê o registro da tabela com base na chave primária.
      *
-     * @apiNote: Se a chave estiver contida no contexto de persistência, ele será retornada caso contrário uma {@link NoResultException}
+     * @apiNote: Se a chave estiver contida no contexto de persistência, ele será retornada caso contrário uma
+     *           {@link NoResultException}
      *
      * @param id
      * @return D

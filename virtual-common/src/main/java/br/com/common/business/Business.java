@@ -1,5 +1,10 @@
 package br.com.common.business;
 
+import br.com.common.domain.Domain;
+import br.com.common.persistence.IPersistence;
+import br.com.common.wrappers.WithResult;
+import br.com.common.wrappers.WithoutResult;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,21 +15,18 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import br.com.common.domain.Domain;
-import br.com.common.persistence.IPersistence;
-import br.com.common.wrappers.WithResult;
-import br.com.common.wrappers.WithoutResult;
-
 /**
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-common <br>
  *
  * @author macelai
  * @date: 22 de out de 2018
+ * @version $
  */
 public abstract class Business<D extends Domain> implements IBusiness<D> {
 
     @Autowired
-    IPersistence<D>     persistence;
+    IPersistence<D> persistence;
 
     @Autowired
     TransactionTemplate transactionTemplate;

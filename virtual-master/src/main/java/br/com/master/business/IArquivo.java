@@ -1,20 +1,22 @@
 package br.com.master.business;
 
+import br.com.common.business.IBusiness;
+
+import br.com.master.configuration.MasterException;
+import br.com.master.domain.ArquivoTO;
+
 import java.util.List;
 
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.com.common.business.IBusiness;
-import br.com.master.configuration.MasterException;
-import br.com.master.domain.ArquivoTO;
-
 /**
- * <b>Description:</b> <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-master <br>
  *
  * @author macelai
  * @date: 18 de nov de 2018
+ * @version $
  */
 public interface IArquivo extends IBusiness<ArquivoTO> {
 

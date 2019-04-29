@@ -1,5 +1,7 @@
 package br.com.slave.configuration;
 
+import br.com.common.wrappers.CommonException;
+
 import javax.persistence.NoResultException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -11,14 +13,13 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
-import br.com.common.wrappers.CommonException;
-
 /**
- * <b>Description:</b> <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-slave <br>
  *
  * @author macelai
  * @date: 29 de out de 2018
+ * @version $
  */
 @Component
 public class SlaveExceptionMapper implements ExceptionMapper<Exception> {
@@ -37,7 +38,7 @@ public class SlaveExceptionMapper implements ExceptionMapper<Exception> {
         } else if (exception instanceof NoResultException) {
             code = "slave.obj.nao.localizado";
         }
-        String message = messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
+        final String message = messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
         return Response.status(status).entity(message).type(MediaType.TEXT_HTML).build();
     }
 }

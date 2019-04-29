@@ -1,5 +1,9 @@
 package br.com.master.persistence;
 
+import br.com.master.configuration.MasterException;
+import br.com.master.domain.ArquivoTO;
+import br.com.master.domain.BlocoTO;
+
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,16 +11,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import br.com.master.configuration.MasterException;
-import br.com.master.domain.ArquivoTO;
-import br.com.master.domain.BlocoTO;
-
 /**
- * <b>Description:</b> <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-master <br>
  *
  * @author macelai
  * @date: 16 de nov de 2018
+ * @version $
  */
 public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
 
@@ -30,7 +31,8 @@ public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
     List<BlocoTO> findByArquivoOrderByNumeroAsc(ArquivoTO arquivo) throws MasterException;
 
     /**
-     * Carrega todos os blocos que estão apenas no diretório local {@link BlocoTO#getDiretorioOffLine()} e não possuem {@link BlocoTO#getInstanceId()}
+     * Carrega todos os blocos que estão apenas no diretório local {@link BlocoTO#getDiretorioOffLine()} e não possuem
+     * {@link BlocoTO#getInstanceId()}
      *
      * @return List<BlocoTO>
      * @throws MasterException List<BlocoTO>
@@ -105,7 +107,8 @@ public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
             " UPDATE BlocoTO " + //
             " SET instanceId =:blocoInstanceId " + //
             " WHERE id =:blocoId ")
-    void update(@Param("blocoInstanceId") String blocoInstanceId, @Param("blocoId") long blocoId) throws MasterException;
+    void update(@Param("blocoInstanceId") String blocoInstanceId, @Param("blocoId") long blocoId)
+            throws MasterException;
 
     /**
      * Verifica se já existe um bloco na instância
@@ -120,8 +123,7 @@ public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
      * Exclui o bloco que tem o uuid e instanceId informado
      *
      * @param uuid
-     * @param instanceId
-     * void
+     * @param instanceId void
      */
     void deleteByUuidAndInstanceId(String uuid, String instanceId);
 

@@ -1,5 +1,9 @@
 package br.com.common.business;
 
+import br.com.common.domain.Domain;
+import br.com.common.wrappers.WithResult;
+import br.com.common.wrappers.WithoutResult;
+
 import java.util.List;
 
 import javax.persistence.NoResultException;
@@ -13,16 +17,13 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import br.com.common.domain.Domain;
-import br.com.common.wrappers.WithResult;
-import br.com.common.wrappers.WithoutResult;
-
 /**
- * <b>Description:</b>  <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-common <br>
-
+ *
  * @author macelai
  * @date: 17 de nov de 2018
+ * @version $
  */
 public abstract class DBusiness<D extends Domain> implements IBusiness<D> {
 
@@ -30,7 +31,7 @@ public abstract class DBusiness<D extends Domain> implements IBusiness<D> {
     JpaRepository<D, Long> persistence;
 
     @Autowired
-    TransactionTemplate    transactionTemplate;
+    TransactionTemplate transactionTemplate;
 
     protected <T> T programmaticTransaction(WithResult<T> with) {
         return transactionTemplate.execute(new TransactionCallback<T>() {

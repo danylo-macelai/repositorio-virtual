@@ -1,20 +1,23 @@
 package br.com.slave.persistence;
 
+import br.com.common.persistence.Persistence;
+
+import br.com.slave.configuration.SlaveException;
+import br.com.slave.domain.VolumeTO;
+
 import javax.persistence.Query;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import br.com.common.persistence.Persistence;
-import br.com.slave.configuration.SlaveException;
-import br.com.slave.domain.VolumeTO;
-
 /**
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-slave <br>
  *
  * @author macelai
  * @date: 23 de out de 2018
+ * @version $
  */
 @Repository
 public class VolumeDAO extends Persistence<VolumeTO> {
@@ -30,11 +33,11 @@ public class VolumeDAO extends Persistence<VolumeTO> {
      * @return VolumeTO
      */
     public VolumeTO buscar() {
-        StringBuilder hql = new StringBuilder();
+        final StringBuilder hql = new StringBuilder();
         hql.append("SELECT V ");
         hql.append("FROM ").append(VolumeTO.class.getName()).append(" V ");
 
-        Query query = query(hql);
+        final Query query = query(hql);
         return (VolumeTO) query.getSingleResult();
     }
 
@@ -45,13 +48,13 @@ public class VolumeDAO extends Persistence<VolumeTO> {
      * @throws SlaveException
      */
     public void update(VolumeTO volume) {
-        StringBuilder hql = new StringBuilder();
+        final StringBuilder hql = new StringBuilder();
         hql.append(" UPDATE ").append(VolumeTO.class.getName()).append(" V ");
         hql.append(" SET V.tamanho = :paramTamanho, ");
         hql.append("     V.contem = :paramContem ");
         hql.append(" WHERE V.id = :paramId ");
 
-        Query query = query(hql);
+        final Query query = query(hql);
         query.setParameter("paramTamanho", volume.getTamanho());
         query.setParameter("paramContem", volume.getContem());
         query.setParameter("paramId", volume.getId());

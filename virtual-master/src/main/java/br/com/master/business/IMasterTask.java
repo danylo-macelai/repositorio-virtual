@@ -3,11 +3,12 @@ package br.com.master.business;
 import br.com.master.configuration.MasterException;
 
 /**
- * <b>Description:</b> <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-master <br>
  *
  * @author macelai
  * @date: 15 de abr de 2019
+ * @version $
  */
 public interface IMasterTask {
 

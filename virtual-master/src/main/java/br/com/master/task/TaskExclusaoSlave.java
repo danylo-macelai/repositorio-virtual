@@ -1,5 +1,7 @@
 package br.com.master.task;
 
+import br.com.master.business.IMasterTask;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.springframework.batch.core.StepContribution;
@@ -7,14 +9,13 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 
-import br.com.master.business.IMasterTask;
-
 /**
- * <b>Description:</b>  <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-master <br>
  *
  * @author macelai
  * @date: 19 de abr de 2019
+ * @version $
  */
 public class TaskExclusaoSlave implements Tasklet {
 
@@ -30,7 +31,7 @@ public class TaskExclusaoSlave implements Tasklet {
         if (!running.getAndSet(true)) {
             try {
                 business.exclusao();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
             } finally {
                 running.set(false);

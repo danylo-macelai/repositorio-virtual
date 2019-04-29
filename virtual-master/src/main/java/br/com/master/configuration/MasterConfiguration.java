@@ -1,5 +1,10 @@
 package br.com.master.configuration;
 
+import br.com.common.configuration.CommonConfiguration;
+
+import br.com.master.business.impl.ConfiguracaoBusiness;
+import br.com.master.domain.ConfiguracaoTO;
+
 import javax.servlet.ServletContext;
 
 import org.springframework.boot.CommandLineRunner;
@@ -12,16 +17,13 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-import br.com.common.configuration.CommonConfiguration;
-import br.com.master.business.impl.ConfiguracaoBusiness;
-import br.com.master.domain.ConfiguracaoTO;
-
 /**
- * <b>Description:</b> <br>
+ * <b>Description:</b> FIXME: Document this type <br>
  * <b>Project:</b> virtual-master <br>
  *
  * @author macelai
  * @date: 18 de nov de 2018
+ * @version $
  */
 @Configuration
 public class MasterConfiguration extends CommonConfiguration {
@@ -47,7 +49,7 @@ public class MasterConfiguration extends CommonConfiguration {
 
     @Bean
     MessageSource messageSource() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        final ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename(MESSAGE_BASE_NAME);
         messageSource.setUseCodeAsDefaultMessage(true);
         return messageSource;
@@ -60,7 +62,7 @@ public class MasterConfiguration extends CommonConfiguration {
 
     @Bean(name = "multipartResolver")
     CommonsMultipartResolver multipartResolver() {
-        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        final CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
         multipartResolver.setMaxUploadSize(-1);
         return multipartResolver;
     }
@@ -68,7 +70,7 @@ public class MasterConfiguration extends CommonConfiguration {
     @Bean
     CommandLineRunner initializing(ConfiguracaoBusiness configuracaoBusiness, Environment env) {
         return args -> {
-            long init = configuracaoBusiness.count();
+            final long init = configuracaoBusiness.count();
             if (init == 0) {
                 configuracaoPopulator(configuracaoBusiness, env);
             }
@@ -81,7 +83,7 @@ public class MasterConfiguration extends CommonConfiguration {
     }
 
     private void configuracaoPopulator(ConfiguracaoBusiness configuracaoBusiness, Environment env) {
-        ConfiguracaoTO configuracao = new ConfiguracaoTO();
+        final ConfiguracaoTO configuracao = new ConfiguracaoTO();
         configuracao.setTamanhoBloco(Integer.valueOf(env.getRequiredProperty(ARQUIVO_TAMANHO_BLOCO)));
         configuracao.setQtdeReplicacao(Integer.valueOf(env.getRequiredProperty(ARQUIVO_QTDE_REPLICACAO)));
         configuracaoBusiness.incluir(configuracao);

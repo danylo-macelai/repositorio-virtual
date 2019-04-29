@@ -47,6 +47,16 @@ Quando o cliente solicitar a leitura do arquivo o Master deverá recuperar os bl
 
   >A versão atual msf4j não tem suporte ao verb @PATCH, foi utilizado o @PUT para fazer a atualização parcial do objeto.
 
+## Configuração do Ambiente de Desenvolvimento
+
+As configurações de Code Style são obrigatórias. Todo o código do Repositório Virtual deverá estar de acordo com este formato de estilo. 
+
+Antes de enviar qualquer código para o repositório, o committer DEVE ter certeza
+que o código alterado adere ao formato canônico do Repositório Virtual. Assim, ao passar `Source > Cleanup` ou (`Alt + S + U`) no repositório, se todo o código estiver em conformidade resultará em nenhuma alteração.
+
+Você precisará verificar se suas configurações [(veja aqui)](../master/docs/eclipse.md#configurar-o-ambiente-do-eclipse) estão definidas corretamente.
+
+
 ## Requisitos Funcionais
 
 * Executar uma instância Master e várias instâncias do Slave na plataforma de microsservos;

@@ -10,7 +10,8 @@
   <strong>
     <a href="#virtual-common">Virtual Common</a> •
     <a href="#virtual-master">Virtual Master</a> •
-    <a href="#virtual-slave">Virtual Slave</a> 
+    <a href="#virtual-slave">Virtual Slave</a> •
+    <a href="#virtual-access">Virtual Access</a>
   </strong>
 </p>
 
@@ -42,6 +43,8 @@ Quando o cliente solicitar a leitura do arquivo o Master deverá recuperar os bl
 * Além de ser flexivelmente estendido, a cada inicialização ele se auto registra no service discovery permitindo assim que o Master sempre verifique a disponibilidade de suas instâncias. 
 
 * Periodicamente uma tarefa será executada afim de manter acuracidade dos blocos armazenados.
+
+## Virtual Access
 
 ## Desenvolvimento
 

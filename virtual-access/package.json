@@ -12,5 +12,8 @@
   "bugs": {
     "url": "https://github.com/danylo-macelai/repositorio-virtual/issues"
   },
-  "repository": "https://github.com/danylo-macelai/repositorio-virtual"
+  "repository": "https://github.com/danylo-macelai/repositorio-virtual",
+  "devDependencies": {
+    "typescript": "2.5.3"
+  }
 }

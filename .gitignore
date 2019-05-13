@@ -45,3 +45,4 @@ target/
 *.project
 .settings
 *.class
+/virtual-access/node_modules

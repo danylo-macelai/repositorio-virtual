@@ -46,3 +46,4 @@ target/
 .settings
 *.class
 /virtual-access/node_modules
+/virtual-access/dist

@@ -18,6 +18,15 @@ export const usuarioResolvers = {
             return listUsuario;
         }
 
-    }
+    },
 
+    Mutation: {
+
+        incluir: (parent, {input}) => {
+            const u = Object.assign({id: listUsuario.length + 1}, input)
+            listUsuario.push(u);
+            return u;
+        }
+
+    }
 };

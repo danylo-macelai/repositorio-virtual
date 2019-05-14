@@ -10,14 +10,25 @@ const usuarioTypes = `
         nome: String!
         email: String!
     }
+
+    input UsuarioAlteracao {
+        id: ID!
+        nome: String!
+        email: String!
+    }    
 `;
 
-const usuarioQueries = `
-    carregarTodos: [ Usuario! ]!
+const usuarioQueries = `    
+    consulta(id: ID!): Usuario!
+    listagem: [ Usuario! ]!
+    quantidade: Int!
 `;
-
+    
 const usuarioMutations = `
-    incluir(input: UsuarioInclusao!): Usuario
+    inclusao(input: UsuarioInclusao!): Usuario
+    alteracao(input: UsuarioAlteracao!): Usuario
+    exclusao(id: ID!): Boolean
+    exclusaoTodos: Boolean
 `;
 
 export {

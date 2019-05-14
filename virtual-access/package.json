@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node_modules/.bin/nodemon --delay 5 dist/index",
+    "dev": "SET NODE_ENV=development&&nodemon --delay 5 dist/index",
     "gulp": "node_modules/.bin/gulp"
   },
   "keywords": [],

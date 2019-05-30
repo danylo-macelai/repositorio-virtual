@@ -21,18 +21,23 @@ Vamos utilizar a abordagem de Branch para as contribuições. Será necessário 
 
 Clique no botão direito em `> [] repositorio-virtual [master] - C:\wo...`, no menu de contexto `Switch To > New Branch...`. No assistente de criação de branch, informe o `Branch name`, lembre-se que o nome deverá representar o objetivo desta contribuição depois clique em `Finish`.
 
+     004_ajustar_documentacao
+      |    | 
+      |    +------> Use o título da issues
+      +------> Use o número da issues
+
      ________________________________________________________________________________________________
     | Create Branch                                                                                  |
     |                                                                                                |
     |      ...                                                                                       |
-    |      Branch name: 123_correcao_na_integracao                                                   |
+    |      Branch name: 004_ajustar_documentacao                                                    |
     |      ...                                                                                       |
     |      [x] Check out new branch                                                                  |
     +------------------------------------------------------------------------------------------------+
     |                                                                   [ Finish ]   [  ...  ]       |
     +------------------------------------------------------------------------------------------------+
 
-Envie sua branch para o repositório na nuvem clicando em `> [] repositorio-virtual [master] - C:\wo...`, no menu de contexto `Push Branch ‘123_correcao_na_integracao’...`. No assistente de push branch, nao informe nada apenas clique em `Next` em seguida no `Finish`.
+Envie sua branch para o repositório na nuvem clicando com o botão direito em `> [] repositorio-virtual [master] - C:\wo...`, no menu de contexto `Push Branch ‘004_ajustar_documentacao’...`. No assistente de push branch, não informe nada apenas clique em `Next` em seguida no `Finish`.
 
 1. Implemente / corrija o código conforme necessário;
 2. Comente as suas contribuições;

@@ -276,3 +276,32 @@ OBS: Repita este procedimento criando o um novo build com o nome `clean_install`
 ##### ECLIPSE (Importando o Projeto)
 
 Finalmente vamos importar o projeto, acesse `File > Import`. No assistente de importação, selecione a opção `Git > Projects from Git` e clique em `Next >`, na próxima tela selecione `Existing local repository` e clique em `Next >`, na próxima tela clique em `Next >` novamente, depois em `Wizard for Project import` selecione o *radio* `import existing Eclipse projects` e clique em `Next >`. Agora em `Projects` marque apenas `virtual-common`, `virtual-master` e `virtual-slave` e clique em `Finish`.
+
+---
+##### ECLIPSE (Inicializado o Projeto)
+
+Copie os arquivos `../virtual-master/src/main/resources/config/config-master.properties` e `../virtual-slave/src/main/resources/config/config-slave.properties` para a pasta `D:\workspaces\GITHUB\`. Abra os aquivos e altere os parâmetros conforme a necessidade do seu ambiente.
+
+Para iniciar o projeto clique com botão direito na classe `br.com.slave.Application.java`, no menu de contexto selecione `Debug As > Debug Configurations...`. No assistente de configuração do Debug, altere o `Name`, acesse a aba `(x)= Arguments` para informar os `VM arguments:`, em seguida clique em `Apply` depois em `Debug`.
+
+    
+    Name: Slave
+                    ________________
+     ______________| (x)= Arguments \________________________________________________________________
+    |                                                                                                |
+    |   +-----------------------------------------------------------------------------------------   | 
+    |   | +-------------------------------------------------------------------------------------+ |  | 
+    |   | |                                           ...                                       | |  |
+    |   | +----------------------------------------------------------------------------------- -+ |  |
+    |   |                                                                              [   ...  ] |  |
+    |   | +-- VM arguments: --------------------------------------------------------------------+ |  |
+    |   | |  -Dconfiguracoes.path=D:\workspaces\GITHUB\config-slave.properties                  | |  |
+    |   | +-------------------------------------------------------------------------------------+ |  |
+    |   |                                           ...                                           |  |
+    |   |                                                                  [   ...  ]   [ Apply ] |  |
+    |   +-----------------------------------------------------------------------------------------+  |
+    |                                               ...                                              |
+    |                                                                        [ Debug  ]   [  ...  ]  |
+    +------------------------------------------------------------------------------------------------+    
+    
+OBS: Repita este procedimento com o name `Master` e Vm Arguments: `-Dconfiguracoes.path=D:\workspaces\GITHUB\config-master.properties` para a classe `br.com.master.Application.java`

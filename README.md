@@ -37,11 +37,11 @@ O sistema está dividido nos módulos virtual-common, virtual-master, virtual-sl
 
 * Ao receber uma solicitação de leitura o Master recupera todos os blocos espalhados entre os diversos nós incluindo as réplicas que serão necessárias para a reconstrução do arquivo no diretório temporário da aplicação, após a entrega uma tarefa será responsável pela sua exclusão.
 
-* Diariamente será executada uma tarefa que mantem uma estratégia para migração de blocos e balanceamento entre os nós Slaves.
+* Diariamente será executada uma tarefa que mantém uma estratégia para migração de blocos e balanceamento entre os nós Slaves.
 
 ## Virtual Slave
 
-* O Slave é um micros-serviço oferecendo uma interface de serviços para interagir exclusivamente com Master realizando a leitura, gravação e exclusão de blocos no disco. 
+* O Slave é um micros-serviço que oferece uma interface de serviços para interagir exclusivamente com Master realizando a leitura, gravação e exclusão de blocos no disco. 
 
 * Além de ser flexivelmente estendido, a cada inicialização ele se auto registra no service discovery permitindo assim que o Master sempre verifique a disponibilidade de suas instâncias. 
 
@@ -59,16 +59,15 @@ O sistema está dividido nos módulos virtual-common, virtual-master, virtual-sl
 
 ...
 
-## Desenvolvimento
+## Contribuições
 
-As configurações de Code Style são obrigatórias. Todo o código do Repositório Virtual deverá estar de acordo com este formato de estilo. 
+A contribuição é uma ótima maneira de aprender e dividir conhecimentos de novas tecnologias e seus ecossistemas. Se você deseja contribuir para o projeto e torná-lo melhor, sua ajuda é muito bem-vinda. Mas será necessário seguir alguns procedimentos. 
 
-Antes de enviar qualquer código para o repositório, o committer DEVE ter certeza
-que o código alterado adere ao formato canônico do Repositório Virtual. Assim, ao passar `Source > Cleanup` ou (`Alt + S + U`) no repositório, se todo o código estiver em conformidade resultará em nenhuma alteração.
+Para o desenvolvimento as configurações de Code Style são obrigatórias. Todo o código do Repositório Virtual deverá estar de acordo com este formato de estilo. 
 
-Você precisará verificar se suas configurações [(veja aqui)](../master/docs/ide.md#configuração-do-ambiente) estão definidas corretamente.
+Antes de enviar qualquer código para o repositório, o committer DEVE ter certeza que o código alterado adere ao formato canônico do Repositório Virtual. Assim, ao passar `Source > Cleanup` no repositório, se todo o código estiver em conformidade resultará em nenhuma alteração.
 
-Além das configurações acima se você deseja contribuir para o projeto e torná-lo melhor, sua ajuda é muito bem-vinda. Mas será necessário seguir alguns procedimentos [(veja aqui)](../master/docs/CONTRIBUTING.md#como-contribuir). A contribuição é uma ótima maneira de aprender e dividir conhecimentos de novas tecnologias e seus ecossistemas.
+Você precisará verificar se as [(configurações)](../master/docs/ide.md#configuração-do-ambiente) das IDE's estão definidas corretamente. Além das configurações [(veja aqui)](../master/docs/CONTRIBUTING.md#como-contribuir) as recomendações para as contribuições.
 
 ## Colaboradores
 
@@ -77,3 +76,8 @@ Além das configurações acima se você deseja contribuir para o projeto e torn
 | [<img src="https://avatars0.githubusercontent.com/u/6737144?s=460&v=4" width="100px;"/><br /><sub><b>brenicio</b></sub>](https://github.com/brenicio)<br /> | [<img src="https://avatars2.githubusercontent.com/u/8239569?s=460&v=4" width="100px;"/><br /><sub><b>danylo-macelai</b></sub>](https://github.com/danylo-macelai)<br /> | [<img src="https://avatars3.githubusercontent.com/u/1007389?s=400&v=4" width="100px;"/><br /><sub><b>Renato Araujo</b></sub>](https://github.com/orenatoaraujo)<br /> | 
 | :---------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+
+
+
+

@@ -27,9 +27,14 @@ Se o resultado for semelhante siga em [(frente)](../docs/eclipse.md#workspace), 
 
 ##### VISUAL STUDIO CODE
 
-[VS Code - Download Page](https://code.visualstudio.com/download)
+Vamos assumir que o  Visual Studio Code está instalado, você pode verificar através do DOS digitando os comandos abaixo:
 
-Baixe e instale o VS Code e siga para a [documentação de configuração](../docs/vscode.md#workspace).
+> C:\Users\dev>code -version<br />
+> 1.25.1<br />
+> 1dfc5e557209371715f655691b1235b6b26a06be<br />
+> x64<p>
+
+Se o resultado for semelhante siga em [(frente)](../docs/vscode.md#visual-studio-code), caso contrário, prepare o seu ambiente antes de prosseguir.
 
 ---
 

@@ -47,3 +47,5 @@ target/
 *.class
 /virtual-access/node_modules
 /virtual-access/dist
+/virtual-web/node_modules
+

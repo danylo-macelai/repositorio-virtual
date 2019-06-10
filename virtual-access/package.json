@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "SET NODE_ENV=development&&nodemon --delay 5 dist/index",
+    "dev": "NODE_ENV=development&&nodemon --delay 5 dist/index",
     "gulp": "node_modules/.bin/gulp"
   },
   "keywords": [],
@@ -20,6 +20,7 @@
     "@types/graphql": "0.11.5",
     "@types/lodash": "4.14.78",
     "@types/node": "8.0.34",
+    "eslint": "^5.16.0",
     "gulp": "3.9.1",
     "gulp-clean": "0.3.2",
     "gulp-typescript": "3.2.2",

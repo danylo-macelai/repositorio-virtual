@@ -59,7 +59,7 @@ public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
             "        B.tamanho          AS TAMANHO, " + // ------------------ 3
             "        B.dir_off_line     AS DIR_OFF_LINE, " + // ------------- 4
             "        MAX(B.instance_id) AS INSTANCE_ID, " + // -------------- 5
-            "        B.id_arquivo       AS ID_ARQUIVO, " + // --------------- 6
+            "        B.arquivo_id       AS ARQUIVO_ID, " + // --------------- 6
             "        C.qtde_replicacao  AS QTDE_REPLICACAO, " + // ---------- 7
             "        COUNT(B.id)        AS QTDE_BL " + // ------------------- 8
             " FROM RV_BLOCO B " + //
@@ -69,7 +69,7 @@ public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
             "      B.uuid, " + //
             "      B.tamanho, " + //
             "      B.dir_off_line, " + //
-            "      B.id_arquivo, " + //
+            "      B.arquivo_id, " + //
             "      C.qtde_replicacao " + //
             " HAVING COUNT(B.id) <= C.qtde_replicacao ", //
             nativeQuery = true) //

@@ -4,6 +4,8 @@ import br.com.common.domain.Domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -21,7 +23,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "RV_BLOCO", uniqueConstraints = { @UniqueConstraint(columnNames = { "uuid", "instance_id" }) })
+@Table(name = "RV_BLOCO", uniqueConstraints = {
+        @UniqueConstraint(name = "UNIQ_UUID__INSTANCE_ID_IN_RV_BLOCO", columnNames = { "uuid", "instance_id" })
+}, indexes = {
+        @Index(name = "IDX_UUID_IN_RV_BLOCO", columnList = "uuid", unique = true),
+        @Index(name = "IDX_INSTANCE_ID_IN_RV_BLOCO", columnList = "instance_id", unique = true)
+})
 public class BlocoTO extends Domain {
 
     @Column(name = "numero", updatable = false, nullable = false)
@@ -44,7 +51,7 @@ public class BlocoTO extends Domain {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "id_arquivo", updatable = false, nullable = false)
+    @JoinColumn(name = "arquivo_id", updatable = false, nullable = false, foreignKey = @ForeignKey(name = "FKEY_ARQUIVO_ID_IN_RV_BLOCO"))
     private ArquivoTO arquivo;
 
     public BlocoTO() {

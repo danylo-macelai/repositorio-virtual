@@ -53,15 +53,15 @@ public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
      * @throws MasterException
      */
     @Query(value = " " + //
-            " SELECT MIN(B.id), " + // ----------------------- 0
-            "        B.numero, " + // ------------------------ 1
-            "        B.uuid, " + // -------------------------- 2
-            "        B.tamanho, " + // ----------------------- 3
-            "        B.dir_off_line, " + // ------------------ 4
-            "        MAX(B.instance_id), " + // -------------- 5
-            "        B.id_arquivo, " + // -------------------- 6
-            "        C.qtde_replicacao, " + // --------------- 7
-            "        COUNT(*) " + // ------------------------- 8
+            " SELECT MIN(B.id)          AS ID, " + // ----------------------- 0
+            "        B.numero           AS NUMERO, " + // ------------------- 1
+            "        B.uuid             AS UUID, " + // --------------------- 2
+            "        B.tamanho          AS TAMANHO, " + // ------------------ 3
+            "        B.dir_off_line     AS DIR_OFF_LINE, " + // ------------- 4
+            "        MAX(B.instance_id) AS INSTANCE_ID, " + // -------------- 5
+            "        B.id_arquivo       AS ID_ARQUIVO, " + // --------------- 6
+            "        C.qtde_replicacao  AS QTDE_REPLICACAO, " + // ---------- 7
+            "        COUNT(B.id)        AS QTDE_BL " + // ------------------- 8
             " FROM RV_BLOCO B " + //
             " LEFT JOIN RV_CONFIGURACAO C ON C.id = C.id " + //
             " WHERE B.instance_id IS NOT NULL " + //
@@ -71,7 +71,7 @@ public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
             "      B.dir_off_line, " + //
             "      B.id_arquivo, " + //
             "      C.qtde_replicacao " + //
-            " HAVING COUNT(*) <= C.qtde_replicacao ", //
+            " HAVING COUNT(B.id) <= C.qtde_replicacao ", //
             nativeQuery = true) //
     List<Object[]> carregarParaReplicacao() throws MasterException;
 
@@ -82,19 +82,19 @@ public interface BlocoDAO extends JpaRepository<BlocoTO, Long> {
      * @throws MasterException
      */
     @Query(value = " " + //
-            " SELECT B.uuid, " + // -------------------------- 0
-            "        MAX(B.instance_id), " + // -------------- 1
-            "        C.qtde_replicacao, " + // --------------- 2
-            "        COUNT(*) " + // ------------------------- 3
+            " SELECT B.uuid             AS UUID, " + // --------------------- 0
+            "        MAX(B.instance_id) AS INSTANCE_ID, " + // -------------- 1
+            "        C.qtde_replicacao  AS QTDE_REPLICACAO, " + // ---------- 2
+            "        COUNT(B.id)        AS QTDE_BL" + // -------------------- 3
             " FROM RV_BLOCO B " + //
             " LEFT JOIN RV_CONFIGURACAO C ON C.id = C.id " + //
             " WHERE B.instance_id IS NOT NULL " + //
-            " AND   B.replica IS TRUE " + //
+            " AND   B.replica = :paramIsReplica " + //
             " GROUP BY B.uuid, " + //
             "      C.qtde_replicacao " + //
-            " HAVING COUNT(*) > C.qtde_replicacao ", //
+            " HAVING COUNT(B.id) > C.qtde_replicacao ", //
             nativeQuery = true) //
-    List<Object[]> carregarParaExclusao() throws MasterException;
+    List<Object[]> carregarParaExclusao(@Param("paramIsReplica") boolean replica) throws MasterException;
 
     /**
      * Atualiza algumas informações do bloco

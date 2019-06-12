@@ -89,7 +89,7 @@ public class BlocoBusiness extends DBusiness<BlocoTO> implements IBloco {
     @Transactional(readOnly = true)
     public List<BlocoTO> carregarParaExclusao() throws MasterException {
         final List<BlocoTO> itens = new ArrayList<>();
-        for (final Object[] values : persistence.carregarParaExclusao()) {
+        for (final Object[] values : persistence.carregarParaExclusao(true)) {
             final BlocoTO bloco = new BlocoTO();
             bloco.setUuid(values[0].toString());
             bloco.setInstanceId(values[1].toString());

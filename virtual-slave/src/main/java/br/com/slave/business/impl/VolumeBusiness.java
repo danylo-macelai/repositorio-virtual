@@ -73,6 +73,9 @@ public class VolumeBusiness extends Business<VolumeTO> implements IVolume {
         if (count > 0) {
             throw new SlaveException("slave.inclusao.unica");
         }
+        if (Files.notExists(Paths.get(volume.getLocalizacao()))) {
+            throw new SlaveException("slave.paths.invalido").args(volume.getLocalizacao()).status(Status.BAD_REQUEST);
+        }
         super.incluir(volume);
     }
 

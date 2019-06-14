@@ -43,6 +43,7 @@ public abstract class CommonConfiguration {
     private static final String HIBERNATE_HBM2DDL_AUTO    = "hibernate.hbm2ddl.auto";
     private static final String HIBERNATE_NAMING_STRATEGY = "hibernate.ejb.naming_strategy";
     private static final String HIBERNATE_SHOW_SQL        = "hibernate.show_sql";
+    private static final String HIBERNATE_LOB_CREATION    = "hibernate.jdbc.lob.non_contextual_creation";
 
     protected abstract String[] packagesToScan();
 
@@ -97,6 +98,7 @@ public abstract class CommonConfiguration {
         jpaProperties.put(HIBERNATE_NAMING_STRATEGY, env.getRequiredProperty(HIBERNATE_NAMING_STRATEGY));
         jpaProperties.put(HIBERNATE_SHOW_SQL, env.getRequiredProperty(HIBERNATE_SHOW_SQL));
         jpaProperties.put(HIBERNATE_FORMAT_SQL, env.getRequiredProperty(HIBERNATE_FORMAT_SQL));
+        jpaProperties.put(HIBERNATE_LOB_CREATION, env.getRequiredProperty(HIBERNATE_LOB_CREATION));
         entityManagerFactoryBean.setJpaProperties(jpaProperties);
 
         return entityManagerFactoryBean;

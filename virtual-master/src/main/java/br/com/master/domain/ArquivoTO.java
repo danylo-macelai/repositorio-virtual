@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -25,7 +26,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "RV_ARQUIVO")
+@Table(name = "RV_ARQUIVO", indexes = {
+        @Index(name = "IDX_NOME_IN_RV_ARQUIVO", columnList = "nome", unique = true)
+})
 public class ArquivoTO extends Domain {
 
     @Column(name = "tamanho", updatable = false, nullable = false)

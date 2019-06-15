@@ -1,13 +1,16 @@
 package br.com.master.task;
 
+import static br.com.common.configuration.CommonQuartzConfiguration.APPLICATION_CONTEXT;
+
 import br.com.master.business.IMasterTask;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.repeat.RepeatStatus;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
  * <b>Description:</b> FIXME: Document this type <br>
@@ -17,19 +20,18 @@ import org.springframework.batch.repeat.RepeatStatus;
  * @date: 5 de abr de 2019
  * @version $
  */
-public class TaskInstanceSlave implements Tasklet {
+@SuppressWarnings("serial")
+public class TaskInstanceSlave extends QuartzJobBean implements Serializable {
 
     static AtomicBoolean running = new AtomicBoolean(false);
-    IMasterTask          business;
-
-    public TaskInstanceSlave(IMasterTask masterTaskBusiness) {
-        business = masterTaskBusiness;
-    }
 
     @Override
-    public RepeatStatus execute(StepContribution step, ChunkContext chunk) throws Exception {
+    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         if (!running.getAndSet(true)) {
             try {
+                final ApplicationContext applicationContext = (ApplicationContext) context.getScheduler().getContext()
+                        .get(APPLICATION_CONTEXT);
+                final IMasterTask business = applicationContext.getBean(IMasterTask.class);
                 business.instance();
             } catch (final Exception e) {
                 e.printStackTrace();
@@ -37,7 +39,6 @@ public class TaskInstanceSlave implements Tasklet {
                 running.set(false);
             }
         }
-        return RepeatStatus.FINISHED;
     }
 
 }

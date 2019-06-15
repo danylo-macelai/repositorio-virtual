@@ -2,8 +2,6 @@ package br.com.slave.task;
 
 import static br.com.common.configuration.CommonQuartzConfiguration.APPLICATION_CONTEXT;
 
-import br.com.common.wrappers.CommonJob;
-
 import br.com.slave.business.ISlaveTask;
 
 import java.io.Serializable;
@@ -12,6 +10,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
  * <b>Description:</b> FIXME: Document this type <br>
@@ -22,7 +21,7 @@ import org.springframework.context.ApplicationContext;
  * @version $
  */
 @SuppressWarnings("serial")
-public class TaskContagem extends CommonJob implements Serializable {
+public class TaskContagem extends QuartzJobBean implements Serializable {
 
     static AtomicBoolean running = new AtomicBoolean(false);
 

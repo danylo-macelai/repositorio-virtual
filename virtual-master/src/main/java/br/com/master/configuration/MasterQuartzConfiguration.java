@@ -2,17 +2,17 @@ package br.com.master.configuration;
 
 import br.com.common.configuration.CommonQuartzConfiguration;
 
-import br.com.master.wrappers.MasterJob;
+import br.com.master.task.TaskGravacaoSlave;
+import br.com.master.task.TaskInstanceSlave;
+import br.com.master.task.TaskLimparDiretorio;
+import br.com.master.task.TaskMigracaoSlave;
+import br.com.master.task.TaskReplicacaoSlave;
 
 import org.quartz.JobDetail;
 import org.quartz.Trigger;
-import org.springframework.batch.core.configuration.JobRegistry;
-import org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 
 /**
  * <b>Description:</b> FIXME: Document this type <br>
@@ -25,17 +25,17 @@ import org.springframework.core.env.Environment;
 @Configuration
 public class MasterQuartzConfiguration extends CommonQuartzConfiguration {
 
-    public static final String JOB_INSTANCE   = "jobInstance";
-    public static final String JOB_GRAVACAO   = "JobGravacao";
-    public static final String JOB_REPLICACAO = "jobReplicacao";
-    public static final String JOB_LIMPAR     = "jobLimpar";
-    public static final String JOB_MIGRACAO   = "jobMigracao";
+    private static final String JOB_INSTANCE   = "jobInstance";
+    private static final String JOB_GRAVACAO   = "JobGravacao";
+    private static final String JOB_REPLICACAO = "jobReplicacao";
+    private static final String JOB_LIMPAR     = "jobLimpar";
+    private static final String JOB_MIGRACAO   = "jobMigracao";
 
-    public static final String TRIGGER_INSTANCE         = "triggerInstance";
-    public static final String TRIGGER_GRAVACAO         = "triggerGravacao";
-    public static final String TRIGGER_REPLICACAO       = "triggerReplicacao";
-    public static final String TRIGGER_LIMPAR_DIRETORIO = "triggerLimparDiretorio";
-    public static final String TRIGGER_MIGRACAO         = "triggerMigracao";
+    private static final String TRIGGER_INSTANCE         = "triggerInstance";
+    private static final String TRIGGER_GRAVACAO         = "triggerGravacao";
+    private static final String TRIGGER_REPLICACAO       = "triggerReplicacao";
+    private static final String TRIGGER_LIMPAR_DIRETORIO = "triggerLimparDiretorio";
+    private static final String TRIGGER_MIGRACAO         = "triggerMigracao";
 
     private static final String CRON_INSTANCE_SLAVE   = "cron.instance.slave";
     private static final String CRON_GRAVACAO_SLAVE   = "cron.gravacao.slave";
@@ -43,39 +43,29 @@ public class MasterQuartzConfiguration extends CommonQuartzConfiguration {
     private static final String CRON_MIGRACAO         = "cron.migracao.slave";
     private static final String CRON_LIMPAR_DIRETORIO = "cron.limpar.diretorio";
 
-    @Autowired
-    private Environment env;
-
-    @Bean
-    public JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor(JobRegistry jobRegistry) {
-        final JobRegistryBeanPostProcessor registry = new JobRegistryBeanPostProcessor();
-        registry.setJobRegistry(jobRegistry);
-        return registry;
-    }
-
     @Bean(JOB_INSTANCE)
     public JobDetail jobInstance() {
-        return jobBuilder(JOB_INSTANCE);
+        return jobBuilder(JOB_INSTANCE, TaskInstanceSlave.class);
     }
 
     @Bean(JOB_GRAVACAO)
     public JobDetail jobGravacao() {
-        return jobBuilder(JOB_GRAVACAO);
+        return jobBuilder(JOB_GRAVACAO, TaskGravacaoSlave.class);
     }
 
     @Bean(JOB_REPLICACAO)
     public JobDetail jobReplicacao() {
-        return jobBuilder(JOB_REPLICACAO);
+        return jobBuilder(JOB_REPLICACAO, TaskReplicacaoSlave.class);
     }
 
     @Bean(JOB_LIMPAR)
     public JobDetail jobLimpar() {
-        return jobBuilder(JOB_LIMPAR);
+        return jobBuilder(JOB_LIMPAR, TaskLimparDiretorio.class);
     }
 
     @Bean(JOB_MIGRACAO)
     public JobDetail jobMigracao() {
-        return jobBuilder(JOB_MIGRACAO);
+        return jobBuilder(JOB_MIGRACAO, TaskMigracaoSlave.class);
     }
 
     @Bean(TRIGGER_GRAVACAO)
@@ -101,10 +91,6 @@ public class MasterQuartzConfiguration extends CommonQuartzConfiguration {
     @Bean(TRIGGER_MIGRACAO)
     public Trigger triggerMigracao(@Qualifier(JOB_MIGRACAO) JobDetail job) {
         return triggerBuilder(TRIGGER_MIGRACAO, job, env.getRequiredProperty(CRON_MIGRACAO));
-    }
-
-    private JobDetail jobBuilder(String id) {
-        return super.jobBuilder(id, MasterJob.class);
     }
 
 }

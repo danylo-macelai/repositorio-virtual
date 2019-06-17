@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
         @UniqueConstraint(name = "UNIQ_UUID__INSTANCE_ID_IN_RV_BLOCO", columnNames = { "uuid", "instance_id" })
 }, indexes = {
         @Index(name = "IDX_UUID_IN_RV_BLOCO", columnList = "uuid", unique = true),
-        @Index(name = "IDX_INSTANCE_ID_IN_RV_BLOCO", columnList = "instance_id", unique = true)
+        @Index(name = "IDX_INSTANCE_ID_IN_RV_BLOCO", columnList = "instance_id", unique = false)
 })
 public class BlocoTO extends Domain {
 

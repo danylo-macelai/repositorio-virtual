@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "RV_ARQUIVO", indexes = {
-        @Index(name = "IDX_NOME_IN_RV_ARQUIVO", columnList = "nome", unique = true)
+        @Index(name = "IDX_NOME_IN_RV_ARQUIVO", columnList = "nome", unique = false)
 })
 public class ArquivoTO extends Domain {
 

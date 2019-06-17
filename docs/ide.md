@@ -1,6 +1,6 @@
 # Configuração do Ambiente
 
-_Verifique as configurações do [Eclipse](../docs/ide.md#eclipse), [Visual Studio Code](../docs/ide.md#visual-studio-code) e [Andriod Studio](../docs/ide.md#android-studio)_
+_Verifique as configurações do [Eclipse](../docs/ide.md#eclipse), [Visual Studio Code](../docs/ide.md#visual-studio-code) e [Android Studio](../docs/ide.md#android-studio)_
 
 ---
 
@@ -40,6 +40,22 @@ Se o resultado for semelhante siga em [(frente)](../docs/vscode.md#visual-studio
 
 ##### ANDROID STUDIO
 
-???
+Vamos assumir que o Java 8+, Java JDK 8+ e o Android Studio 3.4.1 estão instalados, você pode verificar através do DOS digitando os comandos abaixo:
+
+> C:\Users\dev>`java -version`<br />
+> java version "1.8.0_162"<br />
+> Java(TM) SE Runtime Environment (build 1.8.0_162-b12)<br />
+> Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)<p>
+
+>C:\Program Files\Java\jdk-12.0.1\bin>`javac -version`<br />
+>javac 12.0.1<br />
+
+Verificar a versão do Android Studio abaixo:
+
+>Execute Android Studio
+>Menu `help` opção `about`
+>Android Studio 3.4.1
+>Build #AI-183.6156.11.34.5522156, built on May 1, 2019
+
 
 Se o resultado for semelhante siga em [(frente)](../docs/android_studio.md#workspace), caso contrário, prepare o seu ambiente antes de prosseguir.

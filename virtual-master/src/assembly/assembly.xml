@@ -11,8 +11,8 @@
             <outputDirectory>bin</outputDirectory>
             <includes>
                 <include>*.bat</include>
+                <include>*.sh</include>
             </includes>
-            <lineEnding>dos</lineEnding>
         </fileSet>
         
         <fileSet>

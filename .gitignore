@@ -51,4 +51,22 @@ target/
 virtual-master/men
 virtual-slave/men
 
+# android studio ignore
+/virtual-mobile/*.iml
+/virtual-mobile/.gradle
+/virtual-mobile/local.properties
+/virtual-mobile/.idea/caches
+/virtual-mobile/.idea/libraries
+/virtual-mobile/.idea/modules.xml
+/virtual-mobile/.idea/workspace.xml
+/virtual-mobile/.idea/navEditor.xml
+/virtual-mobile/.idea/assetWizardSettings.xml
+/virtual-mobile/.DS_Store
+/virtual-mobile/build
+/virtual-mobile/captures
+/virtual-mobile/.externalNativeBuild
+/virtual-mobile/.gitignore
+/virtual-mobile/app/.gitignore
+
+
 

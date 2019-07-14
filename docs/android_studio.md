@@ -99,6 +99,17 @@ No menu `Java inspection and quick fix` e marque as opções `Add final modifier
     |   ...                                                                                          |
     +------------------------------------------------------------------------------------------------+
 
+Faça a configuração do FILE HEADER para ser incluido nas classes.
+Menu Settings > Editor > File and code templates
+Aba `Includes` > Clique em `File Header`
+No espaço ao lado inclua no arquivo: 
+>/**Description: FIXME: Document this type<br>
+*Project: ${PROJECT_NAME}<br>
+*@author ${USER}<br>
+*@date: ${DATE}<br>
+*@version $$<br>
+*/
+
 E por fim defina o keymap da IDE acessando o `File > Settings`, clique no menu `Keymap` marque a opção `Eclipse`
 
 ---
@@ -151,4 +162,3 @@ Feito isso clique no menu `Run > Run 'app'`.
 Habilite a depuração USB e o modo desenvolvedor do seu dispositivo *Android 6.0 (API 23)+*.
 
 Por fim vá no menu `Run > Run 'app'`.
-

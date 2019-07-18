@@ -1,11 +1,5 @@
-import { usuarioQueries } from './resources/usuario/usuario.schema';
+import { merge } from "lodash";
 
-const Query = `
-    type Query {
-        ${usuarioQueries}
-    }
-`;
+const Query = merge(...);
 
-export {
-    Query
-}
+export { Query };

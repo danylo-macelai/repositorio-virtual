@@ -1,43 +1,42 @@
-Como Contribuir
-=========================================
-Vamos utilizar a abordagem de Branch para as contribuições. Será necessário acessar a perspectiva do Git em `Window > Perspective > Open Perspective > Other..`. No assistente de perspectiva, selecione `Git` depois clique no botão `Open` para abrir a perspectiva.
+# Como Contribuir
 
-     _________________
-    | Git Repositories \_____________________________________________________________________________
-    |                                                                                                |
-    |   +-----------------------------------------------+ +--------------------------------------+   |
-    |   |  > [] repositorio-virtual [master] - C:\wo... | |                                      |   |
-    |   |                                               | |                                      |   |
-    |   |                                               | |                                      |   |
-    |   |                                               | |                                      |   |
-    |   |                                               | |                                      |   |
-    |   |                                               | +--------------------------------------+   |
-    |   |                                               | +--------------------------------------+   |
-    |   |                                               | |                                      |   |
-    |   |                                               | |                                      |   |
-    |   |                                               | |                                      |   |
-    |   +-----------------------------------------------+ +--------------------------------------+   |
-    +------------------------------------------------------------------------------------------------+
+Vamos utilizar a abordagem de Branch para as contribuições. Será necessário acessar via **Dos**/**Git Bash** o diretório do repositório `D:\workspaces\GITHUB\repositorio-virtual`
 
-Clique no botão direito em `> [] repositorio-virtual [master] - C:\wo...`, no menu de contexto `Switch To > New Branch...`. No assistente de criação de branch, informe o `Branch name`, lembre-se que o nome deverá representar o objetivo desta contribuição depois clique em `Finish`.
+1 - Digite o comando `status` se resultado for **On branch master** siga para o passo `3`.
 
-     004_ajustar_documentacao
-      |    | 
+    D:\workspaces\GITHUB\repositorio-virtual>git status
+    ...
+
+2 – Será necessário fazer um `switch` para a branch **_master_**, para através do comando `checkout`.
+
+    D:\workspaces\GITHUB\repositorio-virtual>git checkout master
+    ...
+
+3 – Faça um `fetch` para baixar as atualizações do repositório remoto.
+
+    D:\workspaces\GITHUB\repositorio-virtual>git fetch origin
+    ...
+
+4 – Reset o seu ambiente local de acordo com o remoto
+
+    D:\workspaces\GITHUB\repositorio-virtual>git reset --hard origin/master
+    ...
+
+5 – Crie a sua `branch`, lembre-se que o nome deverá representar o objetivo desta contribuição.
+
+    Exemplo:
+    004_ajustar_documentacao
+      |    |
       |    +------> Use o título da issues
       +------> Use o número da issues
 
-     ________________________________________________________________________________________________
-    | Create Branch                                                                                  |
-    |                                                                                                |
-    |      ...                                                                                       |
-    |      Branch name: 004_ajustar_documentacao                                                    |
-    |      ...                                                                                       |
-    |      [x] Check out new branch                                                                  |
-    +------------------------------------------------------------------------------------------------+
-    |                                                                   [ Finish ]   [  ...  ]       |
-    +------------------------------------------------------------------------------------------------+
+    D:\workspaces\GITHUB\repositorio-virtual>git checkout -b 004_ajustar_documentacao
+    ...
 
-Envie sua branch para o repositório na nuvem clicando com o botão direito em `> [] repositorio-virtual [master] - C:\wo...`, no menu de contexto `Push Branch ‘004_ajustar_documentacao’...`. No assistente de push branch, não informe nada apenas clique em `Next` em seguida no `Finish`.
+6 – Envie sua `branch` para o repositório na nuvem através do comando.
+
+    D:\workspaces\GITHUB\repositorio-virtual>git push origin 004_ajustar_documentacao
+    ...
 
 1. Implemente / corrija o código conforme necessário;
 2. Comente as suas contribuições;
@@ -47,4 +46,4 @@ Envie sua branch para o repositório na nuvem clicando com o botão direito em `
 
 > Antes de abrir o pull request, caso você tenha mais de um commit realize `squash` para manter apenas um commit com a mensagem que corresponde o trabalho realizado, em seguida faça um `rebase` para manter o seu commit no topo da pilha do histórico.
 
-Agora acesse o `github` e abra um `New pull request` e aguarde que suas contribuições sejam revisadas e aprovadas pelos outros contribuintes para serem mesclada. 
+Agora acesse o `github` e abra um `New pull request` e aguarde que suas contribuições sejam revisadas e aprovadas pelos outros contribuintes para serem mesclada.

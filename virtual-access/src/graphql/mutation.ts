@@ -1,11 +1,5 @@
-import { usuarioMutations } from './resources/usuario/usuario.schema';
+import { merge } from "lodash";
 
-const Mutation = `
-    type Mutation {
-        ${usuarioMutations}
-    }
-`;
+const Mutation = merge(...);
 
-export {
-    Mutation
-}
+export { Mutation };

@@ -47,6 +47,7 @@ target/
 *.class
 /virtual-access/node_modules
 /virtual-access/dist
+/virtual-access/.env
 /virtual-web/node_modules
 virtual-master/men
 virtual-slave/men

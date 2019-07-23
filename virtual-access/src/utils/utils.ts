@@ -1,3 +1,12 @@
+/**
+ * Description:</b> FIXME: Document this type <br>
+ * Project:</b> virtual-access <br>
+ *
+ * author: macelai
+ * date: 13 de mai de 2019
+ * version $
+ */
+
 import { Server } from 'http';
 
 export const normalizePort = (
@@ -35,4 +44,16 @@ export const onListening = (server: Server) => {
     let bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
     console.log(`Listening at ${bind}...`);
   };
+};
+
+export const handleError = (error: Error) => {
+  let errorMessage: string = `${error.name}: ${error.message}`;
+  console.log(errorMessage);
+  return Promise.reject(new Error(errorMessage));
+};
+
+export const throwError = (condition: boolean, message: string): void => {
+  if (condition) {
+    throw new Error(message);
+  }
 };

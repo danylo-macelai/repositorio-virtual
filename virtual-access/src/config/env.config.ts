@@ -1,3 +1,12 @@
+/**
+ * Description:</b> FIXME: Document this type <br>
+ * Project:</b> virtual-access <br>
+ *
+ * author: macelai
+ * date: 8 de jul de 2019
+ * version $
+ */
+
 const dotEnv = require('dotenv');
 dotEnv.config();
 

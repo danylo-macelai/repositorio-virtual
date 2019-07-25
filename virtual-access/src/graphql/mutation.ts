@@ -9,6 +9,8 @@
 
 import merge from 'lodash.merge';
 
-const Mutation = merge(...);
+import { usuarioMutations } from './schema/usuario.schema';
+
+const Mutation = merge(usuarioMutations);
 
 export { Mutation };

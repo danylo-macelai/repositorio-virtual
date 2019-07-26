@@ -43,13 +43,13 @@ public class ArquivoResource {
     @Autowired
     IArquivo arquivoBusiness;
 
-    @GetMapping(value = "/arquivos/{nome}")
+    @GetMapping(value = "/arquivos")
     @ApiOperation(value = "Consulta os metadados do arquivo", nickname = "consulta", notes = "<p>A consulta é usada para recuperar os <strong>metadados</strong> dos <strong>arquivos</strong> através do <strong>nome</strong>, caso seja localizado um ou mais registros será retornado os <strong>metadados</strong> no corpo da mensagem da resposta no formato <strong>json</strong> caso contrário, o status <strong>404</strong> indicando que o arquivo não existe ou não foi localizado.</p>", response = List.class, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Nenhum arquivo foi localizado!")
     })
     public ResponseEntity<List<ArquivoTO>> consulta(
-            @ApiParam(name = "nome", value = "Nome é a identificação do arquivo digital deverá conter a extensão.", example = "remessa.txt", required = true) @PathVariable String nome) {
+            @ApiParam(name = "nome", value = "Nome é a identificação do arquivo digital deverá conter a extensão.", example = "remessa.txt", required = true) @RequestParam("nome") String nome) {
         final List<ArquivoTO> arquivos = arquivoBusiness.carregarPor(nome);
         if (arquivos.isEmpty()) {
             throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
@@ -57,7 +57,7 @@ public class ArquivoResource {
         return ResponseEntity.ok(arquivos);
     }
 
-    @GetMapping(value = "/arquivos/leitura/{id:\\d+}")
+    @GetMapping(value = "/arquivos/{id:\\d+}")
     @ApiOperation(value = "Carrega o arquivo do volume", nickname = "leitura", notes = "<p>A leitura é usada para fazer o <strong>download</strong> do <strong>arquivo</strong> no servidor, através do <strong>id</strong>. O arquivo será reconstruído como os <strong>blocos</strong> que estão espalhados entre os servidores <strong>slave</strong> registrados no <strong>service Discovery</strong> se a operação for realizada com sucesso, retorna o <strong>binário</strong> no corpo da mensagem caso contrário, a mensagem de erro.</p>", response = Resource.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Nenhum registro foi encontrado para a consulta.")
@@ -77,7 +77,7 @@ public class ArquivoResource {
                 .body(stream);
     }
 
-    @PostMapping("/arquivos/gravacao")
+    @PostMapping("/arquivos")
     @ApiOperation(value = "Envia um arquivo para o volume", nickname = "gravacao", notes = "<p>A gravação é usada para fazer o <strong>upload</strong> do <strong>arquivo</strong> para o volume, que será divido em <strong>blocos</strong> de tamanho fixo pré-configurado e enviados aos servidores <strong>slave</strong> para o armazenamento, caso esteja configurado também serão replicados em outros servidores registrados no <strong>service discovery</strong>. Se a operação for realizada com sucesso, retorna os <strong>metadados</strong> do arquivo caso contrário, a mensagem de erro</p>", response = ArquivoTO.class, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "<p>Regras de Negócio:</p> <ul> <li>Não existe serviço registrado no service discovery</li> <li>A localização (C:/.../.../m1) do volume é invalida.</li> </ul>") })
@@ -87,8 +87,8 @@ public class ArquivoResource {
         return ResponseEntity.ok(arquivo);
     }
 
-    @DeleteMapping(value = "/arquivos/exclusao/{id:\\d+}")
-    @ApiOperation(value = "Remove o bloco do volume", nickname = "exclusao", notes = "<p>A exclusão é usada para <strong>remover</strong> o <strong>arquivo</strong> do volume, através do <strong>id</strong>. Todos os <strong>blocos</strong> do arquivo serão removidos do volume em seguida os <strong>metadados</strong> se a operação for realizada com sucesso, retorna o status <strong>204</strong> caso contrário, a mensagem de erro.</p>", response = Response.class)
+    @DeleteMapping(value = "/arquivos/{id:\\d+}")
+    @ApiOperation(value = "Remove o bloco do volume", nickname = "exclusao", notes = "<p>A exclusão é usada para <strong>remover</strong> o <strong>arquivo</strong> do volume, através do <strong>id</strong>. Todos os <strong>blocos</strong> do arquivo serão removidos do volume em seguida os <strong>metadados</strong> se a operação for realizada com sucesso, retorna o status <strong>204</strong> caso contrário, a mensagem de erro.</p>", response = ArquivoTO.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Nenhum arquivo foi localizado!")
     })

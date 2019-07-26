@@ -28,7 +28,7 @@
         <commons-lang.version>2.6</commons-lang.version>
 
         <zjsonpatch.version>0.4.3</zjsonpatch.version>
-        <postgresql.version>9.4-1200-jdbc41</postgresql.version>
+        <postgresql.version>42.2.6</postgresql.version>
         <hsqldb.version>1.8.0.10</hsqldb.version>
         <okhttp3.version>3.14.0</okhttp3.version>
         <moshi.version>1.8.0</moshi.version>

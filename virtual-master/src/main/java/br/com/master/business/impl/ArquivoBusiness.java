@@ -87,10 +87,13 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
             final Iterator<BlocoTO> blocoIterator = blocos.iterator();
             while (blocoIterator.hasNext()) {
                 final BlocoTO bloco = blocoIterator.next();
-                final Response response = httpDelete(masterBalance.volumeUrlSlave(bloco.getInstanceId()), "exclusao",
-                        bloco.getUuid());
-                if (Status.OK.getStatusCode() != response.code()) {
-                    throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
+                if (bloco.getInstanceId() != null) {
+                    final Response response = httpDelete(masterBalance.volumeUrlSlave(bloco.getInstanceId()),
+                            "exclusao",
+                            bloco.getUuid());
+                    if (Status.OK.getStatusCode() != response.code()) {
+                        throw new MasterException(response.body().string()).status(Status.BAD_REQUEST);
+                    }
                 }
             }
 

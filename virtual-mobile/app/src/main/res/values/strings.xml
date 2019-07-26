@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">virtual-mobile</string>
+    <string name="title_activity_main">MainActivity</string>
     <string name="apiconnection_name">ApiConnection</string>
+
+    <string name="login_activity_name">LoginActivity</string>
 </resources>

@@ -1,0 +1,5 @@
+query validarTokenQuery($token: String!){
+validarToken(token: $token){
+ativo
+}
+}

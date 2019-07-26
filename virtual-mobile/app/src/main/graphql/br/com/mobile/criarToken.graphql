@@ -1,0 +1,5 @@
+mutation criarTokenMutation($email: String!, $senha: String!){
+  criarToken(email: $email, senha: $senha){
+    token
+  }
+}

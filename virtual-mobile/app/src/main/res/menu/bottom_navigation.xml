@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/search_menu"
+        android:icon="@drawable/search_menu"
+        android:title="Search" />
+
+    <item
+        android:id="@+id/upload_menu"
+        android:icon="@drawable/upload_menu"
+        android:title="Upload" />
+
+    <item
+        android:id="@+id/user_menu"
+        android:icon="@drawable/user_menu"
+        android:title="User" />
+    <item
+        android:id="@+id/apiconnection_menu"
+        android:icon="@drawable/apiconnection_menu"
+        android:title="Config" />
+
+</menu>

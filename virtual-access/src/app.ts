@@ -1,3 +1,12 @@
+/**
+ * Description:</b> FIXME: Document this type <br>
+ * Project:</b> virtual-access <br>
+ *
+ * author: macelai
+ * date: 13 de mai de 2019
+ * version $
+ */
+
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
 

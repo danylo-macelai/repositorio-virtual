@@ -3,8 +3,13 @@
  * Project:</b> virtual-access <br>
  *
  * author: macelai
- * date: 8 de jul de 2019
+ * date: 26 de jul de 2019
  * version $
  */
 
-export { ENV } from './env.config';
+enum PerfilType {
+  Adminstrador = 'ADMINSTRADOR',
+  Padrao = 'PADRAO',
+}
+
+export default PerfilType;

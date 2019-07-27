@@ -4,24 +4,27 @@ const ts = require('gulp-typescript');
 
 const tsProject = ts.createProject('tsconfig.json');
 
-gulp.task('scripts', ['static'], () => {
+gulp.task('scripts', () => {
   const tsResult = tsProject.src().pipe(tsProject());
 
   return tsResult.js.pipe(gulp.dest('dist'));
 });
 
-gulp.task('static', ['clean'], () => {
+gulp.task('static', () => {
   return gulp.src(['src/**/*.json']).pipe(gulp.dest('dist'));
 });
 
 gulp.task('clean', () => {
-  return gulp.src('dist').pipe(clean());
+  return gulp.src('dist', { allowEmpty: true }).pipe(clean());
 });
 
-gulp.task('build', ['scripts']);
+gulp.task('build', gulp.series('clean', 'static', 'scripts'));
 
-gulp.task('watch', ['build'], () => {
-  return gulp.watch(['src/**/*.ts', 'src/**/*.json'], ['build']);
+gulp.task('watch', () => {
+  return gulp.watch(
+    ['src/**/*.ts', 'src/**/*.json'],
+    gulp.series('build', 'watch')
+  );
 });
 
-gulp.task('default', ['watch']);
+gulp.task('default', gulp.series('build', 'watch'));

@@ -26,6 +26,7 @@ import isEmail from 'validator/lib/isEmail';
 import { handleError, throwError } from '../../utils/utils';
 import { UsuarioModel } from '../../models/UsuarioModel';
 import PerfilType from '../../enums/PerfilType';
+import { isAdminstrador, isAutorOrAdminstrador } from '../../utils/utils';
 
 const perfilTypes = new GraphQLEnumType({
   name: 'perfilEnum',
@@ -125,13 +126,21 @@ const usuarioQueries = new GraphQLObjectType({
           type: GraphQLID,
         },
       },
-      resolve(parent: any, input) {
-        return UsuarioModel.findByPk(input.id)
+      resolve(parent: any, args, context) {
+        return UsuarioModel.findByPk(args.id)
           .then((usuario: UsuarioModel) => {
             throwError(
               !usuario,
-              `Usuário com o id ${input.id} não foi localizado!`
+              `Usuário com o id ${args.id} não foi localizado!`
             );
+
+            throwError(
+              !isAutorOrAdminstrador(usuario, context.auth),
+              `O usuário ${
+                context.auth.email
+              }, não possui permissão para consultar o registro!`
+            );
+
             return usuario;
           })
           .catch(handleError);
@@ -140,14 +149,23 @@ const usuarioQueries = new GraphQLObjectType({
 
     listagem: {
       type: new GraphQLList(Usuario),
-      resolve(parent: any) {
+      resolve(parent: any, args, context) {
+        throwError(
+          !isAdminstrador(context.auth),
+          `Somente usuários com perfil de administrador poderá realizar a operação`
+        );
+
         return UsuarioModel.findAll().catch(handleError);
       },
     },
 
     quantidade: {
       type: GraphQLInt,
-      resolve(parent: any) {
+      resolve(parent: any, context) {
+        throwError(
+          !isAdminstrador(context.auth),
+          `Somente usuários com perfil de administrador poderá realizar a operação`
+        );
         return UsuarioModel.count().catch(handleError);
       },
     },
@@ -184,7 +202,7 @@ const usuarioMutations = new GraphQLObjectType({
           type: new GraphQLNonNull(UsuarioAlteracao),
         },
       },
-      resolve: async (parent: any, { input }) => {
+      resolve: async (parent: any, { input }, context) => {
         return sequelize
           .transaction((t: Transaction) => {
             return UsuarioModel.findByPk(input.id).then(
@@ -193,6 +211,14 @@ const usuarioMutations = new GraphQLObjectType({
                   !usuario,
                   `Usuário com o id ${input.id} não foi localizado!`
                 );
+
+                throwError(
+                  !isAutorOrAdminstrador(usuario, context.auth),
+                  `O usuário ${
+                    context.auth.email
+                  }, não possui permissão para alterar o registro!`
+                );
+
                 return UsuarioModel.update(input, {
                   where: { id: usuario.id },
                   transaction: t,
@@ -211,7 +237,7 @@ const usuarioMutations = new GraphQLObjectType({
           type: new GraphQLNonNull(GraphQLID),
         },
       },
-      resolve: async (parent: any, args) => {
+      resolve: async (parent: any, args, context) => {
         return sequelize
           .transaction((t: Transaction) => {
             return UsuarioModel.findByPk(args.id).then(
@@ -220,6 +246,12 @@ const usuarioMutations = new GraphQLObjectType({
                   !usuario,
                   `Usuário com o id ${args.id} não foi localizado!`
                 );
+
+                throwError(
+                  !isAdminstrador(context.auth),
+                  `Somente usuários com perfil de administrador poderá realizar a operação`
+                );
+
                 return usuario
                   .destroy({ transaction: t })
                   .then(result => result);

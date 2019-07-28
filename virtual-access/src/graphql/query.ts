@@ -10,7 +10,8 @@
 import merge from 'lodash.merge';
 
 import { usuarioQueries } from './schema/usuario.schema';
+import { authQueries } from './schema/auth.schema';
 
-const Query = merge(usuarioQueries);
+const Query = merge(usuarioQueries, authQueries);
 
 export { Query };

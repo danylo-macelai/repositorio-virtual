@@ -10,7 +10,8 @@
 import merge from 'lodash.merge';
 
 import { usuarioMutations } from './schema/usuario.schema';
+import { authMutations } from './schema/auth.schema';
 
-const Mutation = merge(usuarioMutations);
+const Mutation = merge(usuarioMutations, authMutations);
 
 export { Mutation };

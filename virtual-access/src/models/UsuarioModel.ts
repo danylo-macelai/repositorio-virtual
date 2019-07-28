@@ -14,8 +14,11 @@ import {
   Model,
   Table,
   UpdatedAt,
+  BeforeUpdate,
+  BeforeCreate,
 } from 'sequelize-typescript';
 import PerfilType from '../enums/PerfilType';
+import { genSaltSync, hashSync, compareSync } from 'bcryptjs';
 
 @Table({
   tableName: 'RV_USUARIO',
@@ -91,4 +94,22 @@ export class UsuarioModel extends Model<UsuarioModel> {
     type: DataType.ENUM(PerfilType.Padrao, PerfilType.Adminstrador),
   })
   public perfilType!: string;
+
+  @BeforeCreate
+  static onCreate(instance: UsuarioModel) {
+    const salt = genSaltSync();
+    instance.senha = hashSync(instance.senha, salt);
+  }
+
+  @BeforeUpdate
+  static onUpdate(instance: UsuarioModel) {
+    if (instance.changed('senha')) {
+      const salt = genSaltSync();
+      instance.senha = hashSync(instance.senha, salt);
+    }
+  }
+
+  public verificarSenha = (encodedSenha: string, senha: string): boolean => {
+    return compareSync(senha, encodedSenha);
+  }
 }

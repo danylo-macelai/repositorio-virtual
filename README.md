@@ -61,14 +61,14 @@ O sistema está dividido nos módulos virtual-common, virtual-master, virtual-sl
 
 ## Virtual Web
 
-...
+- O Web é o sistema que disponibiliza ao usuário, de forma amigável, o acesso aos serviços dos projetos (Master e Access) por meio de um Browser Desktop (como o Chrome, Firefox, etc.) ou Mobile (como Safari, Chrome, etc.).
 
 ## Virtual Mobile
 
-* O Mobile é um sistema que disponibiliza as funcionalidades de Ler, Gravar e Exclusão de arquivos popr meio de um dispositivo mobile com SO Android.
-E também realiza o gerenciamento dos arquivos enviados.
+- O Mobile é um sistema que disponibiliza as funcionalidades de Ler, Gravar e Exclusão de arquivos popr meio de um dispositivo mobile com SO Android.
+  E também realiza o gerenciamento dos arquivos enviados.
 
-* O micro serviço Virtual Master é utilizado para se fazer possivel a interação com o modulo mobile.
+- O micro serviço Virtual Master é utilizado para se fazer possivel a interação com o modulo mobile.
 
 ## Contribuições
 

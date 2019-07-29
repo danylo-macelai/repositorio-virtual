@@ -26,26 +26,26 @@ _O arquivo remessa.txt está divido em dois blocos ac92.rvf e b508.rvf. Cada blo
 Quando o cliente solicitar a leitura do arquivo o Master deverá recuperar os blocos nas instâncias dos Slaves e reconstruir arquivo que será devolvido ao cliente.
 
 O sistema está dividido nos módulos virtual-common, virtual-master, virtual-slave, virtual-access, virtual-web e virtual-mobile responsáveis por tarefas específicas permitindo assim a utilização de diversas linguagens e frameworks.
- 
+
 ## Virtual Common
 
-* O Common permite que os recursos sejam compartilhados com os demais projetos, fornecendo uma base para eles que combinam as soluções hibernate e spring.
+- O Common permite que os recursos sejam compartilhados com os demais projetos, fornecendo uma base para eles que combinam as soluções hibernate e spring.
 
 ## Virtual Master
 
-* O Master é um micros-serviço que interage diretamente com os clientes através da leitura, gravação e exclusão de arquivos. Os arquivos enviados serão divididos em blocos de tamanho fixo e armazenados no diretório temporário da aplicação, assim que alguma instância Slave estiver registrada no service discovery a tarefa de gravação de blocos será executada para que posteriormente seja realizada a replicação entre os nós Slave.
+- O Master é um micros-serviço que interage diretamente com os clientes através da leitura, gravação e exclusão de arquivos. Os arquivos enviados serão divididos em blocos de tamanho fixo e armazenados no diretório temporário da aplicação, assim que alguma instância Slave estiver registrada no service discovery a tarefa de gravação de blocos será executada para que posteriormente seja realizada a replicação entre os nós Slave.
 
-* Ao receber uma solicitação de leitura o Master recupera todos os blocos espalhados entre os diversos nós incluindo as réplicas que serão necessárias para a reconstrução do arquivo no diretório temporário da aplicação, após a entrega uma tarefa será responsável pela sua exclusão.
+- Ao receber uma solicitação de leitura o Master recupera todos os blocos espalhados entre os diversos nós incluindo as réplicas que serão necessárias para a reconstrução do arquivo no diretório temporário da aplicação, após a entrega uma tarefa será responsável pela sua exclusão.
 
-* Diariamente será executada uma tarefa que mantém uma estratégia para migração de blocos e balanceamento entre os nós Slaves.
+- Diariamente será executada uma tarefa que mantém uma estratégia para migração de blocos e balanceamento entre os nós Slaves.
 
 ## Virtual Slave
 
-* O Slave é um micros-serviço que oferece uma interface de serviços para interagir exclusivamente com Master realizando a leitura, gravação e exclusão de blocos no disco. 
+- O Slave é um micros-serviço que oferece uma interface de serviços para interagir exclusivamente com Master realizando a leitura, gravação e exclusão de blocos no disco.
 
-* Além de ser flexivelmente estendido, a cada inicialização ele se auto registra no service discovery permitindo assim que o Master sempre verifique a disponibilidade de suas instâncias. 
+- Além de ser flexivelmente estendido, a cada inicialização ele se auto registra no service discovery permitindo assim que o Master sempre verifique a disponibilidade de suas instâncias.
 
-* Periodicamente uma tarefa será executada afim de manter acuracidade dos blocos armazenados.
+- Periodicamente uma tarefa será executada afim de manter acuracidade dos blocos armazenados.
 
 ## Virtual Access
 
@@ -53,20 +53,20 @@ O sistema está dividido nos módulos virtual-common, virtual-master, virtual-sl
 
 ## Virtual Web
 
-...
+- O Web é o sistema que disponibiliza ao usuário, de forma amigável, o acesso aos serviços dos projetos (Master e Access) por meio de um Browser Desktop (como o Chrome, Firefox, etc.) ou Mobile (como Safari, Chrome, etc.).
 
 ## Virtual Mobile
 
-* O Mobile é um sistema que disponibiliza as funcionalidades de Ler, Gravar e Exclusão de arquivos popr meio de um dispositivo mobile com SO Android.
-E também realiza o gerenciamento dos arquivos enviados.
+- O Mobile é um sistema que disponibiliza as funcionalidades de Ler, Gravar e Exclusão de arquivos popr meio de um dispositivo mobile com SO Android.
+  E também realiza o gerenciamento dos arquivos enviados.
 
-* O micro serviço Virtual Master é utilizado para se fazer possivel a interação com o modulo mobile.
+- O micro serviço Virtual Master é utilizado para se fazer possivel a interação com o modulo mobile.
 
 ## Contribuições
 
-A contribuição é uma ótima maneira de aprender e dividir conhecimentos de novas tecnologias e seus ecossistemas. Se você deseja contribuir para o projeto e torná-lo melhor, sua ajuda é muito bem-vinda. Mas será necessário seguir alguns procedimentos. 
+A contribuição é uma ótima maneira de aprender e dividir conhecimentos de novas tecnologias e seus ecossistemas. Se você deseja contribuir para o projeto e torná-lo melhor, sua ajuda é muito bem-vinda. Mas será necessário seguir alguns procedimentos.
 
-Para o desenvolvimento as configurações de Code Style são obrigatórias. Todo o código do Repositório Virtual deverá estar de acordo com este formato de estilo. 
+Para o desenvolvimento as configurações de Code Style são obrigatórias. Todo o código do Repositório Virtual deverá estar de acordo com este formato de estilo.
 
 Antes de enviar qualquer código para o repositório, o committer DEVE ter certeza que o código alterado adere ao formato canônico do Repositório Virtual. Assim, ao passar `Source > Cleanup` no repositório, se todo o código estiver em conformidade resultará em nenhuma alteração.
 
@@ -78,9 +78,5 @@ Você precisará verificar se as [(configurações)](../master/docs/ide.md#confi
 <!-- prettier-ignore -->
 | [<img src="https://avatars0.githubusercontent.com/u/6737144?s=460&v=4" width="100px;"/><br /><sub><b>Brenicio Montalvão</b></sub>](https://github.com/brenicio)<br /> <a href="#colaboradores" title="Documentation">📝</a><a href="#colaboradores" title="Tools">🔧</a><a href="#colaboradores" title="Construction">🚧</a><a href="#colaboradores" title="Reviewed Pull Requests">👀</a> | [<img src="https://avatars2.githubusercontent.com/u/8239569?s=460&v=4" width="100px;"/><br /><sub><b>Danylo Macelai</b></sub>](https://github.com/danylo-macelai)<br /> <a href="#colaboradores" title="Talks">📢</a><a href="#colaboradores" title="Documentation">📝</a><a href="#colaboradores" title="Tools">🔧</a><a href="#colaboradores" title="Construction">🚧</a><a href="#colaboradores" title="Reviewed Pull Requests">👀</a> | [<img src="https://avatars3.githubusercontent.com/u/1007389?s=400&v=4" width="100px;"/><br /><sub><b>Renato Araujo</b></sub>](https://github.com/orenatoaraujo)<br /> <a href="#colaboradores" title="Documentation">📝</a><a href="#colaboradores" title="Tools">🔧</a><a href="#colaboradores" title="Construction">🚧</a><a href="#colaboradores" title="Reviewed Pull Requests">👀</a> | 
 | :---------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-
-
-
-

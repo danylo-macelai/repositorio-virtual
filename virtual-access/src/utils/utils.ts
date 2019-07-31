@@ -9,6 +9,10 @@
 
 import { Server } from 'http';
 
+import { Auth } from '../interfaces/AuthInterface';
+import { UsuarioModel } from '../models/UsuarioModel';
+import PerfilType from '../enums/PerfilType';
+
 export const normalizePort = (
   val: number | string
 ): number | string | boolean => {
@@ -56,4 +60,23 @@ export const throwError = (condition: boolean, message: string): void => {
   if (condition) {
     throw new Error(message);
   }
+};
+
+const isAutenticado = (auth: Auth): void => {
+  throwError(
+    auth === undefined,
+    `Não autorizado, Usuário não autenticado ou token é invalido!`
+  );
+};
+
+export const isAdminstrador = (auth: Auth): boolean => {
+  isAutenticado(auth);
+  return auth.perfilType === PerfilType.Adminstrador;
+};
+
+export const isAutorOrAdminstrador = (
+  autor: UsuarioModel,
+  auth: Auth
+): boolean => {
+  return isAdminstrador(auth) || autor.id === auth.id;
 };

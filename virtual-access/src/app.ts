@@ -10,9 +10,19 @@
 import express from 'express';
 import graphqlHTTP from 'express-graphql';
 
+import { Authentication } from './middlewares/authentication.middleware';
 import schema from './graphql/schema';
 
 import { ENV } from './config/env.config';
+import { Auth } from './interfaces/AuthInterface';
+
+declare global {
+  namespace Express {
+    export interface Request {
+      auth: Auth;
+    }
+  }
+}
 
 class App {
   public express: express.Application;
@@ -25,10 +35,14 @@ class App {
   private middleware(): void {
     this.express.use(
       '/access',
-      graphqlHTTP({
-        schema: schema,
+      Authentication(),
+      graphqlHTTP(request => ({
+        schema,
         graphiql: ENV.NODE_ENV === 'development',
-      })
+        context: {
+          auth: request.auth,
+        },
+      }))
     );
   }
 }

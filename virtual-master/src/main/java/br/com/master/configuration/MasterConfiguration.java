@@ -64,11 +64,12 @@ public class MasterConfiguration extends CommonConfiguration {
     CommonsMultipartResolver multipartResolver() {
         final CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
         multipartResolver.setMaxUploadSize(-1);
+        multipartResolver.setMaxInMemorySize(-1);
         return multipartResolver;
     }
 
     @Bean
-    CommandLineRunner initializing(ConfiguracaoBusiness configuracaoBusiness, Environment env) {
+    CommandLineRunner initializing(final ConfiguracaoBusiness configuracaoBusiness, final Environment env) {
         return args -> {
             final long init = configuracaoBusiness.count();
             if (init == 0) {
@@ -78,11 +79,11 @@ public class MasterConfiguration extends CommonConfiguration {
     }
 
     @Bean(name = "masterBalance")
-    MasterBalance masterBalance(Environment env, ServletContext context) {
+    MasterBalance masterBalance(final Environment env, final ServletContext context) {
         return new MasterBalance(env, context);
     }
 
-    private void configuracaoPopulator(ConfiguracaoBusiness configuracaoBusiness, Environment env) {
+    private void configuracaoPopulator(final ConfiguracaoBusiness configuracaoBusiness, final Environment env) {
         final ConfiguracaoTO configuracao = new ConfiguracaoTO();
         configuracao.setTamanhoBloco(Integer.valueOf(env.getRequiredProperty(ARQUIVO_TAMANHO_BLOCO)));
         configuracao.setQtdeReplicacao(Integer.valueOf(env.getRequiredProperty(ARQUIVO_QTDE_REPLICACAO)));

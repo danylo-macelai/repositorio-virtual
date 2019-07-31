@@ -65,7 +65,7 @@ export const throwError = (condition: boolean, message: string): void => {
 const isAutenticado = (auth: Auth): void => {
   throwError(
     auth === undefined,
-    `Não autorizado, Usuário não autenticado ou token é invalido!`
+    `Acesso negado: Usuário não autenticado ou token inválido!`
   );
 };
 

@@ -14,11 +14,11 @@ import {
   GraphQLBoolean,
 } from 'graphql';
 
-import { ENV } from '../../config/env.config';
-
 import * as jwt from 'jsonwebtoken';
 
+import { ENV } from '../../config/env.config';
 import { UsuarioModel } from '../../models/UsuarioModel';
+import { throwError } from '../../utils/utils';
 
 const authTypes = {
   Auth: new GraphQLObjectType({
@@ -71,16 +71,14 @@ const authMutations = new GraphQLObjectType({
       resolve: async (parent: any, { email, senha }) => {
         return UsuarioModel.findOne({
           where: { email },
-          attributes: ['id', 'senha'],
+          attributes: ['id', 'senha', 'ativo', 'bloqueado'],
         }).then((usuario: UsuarioModel) => {
-          const errorMessage: string =
-            'Não autorizados, E-mail e/ou Senha incorretos!';
-          if (
-            !usuario ||
-            !usuario.verificarSenha(usuario.get('senha'), senha)
-          ) {
-            throw new Error(errorMessage);
-          }
+          throwError(
+            !usuario || !usuario.verificarSenha(usuario.get('senha'), senha),
+            `Acesso negado: E-mail e/ou Senha incorretos.`
+          );
+          throwError(!usuario.ativo, `Acesso negado: Usuário desativado.`);
+          throwError(usuario.bloqueado, `Acesso negado: Usuário bloqueado.`);
           const payload = { sub: usuario.get('id') };
           return {
             token: jwt.sign(payload, ENV.JWT_SECRET as string, {

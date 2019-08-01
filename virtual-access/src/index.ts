@@ -13,12 +13,14 @@ import app from './app';
 import { ENV } from './config/env.config';
 import { sequelize } from './config/sequelize';
 import { normalizePort, onError, onListening } from './utils/utils';
+import { Populator } from './utils/initializing';
 
 const server = http.createServer(app);
 const port = normalizePort(ENV.NODE_PORT || 3000);
 const host = process.env.host || '127.0.0.1';
 
 sequelize.sync().then(() => {
+  Populator();
   server.listen({ port, host });
   server.on('error', onError(server));
   server.on('listening', onListening(server));

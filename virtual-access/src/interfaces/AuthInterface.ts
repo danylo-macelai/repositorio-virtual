@@ -10,6 +10,10 @@ import PerfilType from '../enums/PerfilType';
  */
 export interface Auth {
   id: number;
+  nome: string;
+  email: string;
+  ativo: boolean;
+  bloqueado: boolean;
+  alterarSenha: boolean;
   perfilType: PerfilType;
-  email?: string;
 }

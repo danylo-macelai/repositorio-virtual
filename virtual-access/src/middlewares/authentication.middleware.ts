@@ -14,15 +14,13 @@ import { ENV } from '../config/env.config';
 
 import { UsuarioModel } from '../models/UsuarioModel';
 import PerfilType from '../enums/PerfilType';
+import { handleError } from './../utils/utils';
 
 export const Authentication = (): RequestHandler => {
   return (req: Request, res: Response, next: NextFunction): void => {
     let token: string = '';
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.split(' ')[0] === ENV.JWT_SECRET
-    ) {
-      token = req.headers.authorization.split(' ')[1];
+    if (req.headers.authorization) {
+      token = req.headers.authorization;
     } else if (req.query && req.query.token) {
       token = req.query.token;
     }
@@ -37,17 +35,31 @@ export const Authentication = (): RequestHandler => {
       }
 
       UsuarioModel.findByPk(decoded.sub, {
-        attributes: ['id', 'perfilType', 'email'],
-      }).then((usuario: UsuarioModel) => {
-        if (usuario) {
-          req.auth = {
-            id: usuario.id,
-            perfilType: usuario.perfilType as PerfilType,
-            email: usuario.email,
-          };
-        }
-        return next();
-      });
+        attributes: [
+          'id',
+          'nome',
+          'email',
+          'ativo',
+          'bloqueado',
+          'alterarSenha',
+          'perfilType',
+        ],
+      })
+        .then((usuario: UsuarioModel) => {
+          if (usuario) {
+            req.auth = {
+              id: usuario.get('id'),
+              nome: usuario.get('nome'),
+              email: usuario.get('email'),
+              ativo: usuario.get('ativo'),
+              bloqueado: usuario.get('bloqueado'),
+              alterarSenha: usuario.get('alterarSenha'),
+              perfilType: usuario.get('perfilType') as PerfilType,
+            };
+          }
+          return next();
+        })
+        .catch(handleError);
     });
   };
 };

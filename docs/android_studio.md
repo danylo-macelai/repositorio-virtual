@@ -140,7 +140,7 @@ No menu ao lado selecione o SDK `Android 6.0 (Marshmalow)` e `Android 9.0 (Pie)`
     |   +----------------------------------------------------------------------------------------+   |
     |   |   [x] Android 9.0 (Pie)                                                                    |
     |   |   ....                                                                                     |
-    |   |   [x] Android 6.0 (Marshmallow)                                                            |
+    |   |   [x] Android 7.0 (Nougat)                                                            |
     |   +----------------------------------------------------------------------------------------+   |
     |   ...                                                                                          |
     +------------------------------------------------------------------------------------------------+
@@ -154,7 +154,7 @@ No menu ao lado selecione o SDK `Android 6.0 (Marshmalow)` e `Android 9.0 (Pie)`
 >AVD (Android Virtual Device Manager)
     
 Para está opção será necessário criar um dispositivo virtual para executar a aplicação, acesse o menu `Tools > AVD Manager`.
-Na tela de configuração do AVD Manager clique em `+ Create Virtual Device ` e clique em `Next`. Selecione o dispositivo que deseja executar e clique em `Next`, depois selecione uma imagem do sistema que seja *API 23 +*, depois clique em `Next` e `Finish`.
+Na tela de configuração do AVD Manager clique em `+ Create Virtual Device ` e clique em `Next`. Selecione o dispositivo que deseja executar e clique em `Next`, depois selecione uma imagem do sistema que seja *API 24 +*, depois clique em `Next` e `Finish`.
 
 Feito isso clique no menu `Run > Run 'app'`.
 

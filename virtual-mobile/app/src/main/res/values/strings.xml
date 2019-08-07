@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">virtual-mobile</string>
+    <string name="apiconnection_name">ApiConnection</string>
 </resources>

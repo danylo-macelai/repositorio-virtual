@@ -16,7 +16,7 @@ import PerfilType from '../enums/PerfilType';
 export const normalizePort = (
   val: number | string
 ): number | string | boolean => {
-  let port: number = typeof val === 'string' ? parseInt(val) : val;
+  const port: number = typeof val === 'string' ? parseInt(val) : val;
   if (isNaN(port)) return val;
   else if (port >= 0) return port;
   else return false;
@@ -24,9 +24,10 @@ export const normalizePort = (
 
 export const onError = (server: Server) => {
   return (error: NodeJS.ErrnoException): void => {
-    let addr = server.address();
+    const addr = server.address();
     if (error.syscall !== 'listen') throw error;
-    let bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+    const bind =
+      typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
     switch (error.code) {
       case 'EACCES':
         console.error(`${bind} requires elevated privileges`);
@@ -44,14 +45,15 @@ export const onError = (server: Server) => {
 
 export const onListening = (server: Server) => {
   return (): void => {
-    let addr = server.address();
-    let bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+    const addr = server.address();
+    const bind =
+      typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
     console.log(`Listening at ${bind}...`);
   };
 };
 
 export const handleError = (error: Error) => {
-  let errorMessage: string = `${error.name}: ${error.message}`;
+  const errorMessage: string = `${error.name}: ${error.message}`;
   console.log(errorMessage);
   return Promise.reject(new Error(errorMessage));
 };
@@ -62,7 +64,7 @@ export const throwError = (condition: boolean, message: string): void => {
   }
 };
 
-const isAutenticado = (auth: Auth): void => {
+export const isAutenticado = (auth: Auth): void => {
   throwError(
     auth === undefined,
     `Acesso negado: Usuário não autenticado ou token inválido!`
@@ -71,12 +73,18 @@ const isAutenticado = (auth: Auth): void => {
 
 export const isAdminstrador = (auth: Auth): boolean => {
   isAutenticado(auth);
+
+  throwError(
+    auth.alterarSenha,
+    `Acesso negado: É necessário alterar a sua senha.`
+  );
+
   return auth.perfilType === PerfilType.Adminstrador;
 };
 
-export const isAutorOrAdminstrador = (
+export const isUsuarioOuAdminstrador = (
   autor: UsuarioModel,
   auth: Auth
 ): boolean => {
-  return isAdminstrador(auth) || autor.id === auth.id;
+  return isAdminstrador(auth) || autor.get('id') === auth.id;
 };

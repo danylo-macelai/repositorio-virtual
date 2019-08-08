@@ -7,18 +7,14 @@
  * version $
  */
 
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLNonNull,
-  GraphQLBoolean,
-} from 'graphql';
+import { GraphQLObjectType, GraphQLString, GraphQLNonNull } from 'graphql';
 
 import * as jwt from 'jsonwebtoken';
 
 import { ENV } from '../../config/env.config';
 import { UsuarioModel } from '../../models/UsuarioModel';
-import { throwError } from '../../utils/utils';
+import { throwError, handleError } from '../../utils/utils';
+import { usuarioTypes } from './usuario.schema';
 
 const authTypes = {
   Auth: new GraphQLObjectType({
@@ -37,19 +33,17 @@ const authQueries = new GraphQLObjectType({
   name: 'authQueries',
   fields: {
     validarToken: {
-      type: GraphQLBoolean,
+      type: usuarioTypes.Usuario,
       args: {
         token: {
           type: GraphQLString,
         },
       },
       resolve(parent: any, args, context) {
-        try {
-          jwt.verify(args.token, ENV.JWT_SECRET as string);
-          return true;
-        } catch (err) {
-          return false;
-        }
+        const dec: any = jwt.verify(args.token, ENV.JWT_SECRET as string);
+        return UsuarioModel.findByPk(dec.sub).then((usuario: UsuarioModel) => {
+          return usuario;
+        });
       },
     },
   },
@@ -71,21 +65,70 @@ const authMutations = new GraphQLObjectType({
       resolve: async (parent: any, { email, senha }) => {
         return UsuarioModel.findOne({
           where: { email },
-          attributes: ['id', 'senha', 'ativo', 'bloqueado'],
-        }).then((usuario: UsuarioModel) => {
-          throwError(
-            !usuario || !usuario.verificarSenha(usuario.get('senha'), senha),
-            `Acesso negado: E-mail e/ou Senha incorretos.`
-          );
-          throwError(!usuario.ativo, `Acesso negado: Usuário desativado.`);
-          throwError(usuario.bloqueado, `Acesso negado: Usuário bloqueado.`);
-          const payload = { sub: usuario.get('id') };
-          return {
-            token: jwt.sign(payload, ENV.JWT_SECRET as string, {
-              expiresIn: Number(ENV.JWT_EXPIRES_IN) * 60,
-            }),
-          };
-        });
+          attributes: [
+            'id',
+            'nome',
+            'senha',
+            'ativo',
+            'bloqueado',
+            'alterarSenha',
+            'tentativasDeAutenticacao',
+          ],
+        })
+          .then((usuario: UsuarioModel) => {
+            throwError(
+              !usuario,
+              `Acesso negado: E-mail e/ou Senha incorretos.`
+            );
+
+            throwError(
+              !usuario.get('ativo'),
+              `Acesso negado: Usuário desativado.`
+            );
+
+            throwError(
+              usuario.get('bloqueado'),
+              `Acesso negado: Usuário bloqueado.`
+            );
+
+            let tentativas = usuario.get('tentativasDeAutenticacao');
+            if (!usuario.verificarSenha(usuario.get('senha'), senha)) {
+              UsuarioModel.update(
+                {
+                  tentativasDeAutenticacao: ++tentativas,
+                  bloqueado: tentativas > 2 ? true : false,
+                },
+                {
+                  where: { id: usuario.get('id') },
+                }
+              );
+
+              throwError(
+                true,
+                tentativas == 3
+                  ? `Usuário Bloqueado, entre em contato com o Administrador do Sistema.`
+                  : `Senha inválida, você tem mais ${3 -
+                      tentativas} tentativas antes de bloquear seu acesso.`
+              );
+            } else if (tentativas > 0) {
+              UsuarioModel.update(
+                {
+                  tentativasDeAutenticacao: 0,
+                },
+                {
+                  where: { id: usuario.get('id') },
+                }
+              );
+            }
+
+            const payload = { sub: usuario.get('id') };
+            return {
+              token: jwt.sign(payload, ENV.JWT_SECRET as string, {
+                expiresIn: Number(ENV.JWT_EXPIRES_IN) * 60,
+              }),
+            };
+          })
+          .catch(handleError);
       },
     },
   },

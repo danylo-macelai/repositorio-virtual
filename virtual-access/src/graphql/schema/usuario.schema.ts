@@ -18,7 +18,6 @@ import {
   GraphQLInt,
   GraphQLEnumType,
 } from 'graphql';
-
 import { sequelize } from '../../config/sequelize';
 import { Transaction } from 'sequelize';
 import isEmail from 'validator/lib/isEmail';
@@ -26,7 +25,11 @@ import isEmail from 'validator/lib/isEmail';
 import { handleError, throwError } from '../../utils/utils';
 import { UsuarioModel } from '../../models/UsuarioModel';
 import PerfilType from '../../enums/PerfilType';
-import { isAdminstrador, isAutorOrAdminstrador } from '../../utils/utils';
+import {
+  isAutenticado,
+  isAdminstrador,
+  isUsuarioOuAdminstrador,
+} from '../../utils/utils';
 
 const perfilTypes = new GraphQLEnumType({
   name: 'perfilEnum',
@@ -56,11 +59,20 @@ const usuarioTypes = {
       perfilType: {
         type: new GraphQLNonNull(perfilTypes),
       },
+      ativo: {
+        type: new GraphQLNonNull(GraphQLBoolean),
+      },
       bloqueado: {
         type: new GraphQLNonNull(GraphQLBoolean),
       },
-      ativo: {
+      alterarSenha: {
         type: new GraphQLNonNull(GraphQLBoolean),
+      },
+      tentativasDeAutenticacao: {
+        type: new GraphQLNonNull(GraphQLInt),
+      },
+      ultimaTrocaSenha: {
+        type: new GraphQLNonNull(GraphQLString),
       },
       criacao: {
         type: new GraphQLNonNull(GraphQLString),
@@ -80,9 +92,6 @@ const usuarioTypes = {
       email: {
         type: new GraphQLNonNull(GraphQLString),
       },
-      perfilType: {
-        type: new GraphQLNonNull(perfilTypes),
-      },
       senha: {
         type: new GraphQLNonNull(GraphQLString),
       },
@@ -101,11 +110,9 @@ const usuarioTypes = {
       email: {
         type: GraphQLString,
       },
+      // Ações que deverão ser realizadas pelo administrador
       perfilType: {
         type: perfilTypes,
-      },
-      bloqueado: {
-        type: GraphQLBoolean,
       },
       ativo: {
         type: GraphQLBoolean,
@@ -131,14 +138,14 @@ const usuarioQueries = new GraphQLObjectType({
           .then((usuario: UsuarioModel) => {
             throwError(
               !usuario,
-              `Usuário com o id ${args.id} não foi localizado!`
+              `Não foi possível carregar o usuário ${
+                args.id
+              }. Ele não foi encontrado no sistema.`
             );
 
             throwError(
-              !isAutorOrAdminstrador(usuario, context.auth),
-              `O usuário ${
-                context.auth.email
-              }, não possui permissão para consultar o registro!`
+              !isUsuarioOuAdminstrador(usuario, context.auth),
+              `Você não possui permissão para a consulta. Por favor, entrar em contato com o Administrador do Sistema.`
             );
 
             return usuario;
@@ -152,7 +159,7 @@ const usuarioQueries = new GraphQLObjectType({
       resolve(parent: any, args, context) {
         throwError(
           !isAdminstrador(context.auth),
-          `Somente usuários com perfil de administrador poderá realizar a operação`
+          `Você não possui permissão para a listagem. Por favor, entrar em contato com o Administrador do Sistema.`
         );
 
         return UsuarioModel.findAll().catch(handleError);
@@ -164,7 +171,7 @@ const usuarioQueries = new GraphQLObjectType({
       resolve(parent: any, context) {
         throwError(
           !isAdminstrador(context.auth),
-          `Somente usuários com perfil de administrador poderá realizar a operação`
+          `Você não possui permissão para a quantidade. Por favor, entrar em contato com o Administrador do Sistema.`
         );
         return UsuarioModel.count().catch(handleError);
       },
@@ -187,7 +194,7 @@ const usuarioMutations = new GraphQLObjectType({
           .transaction((t: Transaction) => {
             throwError(
               input.email && !isEmail(input.email),
-              `E-mail ${input.email} não está em formato válido!`
+              `Endereço ${input.email} de e-mail é inválido.`
             );
             return UsuarioModel.create(input, { transaction: t });
           })
@@ -209,14 +216,25 @@ const usuarioMutations = new GraphQLObjectType({
               (usuario: UsuarioModel) => {
                 throwError(
                   !usuario,
-                  `Usuário com o id ${input.id} não foi localizado!`
+                  `Não foi possível carregar o usuário ${
+                    input.id
+                  }. Ele não foi encontrado no sistema.`
                 );
 
                 throwError(
-                  !isAutorOrAdminstrador(usuario, context.auth),
-                  `O usuário ${
-                    context.auth.email
-                  }, não possui permissão para alterar o registro!`
+                  !isUsuarioOuAdminstrador(usuario, context.auth),
+                  `Você não possui permissão para a alteração. Por favor, entrar em contato com o Administrador do Sistema.`
+                );
+
+                throwError(
+                  input.perfilType === 'ADMINSTRADOR' &&
+                    !isAdminstrador(context.auth),
+                  `Você não tem permissão para alterar o perfil. Por favor, entrar em contato com o Administrador do Sistema.`
+                );
+
+                throwError(
+                  input.ativo !== undefined && !isAdminstrador(context.auth),
+                  `Você não tem permissão para ativar ou inativar usuários. Por favor, entrar em contato com o Administrador do Sistema.`
                 );
 
                 return UsuarioModel.update(input, {
@@ -244,17 +262,103 @@ const usuarioMutations = new GraphQLObjectType({
               (usuario: UsuarioModel) => {
                 throwError(
                   !usuario,
-                  `Usuário com o id ${args.id} não foi localizado!`
+                  `Não foi possível carregar o usuário ${
+                    args.id
+                  }. Ele não foi encontrado no sistema.`
                 );
 
                 throwError(
                   !isAdminstrador(context.auth),
-                  `Somente usuários com perfil de administrador poderá realizar a operação`
+                  `Você não possui permissão para a exclusão. Por favor, entrar em contato com o Administrador do Sistema.`
                 );
 
                 return usuario
                   .destroy({ transaction: t })
                   .then(result => result);
+              }
+            );
+          })
+          .catch(handleError);
+      },
+    },
+
+    desbloqueio: {
+      type: GraphQLInt,
+      args: {
+        id: {
+          type: new GraphQLNonNull(GraphQLID),
+        },
+      },
+      resolve: async (parent: any, args, context) => {
+        return sequelize
+          .transaction((t: Transaction) => {
+            throwError(
+              !isAdminstrador(context.auth),
+              `Você não tem permissão para desbloquear usuários. Por favor, entrar em contato com o Administrador do Sistema.`
+            );
+
+            return UsuarioModel.findByPk(args.id).then(
+              (usuario: UsuarioModel) => {
+                throwError(
+                  !usuario,
+                  `Não foi possível carregar o usuário ${
+                    args.id
+                  }. Ele não foi encontrado no sistema.`
+                );
+
+                throwError(
+                  !usuario.get('bloqueado'),
+                  `O usuário ${usuario.get('nome')}, não está bloqueado.`
+                );
+
+                return UsuarioModel.update(
+                  {
+                    bloqueado: false,
+                    tentativasDeAutenticacao: 0,
+                    alterarSenha: true,
+                  },
+                  {
+                    where: { id: usuario.get('id') },
+                    transaction: t,
+                  }
+                ).then(rowsUpdated => rowsUpdated);
+              }
+            );
+          })
+          .catch(handleError);
+      },
+    },
+
+    alteracaoSenha: {
+      type: GraphQLInt,
+      args: {
+        password: {
+          type: new GraphQLNonNull(GraphQLString),
+        },
+      },
+      resolve: async (parent: any, args, context) => {
+        return sequelize
+          .transaction((t: Transaction) => {
+            isAutenticado(context.auth);
+
+            return UsuarioModel.findByPk(context.auth.id).then(
+              (usuario: UsuarioModel) => {
+                throwError(
+                  !usuario,
+                  `Não foi possível carregar o usuário ${
+                    args.id
+                  }. Ele não foi encontrado no sistema.`
+                );
+                return usuario
+                  .update(
+                    {
+                      senha: args.password,
+                      alterarSenha: false,
+                      ultimaTrocaSenha: Date.now(),
+                    },
+                    { transaction: t }
+                  )
+                  .then((up: UsuarioModel) => !!up);
               }
             );
           })

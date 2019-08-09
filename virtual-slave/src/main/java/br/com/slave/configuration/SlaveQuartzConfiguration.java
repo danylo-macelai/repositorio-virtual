@@ -21,12 +21,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SlaveQuartzConfiguration extends CommonQuartzConfiguration {
 
-    private static final String  JOB_CONTAGEM         = "jobContagem";
+    private static final String JOB_CONTAGEM = "jobContagem";
 
-    private static final String  TRIGGER_CONTAGEM     = "triggerContagem";
+    private static final String TRIGGER_CONTAGEM = "triggerContagem";
 
     private static final String CRON_CONTAGEM_VOLUME = "cron.contagem.volume";
-
 
     @Bean(JOB_CONTAGEM)
     public JobDetail jobContagem() {

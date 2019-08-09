@@ -56,7 +56,7 @@ public class MasterSpringFox {
                         "O serviço de arquivos envolve a leitura, gravação e exclusão."),
                         new Tag(
                                 "Configuração",
-                                "O serviço de configuração envolve a cosulta e ateração."))
+                                "Este serviço foi desenvolvido para permitir a configuração de forma rápida das propriedades que serão utilizadas na divisão dos blocos. Essa configuração deve ser realizada pelo Administrador do sistema."))
                 .apiInfo(apiInfo())
                 .useDefaultResponseMessages(false)
                 .globalResponseMessage(RequestMethod.DELETE, listGlobalResponseMessage)
@@ -74,7 +74,9 @@ public class MasterSpringFox {
                 "Manual de Integração.", /* description */
                 "1.0", /* version */
                 "Terms of service", /* termsOfServiceUrl */
-                new Contact("Danylo Macelai", "http://danylomacelai.com", "danylomacelai@gmail.com"), /* contactName */
+                new Contact("Repositório Virtual",
+                        "https://github.com/danylo-macelai/repositorio-virtual#--",
+                        "danylomacelai@gmail.com"), /* contactName */
                 "Apache 2.0", /* license */
                 "http://www.apache.org/licenses/LICENSE-2.0", /* licenseUrl */
                 Collections.emptyList() /* vendorExtensions */

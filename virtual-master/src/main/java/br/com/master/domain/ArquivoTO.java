@@ -43,6 +43,9 @@ public class ArquivoTO extends Domain {
     @Column(name = "mime_type", updatable = false, nullable = false)
     private String mimeType;
 
+    @Column(name = "usuario_externo_id", updatable = false, nullable = false)
+    private String usuarioExternoId;
+
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "arquivo")
     @OrderBy("numero ASC")
@@ -78,6 +81,14 @@ public class ArquivoTO extends Domain {
 
     public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
+    }
+
+    public String getUsuarioExternoId() {
+        return usuarioExternoId;
+    }
+
+    public void setUsuarioExternoId(String usuarioExternoId) {
+        this.usuarioExternoId = usuarioExternoId;
     }
 
     public Set<BlocoTO> getBlocos() {

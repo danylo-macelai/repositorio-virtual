@@ -7,6 +7,7 @@ import static br.com.common.utils.Utils.gerarIdentificador;
 import static br.com.common.utils.Utils.httpDelete;
 import static br.com.common.utils.Utils.httpGet;
 
+import br.com.common.access.property.ValidarToken;
 import br.com.common.business.DBusiness;
 
 import br.com.master.business.IArquivo;
@@ -77,6 +78,22 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      */
     @Override
     @Transactional
+    public void excluir(ValidarToken access, long id) throws MasterException {
+        final ArquivoTO arquivo = ache(id);
+        if (arquivo == null) {
+            throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
+        }
+        if (!arquivo.getUsuarioExternoId().equals(access.getId())) {
+            throw new MasterException("master.excluir.arquivo");
+        }
+        this.excluir(arquivo);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
     public void excluir(ArquivoTO arquivo) throws MasterException {
         try {
             final List<BlocoTO> blocos = blocoBusiness.carregarTodosPor(arquivo);
@@ -107,13 +124,14 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      * {@inheritDoc}
      */
     @Override
-    public ArquivoTO gravar(MultipartFile multipartFile) throws MasterException {
+    public ArquivoTO gravar(ValidarToken access, MultipartFile multipartFile) throws MasterException {
         final ConfiguracaoTO configuracao = configuracaoBusiness.buscar();
 
         final ArquivoTO arquivo = new ArquivoTO();
         arquivo.setNome(multipartFile.getOriginalFilename());
         arquivo.setTamanho((int) multipartFile.getSize());
         arquivo.setMimeType(multipartFile.getContentType());
+        arquivo.setUsuarioExternoId(access.getId());
 
         final int tamanhoBloco = configuracao.getTamanhoBloco() * 1024;
         final int miniBloco = arquivo.getTamanho() % tamanhoBloco;

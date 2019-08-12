@@ -1,5 +1,8 @@
 package br.com.master.resource;
 
+import br.com.common.access.property.ValidarToken;
+import br.com.common.resource.CommonResource;
+
 import br.com.master.business.IArquivo;
 import br.com.master.configuration.MasterException;
 import br.com.master.domain.ArquivoTO;
@@ -10,6 +13,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,10 +43,14 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController()
 @Api(tags = { "Arquivos" })
-public class ArquivoResource {
+public class ArquivoResource extends CommonResource {
 
     @Autowired
     IArquivo arquivoBusiness;
+
+    public ArquivoResource(Environment env) {
+        super(env);
+    }
 
     @GetMapping(value = "/arquivos")
     @ApiOperation(value = "Consulta os metadados do arquivo", nickname = "consulta", notes = "<p>A consulta é usada para recuperar os <strong>metadados</strong> dos <strong>arquivos</strong> através do <strong>nome</strong>, caso seja localizado um ou mais registros será retornado os <strong>metadados</strong> no corpo da mensagem da resposta no formato <strong>json</strong> caso contrário, o status <strong>404</strong> indicando que o arquivo não existe ou não foi localizado.</p>", response = List.class, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -49,7 +58,11 @@ public class ArquivoResource {
             @ApiResponse(code = 404, message = "Nenhum arquivo foi localizado!")
     })
     public ResponseEntity<List<ArquivoTO>> consulta(
-            @ApiParam(name = "nome", value = "Nome é a identificação do arquivo digital deverá conter a extensão.", example = "remessa.txt", required = true) @RequestParam("nome") String nome) {
+            @ApiParam(name = "nome", //
+                    value = "Nome é a identificação do arquivo digital deverá conter a extensão.", //
+                    example = "remessa.txt", //
+                    required = true) //
+            @RequestParam("nome") String nome) {
         final List<ArquivoTO> arquivos = arquivoBusiness.carregarPor(nome);
         if (arquivos.isEmpty()) {
             throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
@@ -63,7 +76,12 @@ public class ArquivoResource {
             @ApiResponse(code = 404, message = "Nenhum registro foi encontrado para a consulta.")
     })
     public ResponseEntity<Resource> leitura(
-            @ApiParam(name = "id", value = "Id é um número utilizado para a identificação do arquivo", example = "1234", required = true) @PathVariable("id") long id) {
+            @ApiParam(name = "id", //
+                    value = "Id é um número utilizado para a identificação do arquivo", //
+                    example = "1234", //
+                    required = true) //
+            @PathVariable("id") long id) {
+
         final ArquivoTO arquivo = arquivoBusiness.ache(id);
         if (arquivo == null) {
             throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
@@ -82,8 +100,23 @@ public class ArquivoResource {
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "<p>Regras de Negócio:</p> <ul> <li>Não existe serviço registrado no service discovery</li> <li>A localização (C:/.../.../m1) do volume é invalida.</li> </ul>") })
     public ResponseEntity<ArquivoTO> gravacao(
-            @ApiParam(name = "file", value = "<p>File é o binário que será enviado ao servidor pode ser um arquivo de texto, planilha, livro, vídeo, música e etc..</p>", required = true) @RequestParam("file") MultipartFile file) {
-        final ArquivoTO arquivo = arquivoBusiness.gravar(file);
+            @ApiParam(name = "file", //
+                    value = "<p>File é o binário que será enviado ao servidor pode ser um arquivo de texto, planilha, livro, vídeo, música e etc..</p>", //
+                    required = true) @RequestParam("file") //
+            MultipartFile file,
+            @ApiParam(name = "Authorization", //
+                    value = "<p>O Authorization é uma string criptografada, gerada pelo servidor <strong>virtual-access</strong> que deverá ser enviada no cabeçalho</p>", //
+                    example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImlhdCI6MTU2NTYxNzYyOSwiZXhwIjoxNTY1NjE5NDI5fQ.X_exWWVCKIptCipsYXMVuIcBHosgQgAWrN50IO9Ss68", //
+                    required = false) //
+            @RequestHeader(value = "Authorization", required = false) String authorization,
+            @ApiParam(name = "token", //
+                    value = "<p>O token é uma string criptografada, gerada pelo servidor <strong>virtual-access</strong> que deve ser enviada como um <strong>queryParam</strong></p>", //
+                    required = false) //
+            @RequestParam(value = "token", required = false) String token) {
+
+        final ValidarToken access = validarTokenAccess(authorization, token);
+        final ArquivoTO arquivo = arquivoBusiness.gravar(access, file);
+
         return ResponseEntity.ok(arquivo);
     }
 
@@ -93,14 +126,24 @@ public class ArquivoResource {
             @ApiResponse(code = 404, message = "Nenhum arquivo foi localizado!")
     })
     public ResponseEntity<Response> exclusao(
-            @ApiParam(name = "id", value = "Id é um número utilizado para a identificação do arquivo que será removido", example = "1234", required = true) @PathVariable("id") long id) {
+            @ApiParam(name = "id", //
+                    value = "Id é um número utilizado para a identificação do arquivo que será removido", //
+                    example = "1234", //
+                    required = true) //
+            @PathVariable("id") long id,
+            @ApiParam(name = "Authorization", //
+                    value = "<p>O Authorization é uma string criptografada, gerada pelo servidor <strong>virtual-access</strong> que deverá ser enviada no cabeçalho</p>", //
+                    example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImlhdCI6MTU2NTYxNzYyOSwiZXhwIjoxNTY1NjE5NDI5fQ.X_exWWVCKIptCipsYXMVuIcBHosgQgAWrN50IO9Ss68", //
+                    required = false) //
+            @RequestHeader(value = "Authorization", required = false) String authorization,
+            @ApiParam(name = "token", //
+                    value = "<p>O token é uma string criptografada, gerada pelo servidor <strong>virtual-access</strong> que deve ser enviada como um <strong>queryParam</strong></p>", //
+                    required = false) //
+            @RequestParam(value = "token", required = false) String token) {
 
-        final ArquivoTO arquivo = arquivoBusiness.ache(id);
-        if (arquivo == null) {
-            throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
-        }
+        final ValidarToken access = validarTokenAccess(authorization, token);
 
-        arquivoBusiness.excluir(arquivo);
+        arquivoBusiness.excluir(access, id);
 
         return ResponseEntity.noContent().build();
     }

@@ -21,10 +21,10 @@ class Menu extends React.Component {
             <Link to="/">Home</Link>
           </li>
           <li className="item">
-            <a href="javascript:;">About</a>
+            <a href="/">About</a>
           </li>
           <li className="item">
-            <a href="javascript:;">How us work</a>
+            <a href="/">How us work</a>
           </li>
           <li className="item">
             <Link to="/sign-in">Sign in</Link>

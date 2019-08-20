@@ -1,0 +1,42 @@
+.upload-file-container {
+  .upload-file-handle {
+    input[name='file'] {
+      display: none;
+
+      &:disabled + label {
+        color: #ccc;
+        border-color: #ccc;
+      }
+    }
+
+    label {
+      border: 1px dashed #212121;
+      color: #212121;
+      display: block;
+      cursor: pointer;
+      padding: 18px 15px;
+      text-align: center;
+      transition: border-color 0.5s ease, color 0.5s ease;
+
+      &:hover {
+        border-color: #999;
+        color: #999;
+      }
+    }
+  }
+
+  .ui.items {
+    .image.custom {
+      width: 30px;
+    }
+
+    .title-image {
+      display: inline-block;
+      line-height: 26px;
+      max-width: calc(100% - 100px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}

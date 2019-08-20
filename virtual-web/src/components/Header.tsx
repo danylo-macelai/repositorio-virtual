@@ -10,9 +10,12 @@
 import React from 'react';
 
 import Menu from './Menu';
+import MenuTop from './MenuTop';
+import { Link } from 'react-router-dom';
 
 import './Header.scss';
-import { Link } from 'react-router-dom';
+
+import logo from '../assets/images/virteca-horizontal.png';
 
 class Header extends React.Component {
   render() {
@@ -22,11 +25,13 @@ class Header extends React.Component {
           <div className="main-header-wrap">
             <div className="logo">
               <Link to="/">
-                <img src="https://via.placeholder.com/150x38?text=+" alt=" " />
+                <img src={logo} alt=" " />
               </Link>
             </div>
 
             <Menu />
+
+            <MenuTop />
           </div>
         </div>
       </header>

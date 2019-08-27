@@ -1,6 +1,8 @@
 package br.com.master.business;
 
+import br.com.common.access.property.ValidarToken;
 import br.com.common.business.IBusiness;
+import br.com.common.domain.Domain;
 
 import br.com.master.configuration.MasterException;
 import br.com.master.domain.ArquivoTO;
@@ -33,9 +35,10 @@ public interface IArquivo extends IBusiness<ArquivoTO> {
     /**
      * Realiza o upload e grava o arquivo enviado
      *
+     * @param access 
      * @param file
      */
-    ArquivoTO gravar(MultipartFile file) throws MasterException;
+    ArquivoTO gravar(ValidarToken access, MultipartFile file) throws MasterException;
 
     /**
      * Realiza o download do arquivo enviado
@@ -46,4 +49,12 @@ public interface IArquivo extends IBusiness<ArquivoTO> {
      */
     InputStreamResource ler(ArquivoTO arquivo) throws MasterException;
 
+    /**
+     * O método {@link IBusiness#excluir(Domain)} exclui apenas o registro informado.
+     *
+     * @param access
+     * @param id
+     * @throws MasterException
+     */
+    void excluir(ValidarToken access, long id) throws MasterException;
 }

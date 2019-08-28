@@ -8,27 +8,37 @@
  */
 
 import React from 'react';
-import { HashRouter } from 'react-router-dom';
+import { HashRouter, Route } from 'react-router-dom';
+import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 
 import './App.scss';
 
+import AlertTemplate from './components/AlertTemplate';
 import Header from './components/Header';
+import Arquivo from './pages/Arquivo';
+
+const options: any = {
+  position: positions.TOP_RIGHT,
+  timeout: 5000,
+  offset: '12px',
+  transition: transitions.FADE,
+};
 
 class App extends React.Component {
   render() {
     return (
       <HashRouter basename="/">
-        <Header />
+        <AlertProvider template={AlertTemplate} {...options}>
+          <Header />
 
-        <div className="main-content">
-          <div className="ui container">
-            <div className="main-content-wrap">
-              {
-                // Components route here
-              }
+          <div className="main-content">
+            <div className="ui container">
+              <div className="main-content-wrap">
+                <Route path="/arquivo" component={Arquivo} />
+              </div>
             </div>
           </div>
-        </div>
+        </AlertProvider>
       </HashRouter>
     );
   }

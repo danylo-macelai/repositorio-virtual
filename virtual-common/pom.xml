@@ -38,6 +38,12 @@
             <artifactId>jsr311-api</artifactId>
             <version>${jsr311-api.version}</version>
         </dependency>
+        
+        <dependency>
+            <artifactId>quartz</artifactId>
+            <groupId>org.quartz-scheduler</groupId>
+            <version>${quartz.version}</version>
+        </dependency>        
     </dependencies>
 
     <build>

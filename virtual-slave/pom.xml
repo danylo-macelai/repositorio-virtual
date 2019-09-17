@@ -151,6 +151,12 @@
             <artifactId>commons-pool</artifactId>
             <version>${commons-pool.version}</version>
         </dependency>
+        
+        <dependency>
+            <artifactId>quartz</artifactId>
+            <groupId>org.quartz-scheduler</groupId>
+            <version>${quartz.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

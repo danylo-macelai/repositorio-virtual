@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: virtual-proxy
+  main:
+    allow-bean-definition-overriding: true
+
+server:
+  port: 8050
+
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
+
+zuul:
+    prefix: /api
+    routes:
+      volumes:
+        path: /volumes/**
+        serviceId: APP-SLAVE
+        strip-prefix: false
+        
+      arquivos:
+        path: /arquivos/**
+        serviceId: APP-MASTER
+        strip-prefix: false
+
+APP-SLAVE:
+  ribbon:
+    NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
+    NFLoadBalancerRuleClassName: br.com.proxy.configuration.LoadBalancerRuleSlave
+    listOfServers: http://localhost:8081
+    ConnectTimeout: 1000
+    ReadTimeout: 3000
+    MaxTotalHttpConnections: 500
+    MaxConnectionsPerHost: 100
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+
+logging:
+  level:
+    ROOT: INFO
+    org.springframework.web: DEBUG

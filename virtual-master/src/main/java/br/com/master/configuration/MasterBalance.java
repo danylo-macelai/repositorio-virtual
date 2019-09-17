@@ -16,8 +16,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.Application;
-import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 
 /**
  * <b>Description:</b> FIXME: Document this type <br>
@@ -37,7 +37,7 @@ public class MasterBalance {
     private String     pathTmpDirectory = null;
 
     @Autowired
-    PeerAwareInstanceRegistry registry;
+    EurekaClient       registry;
 
     protected MasterBalance(Environment env, ServletContext context) {
         init(env, context);
@@ -64,7 +64,7 @@ public class MasterBalance {
      * @return String página inicial
      */
     public final String volumeUrlSlave(String instanceId) {
-        final InstanceInfo instance = registry.getInstanceByAppAndId(appName, instanceId);
+        final InstanceInfo instance = registry.getApplication(appName).getByInstanceId(instanceId);
         if (instance == null) {
             throw new MasterException("instance.id.e.invalido");
         }

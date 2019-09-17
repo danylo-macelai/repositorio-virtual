@@ -14,6 +14,8 @@
 
     <modules>
         <module>virtual-common</module>
+        <module>virtual-proxy</module>
+        <module>virtual-registry</module>
         <module>virtual-slave</module>
         <module>virtual-master</module>
     </modules>
@@ -125,12 +127,6 @@
 		    <artifactId>moshi</artifactId>
 		    <version>${moshi.version}</version>
 		</dependency>
-
-        <dependency>
-            <artifactId>quartz</artifactId>
-            <groupId>org.quartz-scheduler</groupId>
-            <version>${quartz.version}</version>
-        </dependency>
     </dependencies>
 
     <build>

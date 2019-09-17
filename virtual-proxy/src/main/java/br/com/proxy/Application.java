@@ -1,20 +1,17 @@
-package br.com.master;
+package br.com.proxy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 
-/**
- * <b>Description:</b> FIXME: Document this type <br>
- * <b>Project:</b> virtual-master <br>
- *
- * @author macelai
- * @date: 18 de nov de 2018
- * @version $
- */
 @SpringBootApplication
+@EnableEurekaClient
+@EnableZuulProxy
 public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
+
 }

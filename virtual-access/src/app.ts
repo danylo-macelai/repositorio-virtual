@@ -8,6 +8,7 @@
  */
 
 import express from 'express';
+import cors from 'cors';
 import graphqlHTTP from 'express-graphql';
 
 import { Authentication } from './middlewares/authentication.middleware';
@@ -33,6 +34,8 @@ class App {
   }
 
   private middleware(): void {
+    this.express.use(cors());
+
     this.express.use(
       '/access',
       Authentication(),

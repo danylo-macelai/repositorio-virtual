@@ -27,7 +27,7 @@ Se o resultado for semelhante siga em [(frente)](../docs/eclipse.md#workspace), 
 
 ##### VISUAL STUDIO CODE
 
-Vamos assumir que o  Visual Studio Code está instalado, você pode verificar através do DOS digitando os comandos abaixo:
+Vamos assumir que o Visual Studio Code está instalado, você pode verificar através do DOS digitando os comandos abaixo:
 
 > C:\Users\dev>code -version<br />
 > 1.25.1<br />
@@ -47,15 +47,14 @@ Vamos assumir que o Java 8+, Java JDK 8+ e o Android Studio 3.4.1 estão instala
 > Java(TM) SE Runtime Environment (build 1.8.0_162-b12)<br />
 > Java HotSpot(TM) 64-Bit Server VM (build 25.162-b12, mixed mode)<p>
 
->C:\Program Files\Java\jdk-12.0.1\bin>`javac -version`<br />
->javac 12.0.1<br />
+> C:\Program Files\Java\jdk-12.0.1\bin>`javac -version`<br />
+> javac 12.0.1<br />
 
 Verificar a versão do Android Studio abaixo:
 
->Execute Android Studio
->Menu `help` opção `about`
->Android Studio 3.4.1
->Build #AI-183.6156.11.34.5522156, built on May 1, 2019
-
+> Execute Android Studio
+> Menu `help` opção `about`
+> Android Studio 3.4.1
+> Build #AI-183.6156.11.34.5522156, built on May 1, 2019
 
 Se o resultado for semelhante siga em [(frente)](../docs/android_studio.md#workspace), caso contrário, prepare o seu ambiente antes de prosseguir.

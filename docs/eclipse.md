@@ -1,31 +1,31 @@
-Workspace
-=========================================
+# Workspace
 
 Partindo o pressuposto que o ambiente de desenvolvimento será em `D:\workspaces\GITHUB\` abra a ide Eclipse apontando para este local.
 
 ---
+
 ##### ECLIPSE (Code Style)
 
-As instruções a seguir descrevem como configurar o eclipse para usar arquivos e convenções que obedecem aos padrões de codificação do Repositório Virtual.
+As instruções a seguir descrevem como configurar o eclipse para usar arquivos e convenções que obedecem aos padrões de codificação do VirTeca.
 
->Todas as opções referentes ao `Window > Preferences > Java > CodeStyle` podem ser configuradas rapidamente importando apenas o arquivo [ [rv_preferences.epf](../docs/rv_preferences.epf) ]. 
+> Todas as opções referentes ao `Window > Preferences > Java > CodeStyle` podem ser configuradas rapidamente importando apenas o arquivo [ [rv_preferences.epf](../docs/rv_preferences.epf) ].
 
-O arquivo de preferências pode ser importado para *Eclipse*, permitindo que você configure automaticamente o `Formatting`, `Import Organization`, `Clean Up` e `Code Templates`. Para importar preferências do sistema acesse `File > Import... `. No assistente de Importação, selecione `General > Prefereces` e clique em `Next >`. Clique em `Browse...` e localize o arquivo em seguida selecione as preferências que você quer importar na lista depois clique em `Finish`. 
-        
-    |   ...                                                                                          |
-    |   From preference file: D:\...\rv_preferences.epf                              [ Browse... ]   |
-    |   ...                                                                                          |
-    |   +----------------------------------------------------------------------------------------+   |
-    |   |   [x] Java Code Style Preferences                                                      |   |
-    |   |   [x] Java Compiler  Prefereces                                                        |   |
-    |   +----------------------------------------------------------------------------------------+   |
-    |   ...                                                                                          |
-    +------------------------------------------------------------------------------------------------+
-    |                                               [  ...  ]   [  ...  ]   [ Finish ]   [  ...  ]   |
-    +------------------------------------------------------------------------------------------------+
-    |   ...                                                                                          |
+O arquivo de preferências pode ser importado para _Eclipse_, permitindo que você configure automaticamente o `Formatting`, `Import Organization`, `Clean Up` e `Code Templates`. Para importar preferências do sistema acesse `File > Import...`. No assistente de Importação, selecione `General > Prefereces` e clique em `Next >`. Clique em `Browse...` e localize o arquivo em seguida selecione as preferências que você quer importar na lista depois clique em `Finish`.
+  
+ | ... |
+| From preference file: D:\...\rv_preferences.epf [ Browse... ] |
+| ... |
+| +----------------------------------------------------------------------------------------+ |
+| | [x] Java Code Style Preferences | |
+| | [x] Java Compiler Prefereces | |
+| +----------------------------------------------------------------------------------------+ |
+| ... |
++------------------------------------------------------------------------------------------------+
+| [ ... ][ ... ] [ Finish ][ ... ] |
++------------------------------------------------------------------------------------------------+
+| ... |
 
-Algumas configurações *NÃO* são cobertas pela importação e deverão ser realizadas manualmente. Para configurar o *encoding* e a *quebras de linha* acesse `Window > Preferences`. No assistente de preferencias, selecione `General > Workspace`. Na seção denominada `Text file encoding` marque a opção `Other` combinada com `UTF-8`, já para a `New text file line delimiter`, `Other` e `Unix`, depois clique em `Apply`.
+Algumas configurações _NÃO_ são cobertas pela importação e deverão ser realizadas manualmente. Para configurar o _encoding_ e a _quebras de linha_ acesse `Window > Preferences`. No assistente de preferencias, selecione `General > Workspace`. Na seção denominada `Text file encoding` marque a opção `Other` combinada com `UTF-8`, já para a `New text file line delimiter`, `Other` e `Unix`, depois clique em `Apply`.
 
     |                                              ...                                               |
     |                                                                                                |
@@ -37,17 +37,16 @@ Algumas configurações *NÃO* são cobertas pela importação e deverão ser re
     |                                                                        [  ...  ]   [ Apply ]   |
     +------------------------------------------------------------------------------------------------+
     |   ...                                                                                          |
-    
-Vamos precisar substituir as *tabs* por *spaces* dos arquivos de texto, para configurar acesse `Window > Preferences`. No assistente de preferencias, selecione `General > Editors > Text Editors` e marque a ckeckbox `Insert spaces for tabs`, depois clique em `Apply`.
-    
-    |                                              ...                                               |
-    |  [x] Insert spaces for tabs                                                                    |
-    |                                              ...                                               |
-    |                                                                        [  ...  ]   [ Apply ]   |
-    +------------------------------------------------------------------------------------------------+
-    |   ...                                                                                          |
-	
-Para finalizar vamos definir um conjunto de ações que serão executadas a cada salvamento do editor *Java*, para configurar acesse `Window > Preferences`. No assistente de preferencias, selecione `Java > Editor > Save Actions`, para cada *tab* selecione as seguintes opções:
+
+Vamos precisar substituir as _tabs_ por _spaces_ dos arquivos de texto, para configurar acesse `Window > Preferences`. No assistente de preferencias, selecione `General > Editors > Text Editors` e marque a ckeckbox `Insert spaces for tabs`, depois clique em `Apply`.
+  
+ | ... |
+| [x] Insert spaces for tabs |
+| ... |
+| [ ... ][ apply ] |
++------------------------------------------------------------------------------------------------+
+| ... |
+Para finalizar vamos definir um conjunto de ações que serão executadas a cada salvamento do editor _Java_, para configurar acesse `Window > Preferences`. No assistente de preferencias, selecione `Java > Editor > Save Actions`, para cada _tab_ selecione as seguintes opções:
 
     |                                              ...                                               |
     |   [x] Perform the selected actions on save                                                     |
@@ -134,9 +133,10 @@ Depois clique em `Configure...`
     +------------------------------------------------------------------------------------------------+
 
 ---
+
 ##### ECLIPSE (SSH)
 
-O Eclipse possui um cliente de *SSH* para acessar o servidor remoto *Git*. O processo de configuração dos pares de chaves *SSH* é bastante simples, para configurar acesse `Window > Preferences`. No assistente de preferencias, selecione `General > Network Connections > SSH2`, preencha as *tabs* com as seguintes opções:
+O Eclipse possui um cliente de _SSH_ para acessar o servidor remoto _Git_. O processo de configuração dos pares de chaves _SSH_ é bastante simples, para configurar acesse `Window > Preferences`. No assistente de preferencias, selecione `General > Network Connections > SSH2`, preencha as _tabs_ com as seguintes opções:
 
      __________
     | General  \_____________________________________________________________________________________
@@ -162,8 +162,9 @@ O Eclipse possui um cliente de *SSH* para acessar o servidor remoto *Git*. O pro
     +------------------------------------------------------------------------------------------------+
 
 ---
+
 ##### GITHUB (SSH)
-               
+
 Acesse o menu `Settings` localizado no avatar, depois no menu lateral `Personal settings` selecione a opção `SSH and GPG keys` e clique no botão `New SSH key`
 
 `Title:` pc_dev
@@ -173,9 +174,10 @@ Acesse o menu `Settings` localizado no avatar, depois no menu lateral `Personal 
 _Confirme a operação informando o password._
 
 ---
+
 ##### ECLIPSE (Clone)
 
-EGit é a integração do *Git* para o IDE do *Eclipse*, ele já vem instalada, para configurar abra a perspectiva em `Window > Perspective > Open Perspective > Other..`. No assistente de perspectiva, selecione `Git` depois clique no botão `Open` para abrir a perspectiva.
+EGit é a integração do _Git_ para o IDE do _Eclipse_, ele já vem instalada, para configurar abra a perspectiva em `Window > Perspective > Open Perspective > Other..`. No assistente de perspectiva, selecione `Git` depois clique no botão `Open` para abrir a perspectiva.
 
      _________________
     | Git Repositories \_____________________________________________________________________________
@@ -227,7 +229,7 @@ Na próxima tela marque checkbox e depois clique em `Next >`.
     |                                              [  ...  ]   [ Next > ]   [        ]   [  ...  ]   |
     +------------------------------------------------------------------------------------------------+
 
- Aqui devemos informar o local onde será armazenado o código fonte.
+Aqui devemos informar o local onde será armazenado o código fonte.
 
     |   +-- Destination -------------------------------------------------------------------------+   |
     |   |   Directory: C:\workspaces\GITHUB\repositorio-virtual                                  |   |
@@ -239,9 +241,10 @@ Na próxima tela marque checkbox e depois clique em `Next >`.
     +------------------------------------------------------------------------------------------------+
 
 ---
+
 ##### ECLIPSE (Maven)
 
-O *Eclipse* fornece um mecanismo para executar ferramentas que não fazem parte dele. Neste caso vamos executar comando do *Maven* através da configuração de ferramentas externas, para configurar acesse `Run > External Tools > External Tools Configurations`. No assistente de configuração, clique com botão direito em `Program` e selecione a opção `New`, preencha as *tab* `Main` com as seguintes informações.
+O _Eclipse_ fornece um mecanismo para executar ferramentas que não fazem parte dele. Neste caso vamos executar comando do _Maven_ através da configuração de ferramentas externas, para configurar acesse `Run > External Tools > External Tools Configurations`. No assistente de configuração, clique com botão direito em `Program` e selecione a opção `New`, preencha as _tab_ `Main` com as seguintes informações.
 
     +------------------------------------------------------------------------------------------------+
     |   Name: eclipse_eclipse                                                                        |
@@ -266,31 +269,32 @@ O *Eclipse* fornece um mecanismo para executar ferramentas que não fazem parte 
     |   +----------------------------------------------------------------------------------------+   |
     |   |                                                               [   ...  ]   [ Apply ]   |   |
     |   +----------------------------------------------------------------------------------------+   |
-    |                                                                                                |    
+    |                                                                                                |
     |                                                                   [   Run  ]   [  ...  ]       |
     +------------------------------------------------------------------------------------------------+
 
 OBS: Repita este procedimento criando o um novo build com o nome `clean_install` e arguments `clean install -DskipTests=true`
 
 ---
+
 ##### ECLIPSE (Importando o Projeto)
 
-Finalmente vamos importar o projeto, acesse `File > Import`. No assistente de importação, selecione a opção `Git > Projects from Git` e clique em `Next >`, na próxima tela selecione `Existing local repository` e clique em `Next >`, na próxima tela clique em `Next >` novamente, depois em `Wizard for Project import` selecione o *radio* `import existing Eclipse projects` e clique em `Next >`. Agora em `Projects` marque apenas `virtual-common`, `virtual-master` e `virtual-slave` e clique em `Finish`.
+Finalmente vamos importar o projeto, acesse `File > Import`. No assistente de importação, selecione a opção `Git > Projects from Git` e clique em `Next >`, na próxima tela selecione `Existing local repository` e clique em `Next >`, na próxima tela clique em `Next >` novamente, depois em `Wizard for Project import` selecione o _radio_ `import existing Eclipse projects` e clique em `Next >`. Agora em `Projects` marque apenas `virtual-common`, `virtual-master` e `virtual-slave` e clique em `Finish`.
 
 ---
+
 ##### ECLIPSE (Inicializado o Projeto)
 
 Copie os arquivos `../virtual-master/src/main/resources/config/config-master.properties` e `../virtual-slave/src/main/resources/config/config-slave.properties` para a pasta `D:\workspaces\GITHUB\`. Abra os aquivos e altere os parâmetros conforme a necessidade do seu ambiente.
 
 Para iniciar o projeto clique com botão direito na classe `br.com.slave.Application.java`, no menu de contexto selecione `Debug As > Debug Configurations...`. No assistente de configuração do Debug, altere o `Name`, acesse a aba `(x)= Arguments` para informar os `VM arguments:`, em seguida clique em `Apply` depois em `Debug`.
 
-    
     Name: Slave
                     ________________
      ______________| (x)= Arguments \________________________________________________________________
     |                                                                                                |
-    |   +-----------------------------------------------------------------------------------------   | 
-    |   | +-------------------------------------------------------------------------------------+ |  | 
+    |   +-----------------------------------------------------------------------------------------   |
+    |   | +-------------------------------------------------------------------------------------+ |  |
     |   | |                                           ...                                       | |  |
     |   | +----------------------------------------------------------------------------------- -+ |  |
     |   |                                                                              [   ...  ] |  |
@@ -302,6 +306,6 @@ Para iniciar o projeto clique com botão direito na classe `br.com.slave.Applica
     |   +-----------------------------------------------------------------------------------------+  |
     |                                               ...                                              |
     |                                                                        [ Debug  ]   [  ...  ]  |
-    +------------------------------------------------------------------------------------------------+    
-    
+    +------------------------------------------------------------------------------------------------+
+
 OBS: Repita este procedimento com o name `Master` e Vm Arguments: `-Dconfiguracoes.path=D:\workspaces\GITHUB\config-master.properties` para a classe `br.com.master.Application.java`

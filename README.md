@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="docs/rv_logo.png" width="400">
+  <img src="docs/virteca-hor@3x.png" width="400">
 </h1>
 
 <h3 align="center">
@@ -19,7 +19,7 @@
 
 <img src="docs/rv_mod.png" align="right"  height="450">
 
-O Repositório Virtual é sistema de gestão distribuída de arquivos que oferece um serviço para a hospedagem de livros, filmes, softwares, músicas e outros arquivos no formato digital. Qualquer pessoa com uma conta poderá interagir com leitura, gravação e exclusão dos arquivos que estão divididos em blocos de dados distribuídos entre os vários nós de armazenamento.
+O VirTeca é sistema de gestão distribuída de arquivos que oferece um serviço para a hospedagem de livros, filmes, softwares, músicas e outros arquivos no formato digital. Qualquer pessoa com uma conta poderá interagir com leitura, gravação e exclusão dos arquivos que estão divididos em blocos de dados distribuídos entre os vários nós de armazenamento.
 
 _O arquivo remessa.txt está divido em dois blocos ac92.rvf e b508.rvf. Cada bloco foi armazenado em locais diferentes o ac92.rvf está no Slave 1 e sua cópia no Slave 4, já o bloco b508.rvf no Slave 2 e 3._
 
@@ -74,9 +74,9 @@ O sistema está dividido nos módulos virtual-common, virtual-master, virtual-sl
 
 A contribuição é uma ótima maneira de aprender e dividir conhecimentos de novas tecnologias e seus ecossistemas. Se você deseja contribuir para o projeto e torná-lo melhor, sua ajuda é muito bem-vinda. Mas será necessário seguir alguns procedimentos.
 
-Para o desenvolvimento as configurações de Code Style são obrigatórias. Todo o código do Repositório Virtual deverá estar de acordo com este formato de estilo.
+Para o desenvolvimento as configurações de Code Style são obrigatórias. Todo o código do VirTeca deverá estar de acordo com este formato de estilo.
 
-Antes de enviar qualquer código para o repositório, o committer DEVE ter certeza que o código alterado adere ao formato canônico do Repositório Virtual. Assim, ao passar `Source > Cleanup` no repositório, se todo o código estiver em conformidade resultará em nenhuma alteração.
+Antes de enviar qualquer código para o repositório, o committer DEVE ter certeza que o código alterado adere ao formato canônico do VirTeca. Assim, ao passar `Source > Cleanup` no repositório, se todo o código estiver em conformidade resultará em nenhuma alteração.
 
 Você precisará verificar se as [(configurações)](../master/docs/ide.md#configuração-do-ambiente) das IDE's estão definidas corretamente. Além das configurações [(veja aqui)](../master/docs/CONTRIBUTING.md#como-contribuir) as recomendações para as contribuições.
 

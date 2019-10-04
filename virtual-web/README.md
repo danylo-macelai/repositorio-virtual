@@ -1,5 +1,7 @@
 # virtual-web
 
+- O Web é o sistema que disponibiliza ao usuário, de forma amigável, o acesso aos serviços dos projetos (Master e Access) por meio de um Browser Desktop (como o Chrome, Firefox, etc.) ou Mobile (como Safari, Chrome, etc.).
+
 ## Available Scripts
 
 Comandos que podem ser executados dentro do projeto:

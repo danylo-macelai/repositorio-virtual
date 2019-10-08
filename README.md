@@ -58,7 +58,7 @@ Para armazenar arquivos o usuário deverá estar registrado e autenticado na apl
         <tr>
             <th scope="row" align="right" width="260px">Licença</th>
             <td align="left" valign="middle" width="650px">
-                ???
+                ?????
             </td>
         </tr>
         <tr>
@@ -73,7 +73,7 @@ Para armazenar arquivos o usuário deverá estar registrado e autenticado na apl
 
 No decorrer da especialização em [Desenvolvimento Web e Mobile - Full Stack](http://inf.ufg.br/espweb-mob) da [Universidade Federal de Goiás](https://www.ufg.br/) foi discutido alguns recursos tecnológicos conforme [ementa](https://docs.google.com/document/d/1QoNsiIL_b1FXZBbqHYIVFwHHTRKQwP1WCW3r_jXUSAw/edit).
 
-Neste contexto surgiu o VirTeca como projeto, que pretendesse consolidar ao máximo a utilização destas práticas e recursos tecnológicos não só realizado a persistência de dados, más também a manipulação de binários e a troca de informações entre sistemas. Para isso dividimos nos módulos virtual-common, virtual-master, virtual-slave, virtual-access, virtual-web e virtual-mobile responsáveis por tarefas específicas.
+Neste contexto surgiu o VirTeca como projeto, que pretendesse consolidar ao máximo a utilização destas práticas e recursos tecnológicos não só realizado a persistência de dados, más também a manipulação de binários e a troca de informações entre sistemas. Para isso dividimos nos módulos [virtual-common](/virtual-common/README.md), [virtual-master](/virtual-master/README.md), [virtual-slave](/virtual-slave/README.md), [virtual-access](/virtual-access/README.md), [virtual-web](/virtual-web/README.md) e [virtual-mobile](/virtual-mobile/README.md) responsáveis por tarefas específicas.
 
 # Funcionalidade
 

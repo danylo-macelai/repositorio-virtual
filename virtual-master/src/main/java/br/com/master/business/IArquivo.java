@@ -6,6 +6,7 @@ import br.com.common.domain.Domain;
 
 import br.com.master.configuration.MasterException;
 import br.com.master.domain.ArquivoTO;
+import br.com.master.wrappers.SearchTab;
 
 import java.util.List;
 
@@ -26,16 +27,17 @@ public interface IArquivo extends IBusiness<ArquivoTO> {
      * Consulta o arquivo por nome
      *
      * @param nome - Nome do arquivo
+     * @param searchTab - Grupo do arquivo
      *
      * @return List<ArquivoTO>
      * @throws MasterException
      */
-    List<ArquivoTO> carregarPor(String nome) throws MasterException;
+    List<ArquivoTO> carregarPor(String nome, SearchTab searchTab) throws MasterException;
 
     /**
      * Realiza o upload e grava o arquivo enviado
      *
-     * @param access 
+     * @param access
      * @param file
      */
     ArquivoTO gravar(ValidarToken access, MultipartFile file) throws MasterException;

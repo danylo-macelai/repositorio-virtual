@@ -111,14 +111,14 @@ public abstract class CommonResource {
      *
      * @apiNote: Caso o usuário informado seja inválido ou não for um administrador uma CommonException será lancada.
      *
-     * @param usuario
+     * @param token
      * @throws CommonException
      */
-    protected final void restritoAdminstrador(ValidarToken usuario) throws CommonException {
-        if (usuario == null) {
+    protected final void restritoAdminstrador(ValidarToken token) throws CommonException {
+        if (token == null) {
             throw new CommonException("common.resource.usuario.null");
         }
-        if (!PERFIL_TYPE_ADMINSTRADOR.equals(usuario.getPerfilType())) {
+        if (!PERFIL_TYPE_ADMINSTRADOR.equals(token.getAccessPerfilType())) {
             throw new CommonException("common.resource.usuario.administrador");
         }
     }

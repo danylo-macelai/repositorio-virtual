@@ -2,6 +2,9 @@ package br.com.common.access.property;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -17,58 +20,63 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @SuppressWarnings("serial")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "id",
-    "nome",
-    "email",
-    "perfilType"
+        "id",
+        "nome",
+        "email",
+        "perfilType"
 })
+@Embeddable
 public class ValidarToken implements Serializable {
 
     @JsonProperty("id")
-    private String id;
+    @Column(name = "access_id", updatable = false, nullable = false)
+    private String accessId;
 
     @JsonProperty("nome")
-    private String nome;
+    @Column(name = "access_nome", updatable = false, nullable = false)
+    private String accessNome;
 
     @JsonProperty("email")
-    private String email;
+    @Column(name = "access_email", updatable = false, nullable = false)
+    private String accessEmail;
 
     @JsonProperty("perfilType")
-    private String perfilType;
+    @Column(name = "access_perfil_type", updatable = false, nullable = false)
+    private String accessPerfilType;
 
     public ValidarToken() {
     }
 
-    public String getId() {
-        return id;
+    public String getAccessId() {
+        return accessId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setAccessId(String accessId) {
+        this.accessId = accessId;
     }
 
-    public String getNome() {
-        return nome;
+    public String getAccessNome() {
+        return accessNome;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setAccessNome(String accessNome) {
+        this.accessNome = accessNome;
     }
 
-    public String getEmail() {
-        return email;
+    public String getAccessEmail() {
+        return accessEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setAccessEmail(String accessEmail) {
+        this.accessEmail = accessEmail;
     }
 
-    public String getPerfilType() {
-        return perfilType;
+    public String getAccessPerfilType() {
+        return accessPerfilType;
     }
 
-    public void setPerfilType(String perfilType) {
-        this.perfilType = perfilType;
+    public void setAccessPerfilType(String accessPerfilType) {
+        this.accessPerfilType = accessPerfilType;
     }
 
 }

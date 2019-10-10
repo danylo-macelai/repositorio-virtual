@@ -1,6 +1,7 @@
 package br.com.master.persistence;
 
 import br.com.master.domain.ArquivoTO;
+import br.com.master.wrappers.SearchTab;
 
 import java.util.List;
 
@@ -22,6 +23,15 @@ public interface ArquivoDAO extends JpaRepository<ArquivoTO, Long> {
      * @param nome
      * @return List<ArquivoTO>
      */
-    List<ArquivoTO> findAllByNome(String nome);
+    List<ArquivoTO> findAllByNomeIgnoreCaseContaining(String nome);
+
+    /**
+     * Consulta o arquivo por nome
+     *
+     * @param nome - Nome do arquivo
+     * @param searchTab - Grupo do arquivo
+     * @return List<ArquivoTO>
+     */
+    List<ArquivoTO> findAllBySearchTabAndNomeIgnoreCaseContaining(SearchTab tab, String nome);
 
 }

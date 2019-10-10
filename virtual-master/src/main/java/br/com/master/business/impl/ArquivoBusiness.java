@@ -19,6 +19,7 @@ import br.com.master.domain.ArquivoTO;
 import br.com.master.domain.BlocoTO;
 import br.com.master.domain.ConfiguracaoTO;
 import br.com.master.persistence.ArquivoDAO;
+import br.com.master.wrappers.SearchTab;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -69,8 +70,11 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<ArquivoTO> carregarPor(String nome) throws MasterException {
-        return persistence.findAllByNome(nome);
+    public List<ArquivoTO> carregarPor(String nome, SearchTab searchTab) throws MasterException {
+        if (searchTab == null) {
+            return persistence.findAllByNomeIgnoreCaseContaining(nome);
+        }
+        return persistence.findAllBySearchTabAndNomeIgnoreCaseContaining(searchTab, nome);
     }
 
     /**
@@ -78,12 +82,12 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      */
     @Override
     @Transactional
-    public void excluir(ValidarToken access, long id) throws MasterException {
+    public void excluir(ValidarToken token, long id) throws MasterException {
         final ArquivoTO arquivo = ache(id);
         if (arquivo == null) {
             throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
         }
-        if (!arquivo.getUsuarioExternoId().equals(access.getId())) {
+        if (!arquivo.getToken().getAccessId().equals(token.getAccessId())) {
             throw new MasterException("master.excluir.arquivo");
         }
         this.excluir(arquivo);
@@ -124,14 +128,15 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      * {@inheritDoc}
      */
     @Override
-    public ArquivoTO gravar(ValidarToken access, MultipartFile multipartFile) throws MasterException {
+    public ArquivoTO gravar(ValidarToken token, MultipartFile multipartFile) throws MasterException {
         final ConfiguracaoTO configuracao = configuracaoBusiness.buscar();
 
         final ArquivoTO arquivo = new ArquivoTO();
         arquivo.setNome(multipartFile.getOriginalFilename());
         arquivo.setTamanho((int) multipartFile.getSize());
         arquivo.setMimeType(multipartFile.getContentType());
-        arquivo.setUsuarioExternoId(access.getId());
+        arquivo.setSearchTab(SearchTab.ofNullable(multipartFile.getContentType()));
+        arquivo.setToken(token);
 
         final int tamanhoBloco = configuracao.getTamanhoBloco() * 1024;
         final int miniBloco = arquivo.getTamanho() % tamanhoBloco;

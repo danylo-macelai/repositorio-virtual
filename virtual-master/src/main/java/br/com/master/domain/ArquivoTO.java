@@ -1,13 +1,19 @@
 package br.com.master.domain;
 
+import br.com.common.access.property.ValidarToken;
 import br.com.common.domain.Domain;
+
+import br.com.master.wrappers.SearchTab;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
@@ -43,8 +49,12 @@ public class ArquivoTO extends Domain {
     @Column(name = "mime_type", updatable = false, nullable = false)
     private String mimeType;
 
-    @Column(name = "usuario_externo_id", updatable = false, nullable = false)
-    private String usuarioExternoId;
+    @Column(name = "search_tab", updatable = false, nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private SearchTab searchTab;
+
+    @Embedded
+    private ValidarToken token;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "arquivo")
@@ -83,12 +93,20 @@ public class ArquivoTO extends Domain {
         this.mimeType = mimeType;
     }
 
-    public String getUsuarioExternoId() {
-        return usuarioExternoId;
+    public SearchTab getSearchTab() {
+        return searchTab;
     }
 
-    public void setUsuarioExternoId(String usuarioExternoId) {
-        this.usuarioExternoId = usuarioExternoId;
+    public void setSearchTab(SearchTab searchTab) {
+        this.searchTab = searchTab;
+    }
+
+    public ValidarToken getToken() {
+        return token;
+    }
+
+    public void setToken(ValidarToken token) {
+        this.token = token;
     }
 
     public Set<BlocoTO> getBlocos() {

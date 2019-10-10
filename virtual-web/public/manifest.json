@@ -1,6 +1,6 @@
 {
-  "short_name": "Repositório Virtual",
-  "name": "Sistema de Gestão Distribuída de Arquivos",
+  "short_name": "VirTeca",
+  "name": "Serviço de Hospedagem de Arquivos",
   "icons": [
     {
       "src": "favicon.ico",

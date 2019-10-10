@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 
 import './Header.scss';
 
-import logo from '../assets/images/virteca-horizontal.png';
+import logo from '../../assets/images/virteca-horizontal.png';
 
 class Header extends React.Component {
   render() {

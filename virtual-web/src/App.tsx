@@ -13,8 +13,8 @@ import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 
 import './App.scss';
 
-import AlertTemplate from './components/AlertTemplate';
-import Header from './components/Header';
+import AlertTemplate from './components/common/AlertTemplate';
+import Header from './components/common/Header';
 import Arquivo from './pages/Arquivo';
 import Home from './pages/Home';
 

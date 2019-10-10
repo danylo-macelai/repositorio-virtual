@@ -21,6 +21,25 @@ class ArquivoApi {
 
     return response;
   }
+
+  static async consulta(nome: string, searchTab: string) {
+    const response: any = await virtualMasterConfig.get('arquivos', {
+      params: { nome: nome, search_tab: searchTab },
+    });
+    return response.data;
+  }
+
+  static async leitura(id: number) {
+    return null;
+  }
+
+  static async gravacao(file: File, authorization: string, token: string) {
+    return null;
+  }
+
+  static async exclusao(id: number, authorization: string, token: string) {
+    return null;
+  }
 }
 
 export default ArquivoApi;

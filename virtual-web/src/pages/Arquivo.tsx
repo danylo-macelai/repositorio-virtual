@@ -10,11 +10,10 @@
 import React, { RefObject } from 'react';
 import { withAlert, AlertManager } from 'react-alert';
 
-import ArquivoApi from '../api/virtual-master/arquivo-api';
-
-import './Arquivo.scss';
+import './scss/Arquivo.scss';
 
 import fileImage from '../assets/images/file.png';
+import { gravarArquivos } from '../services/servicosApi';
 
 class ArquivoProps {
   alert!: AlertManager;
@@ -83,7 +82,7 @@ class Arquivo extends React.Component<ArquivoProps, ArquivoState> {
       });
 
       try {
-        const response = await ArquivoApi.gravar(file);
+        const response = await gravarArquivos(file);
         console.log(response);
         file.success = true;
       } catch (e) {

@@ -9,7 +9,7 @@
 
 import React from 'react';
 
-import './Menu.scss';
+import './scss/Menu.scss';
 import { Link } from 'react-router-dom';
 
 class Menu extends React.Component {

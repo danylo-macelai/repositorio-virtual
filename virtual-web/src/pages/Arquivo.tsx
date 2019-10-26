@@ -10,9 +10,9 @@
 import React, { RefObject } from 'react';
 import { withAlert, AlertManager } from 'react-alert';
 
-import ArquivoApi from '../api/virtual-master/arquivo-api';
+import ArquivoApi from '../services/arquivo-api';
 
-import './Arquivo.scss';
+import './scss/Arquivo.scss';
 
 import fileImage from '../assets/images/file.png';
 

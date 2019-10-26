@@ -10,7 +10,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import './MenuTop.scss';
+import './scss/MenuTop.scss';
 
 class MenuTop extends React.Component {
   render() {

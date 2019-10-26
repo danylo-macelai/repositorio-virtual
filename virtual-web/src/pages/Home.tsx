@@ -8,12 +8,11 @@
  */
 
 import React from 'react';
-
-import Search from '../components/Search';
+import ArquivoListagem from '../components/arquivo/ArquivoListagem';
 
 class Home extends React.Component {
   render() {
-    return <Search />;
+    return <ArquivoListagem />;
   }
 }
 

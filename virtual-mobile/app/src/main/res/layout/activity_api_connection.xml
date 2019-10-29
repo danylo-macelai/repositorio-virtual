@@ -113,4 +113,12 @@
         android:onClick="salvar"
         android:fontFamily="@font/robotolight" />
 
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/bottom_navigation" />
+
 </RelativeLayout>

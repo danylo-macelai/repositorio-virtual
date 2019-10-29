@@ -14,7 +14,7 @@ import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import './App.scss';
 
 import { AlertTemplate, Header } from './components/layout/index';
-import { Arquivo, Home } from './pages/index';
+import { ArquivoPage } from './pages/index';
 
 const options: any = {
   position: positions.TOP_RIGHT,
@@ -29,12 +29,11 @@ class App extends React.Component {
       <HashRouter basename="/">
         <AlertProvider template={AlertTemplate} {...options}>
           <Header />
-
           <div className="main-content">
             <div className="ui container">
               <div className="main-content-wrap">
-                <Route path="/" exact component={Home} />
-                <Route path="/arquivo" component={Arquivo} />
+                <Route path="/" exact={true} component={ArquivoPage} />
+                <Route path="/arquivo" exact={true} component={ArquivoPage} />
               </div>
             </div>
           </div>

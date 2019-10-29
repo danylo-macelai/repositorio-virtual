@@ -7,7 +7,6 @@
  * version $
  */
 
-import Arquivo from './Arquivo';
-import Home from './Home';
+import ArquivoPage from './ArquivoPage';
 
-export { Arquivo, Home };
+export { ArquivoPage };

@@ -12,19 +12,34 @@ import * as Constants from '../common/constants';
 import { tratarExcecao } from '../common/utils';
 import { Arquivo } from '../common/models';
 
-export const consultaArquivos = (
+export const consultaArquivo = (
   nome: string,
   filtro: string
 ): Promise<Arquivo[]> => {
   return axios
-    .get(Constants.ARQUIVOS_API_MASTER, {
+    .get(Constants.ARQUIVO_RESOURCE, {
       params: { nome: nome, search_tab: filtro },
     })
     .then(response => Promise.resolve(response.data))
     .catch(tratarExcecao);
 };
 
-export const gravarArquivos = (file: File) => {};
+export const leituraArquivo = (id: number): Promise<Arquivo> => {
+  return axios
+    .get(Constants.ARQUIVO_RESOURCE, {
+      baseURL: `${id}`,
+    })
+    .then(response => Promise.resolve(response.data))
+    .catch(tratarExcecao);
+};
+
+export const gravacaoArquivo = (file: File) => {};
+
+export const exclusaoArquivo = (id: number) => {};
+
+export const consultaConfiguracao = (id: number) => {};
+
+export const alteracaoConfiguracao = (id: number) => {};
 
 /*static async gravar(file: File) {
   var formData = new FormData();

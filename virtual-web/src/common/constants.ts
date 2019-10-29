@@ -9,4 +9,5 @@
 
 import { ENV } from './../services/env.config';
 
-export const ARQUIVOS_API_MASTER = `${ENV.URL_API_MASTER}/arquivos`;
+export const ARQUIVO_RESOURCE = `${ENV.URL_API_MASTER}/arquivos`;
+export const CONFIGURACAO_RESOURCE = `${ENV.URL_API_MASTER}/configuracoes`;

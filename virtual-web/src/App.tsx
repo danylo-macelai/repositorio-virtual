@@ -10,11 +10,14 @@
 import * as React from 'react';
 import { HashRouter, Route } from 'react-router-dom';
 import { transitions, positions, Provider as AlertProvider } from 'react-alert';
-
-import './App.scss';
+import { connect } from 'react-redux';
 
 import { AlertTemplate, Header } from './components/layout/index';
-import { ArquivoPage } from './pages/index';
+import { ArquivoPage, LoginPage } from './pages/index';
+
+import './App.scss';
+import { VirtualWebState } from './reducers';
+import UserAction from './actions/users';
 
 const options: any = {
   position: positions.TOP_RIGHT,
@@ -23,7 +26,23 @@ const options: any = {
   transition: transitions.FADE,
 };
 
-class App extends React.Component {
+const mapStateToProps = (state: VirtualWebState) => ({});
+
+const mapDispatchToProps = {
+  setUserFromStorage: UserAction.setUserFromStorage,
+};
+
+type AppProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
+
+interface AppState {}
+
+class App extends React.Component<AppProps, AppState> {
+  constructor(props: AppProps) {
+    super(props);
+
+    this.props.setUserFromStorage();
+  }
+
   render() {
     return (
       <HashRouter basename="/">
@@ -34,6 +53,7 @@ class App extends React.Component {
               <div className="main-content-wrap">
                 <Route path="/" exact={true} component={ArquivoPage} />
                 <Route path="/arquivo" exact={true} component={ArquivoPage} />
+                <Route path="/login" exact={true} component={LoginPage} />
               </div>
             </div>
           </div>
@@ -43,4 +63,7 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

@@ -95,7 +95,7 @@ public class UploadActivity extends AppCompatActivity {
 
                         switch (menuItem.getItemId()) {
                         case (R.id.search_menu):
-                            intent = new Intent(UploadActivity.this, MainActivity.class);
+                            intent = new Intent(UploadActivity.this, PesquisaArquivosActivity.class);
                             startActivity(intent);
                             overridePendingTransition(0, 0);
                             finish();

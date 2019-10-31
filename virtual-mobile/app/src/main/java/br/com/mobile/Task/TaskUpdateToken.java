@@ -21,7 +21,7 @@ public class TaskUpdateToken implements Runnable {
 
     @Override
     public void run() {
-        handler.postDelayed(this, 1800000);
+        handler.postDelayed(this, 1700000);
         access.validarToken();
     }
 }

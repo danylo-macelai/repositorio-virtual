@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import br.com.mobile.R;
+import br.com.mobile.Utils.FileUtils;
 
 /**
  * Description: FIXME: Document this type > *Project: virtual-mobile
@@ -43,6 +44,8 @@ public class UploadListAdapter extends RecyclerView.Adapter<UploadListAdapter.Vi
 
         String fileName = fileNameList.get(i);
         viewHolder.fileNameView.setText(fileName);
+        String extension = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+        viewHolder.fileImageView.setImageResource(FileUtils.getFileImageExtension(extension));
 
         String fileDone = fileDoneList.get(i);
 
@@ -64,6 +67,7 @@ public class UploadListAdapter extends RecyclerView.Adapter<UploadListAdapter.Vi
 
         public TextView  fileNameView;
         public ImageView fileDoneView;
+        public ImageView fileImageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -71,6 +75,7 @@ public class UploadListAdapter extends RecyclerView.Adapter<UploadListAdapter.Vi
 
             fileNameView = (TextView) view.findViewById(R.id.txtFileName);
             fileDoneView = (ImageView) view.findViewById(R.id.imgFileUploading);
+            fileImageView = (ImageView) view.findViewById(R.id.imgFile);
         }
     }
 }

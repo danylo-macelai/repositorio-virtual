@@ -1,8 +1,6 @@
 package br.com.mobile;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -15,24 +13,25 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import br.com.mobile.Resource.SessionResource;
+
 public class ApiConnection extends AppCompatActivity {
-    private static final String  FILE_NAME = "apiURL";
     private EditText             edtUrl;
     private EditText             edtPort;
     private TextView             txtStatus;
     private ImageView            imgStatus;
-    private SharedPreferences    prefs;
     private BottomNavigationView bottomNavigationView;
+    private SessionResource      session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_api_connection);
+        session = new SessionResource(this);
         edtUrl = (EditText) findViewById(R.id.edtUrl);
         edtPort = (EditText) findViewById(R.id.edtPort);
         txtStatus = (TextView) findViewById(R.id.txtStatus);
         imgStatus = (ImageView) findViewById(R.id.imgStatus);
-        prefs = getSharedPreferences("preferencias", Context.MODE_PRIVATE);
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         Menu menu = bottomNavigationView.getMenu();
@@ -49,22 +48,22 @@ public class ApiConnection extends AppCompatActivity {
 
                                 switch (menuItem.getItemId()) {
                                 case (R.id.search_menu):
-                                    intent = new Intent(ApiConnection.this, MainActivity.class);
-                                    startActivity(intent);
+                                    intent = new Intent(ApiConnection.this, PesquisaArquivosActivity.class);
+                                    startActivity(verificaSessao(intent));
                                     overridePendingTransition(0, 0);
                                     finish();
                                     break;
 
                                 case (R.id.upload_menu):
                                     intent = new Intent(ApiConnection.this, UploadActivity.class);
-                                    startActivity(intent);
+                                    startActivity(verificaSessao(intent));
                                     overridePendingTransition(0, 0);
                                     finish();
                                     break;
 
                                 case (R.id.apiconnection_menu):
                                     intent = new Intent(ApiConnection.this, ApiConnection.class);
-                                    startActivity(intent);
+                                    startActivity(verificaSessao(intent));
                                     overridePendingTransition(0, 0);
                                     finish();
                                     break;
@@ -81,24 +80,26 @@ public class ApiConnection extends AppCompatActivity {
     }
 
     public void salvar(View v) {
-        String apiUrl = edtUrl.getText().toString();
+        String ip = edtUrl.getText().toString();
         String apiPort = edtPort.getText().toString();
-        String apiConnection = "";
 
-        if (apiPort.equals("")) {
-            apiConnection = "http://" + apiUrl;
-        } else {
-            apiConnection = "http://" + apiUrl + ":" + apiPort;
+        if (!ip.equals("")) {
+            session.setPreferencesIP(ip);
+
+            if (apiPort.equals("")) {
+                session.setPreferencesApiURL("http://" + session.getPreferencesIP());
+            } else {
+                session.setPreferencesPortApi(apiPort);
+                session.setPreferencesApiURL(
+                        "http://" + session.getPreferencesIP() + ":" + session.getPreferencesPortApi());
+            }
         }
-        SharedPreferences.Editor prefsEditor = prefs.edit();
-        prefsEditor.putString(FILE_NAME, apiConnection);
-        prefsEditor.apply();
         verificaStatus();
     }
 
     private String carregar() {
-        String urlConnection = prefs.getString(FILE_NAME, "");
-        return urlConnection;
+        return session.getPreferencesApiURL();
+
     }
 
     private void verificaStatus() {
@@ -112,6 +113,13 @@ public class ApiConnection extends AppCompatActivity {
         }
         txtStatus.setVisibility(View.VISIBLE);
         imgStatus.setVisibility(View.VISIBLE);
+    }
+
+    private Intent verificaSessao(Intent intent) {
+        if (session.getPreferencesApiURL().equals("")) {
+            intent = new Intent(ApiConnection.this, ApiConnection.class);
+        }
+        return intent;
     }
 
 }

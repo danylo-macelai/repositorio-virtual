@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
+import com.apollographql.apollo.ApolloMutationCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 
@@ -20,18 +21,18 @@ import okhttp3.OkHttpClient;
  * @author breni > _@date: 18/10/2019 > _@version $$ >
  */
 public class AccessResource {
-    private static final String   BASE_URL = "http://10.0.2.2:3000/access";
     private static ApolloClient   myApolloClient;
     private final SessionResource session;
 
     public AccessResource(Context context) {
         this.session = new SessionResource(context);
+        setAcessURL();
     }
 
-    public static ApolloClient getMyApolloClient() {
+    public ApolloClient getMyApolloClient() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
         myApolloClient = ApolloClient.builder()
-                .serverUrl(BASE_URL)
+                .serverUrl(session.getPreferencesAccessURL())
                 .okHttpClient(okHttpClient)
                 .build();
         return myApolloClient;
@@ -50,7 +51,7 @@ public class AccessResource {
                             }
 
                         } catch (Exception e) {
-                            criarToken();
+                            atualizarToken();
                         }
                     }
 
@@ -61,29 +62,40 @@ public class AccessResource {
                 });
     }
 
-    public void criarToken() {
-        AccessResource.getMyApolloClient().mutate(
+    public void atualizarToken() {
+        this.getMyApolloClient().mutate(
                 CriarTokenMutation.builder()
                         .email(session.getPreferencesUserName())
                         .senha(session.getPreferencesPassword()).build())
                 .enqueue(new ApolloCall.Callback<CriarTokenMutation.Data>() {
                     @Override
-                    public void onResponse(@NotNull final Response<CriarTokenMutation.Data> response) {
+                    public void onResponse(@NotNull Response<CriarTokenMutation.Data> response) {
                         try {
-                            if (!response.data().criarToken().token().equals("")) {
-                                session.setPreferencesToken(response.data().criarToken().token());
-                            }
+                            session.setPreferencesToken(response.data().criarToken().token());
                         } catch (Exception e) {
-                            Log.i("TOKEN - TASK", response.errors().get(0).message());
+                            e.printStackTrace();
+                            Log.e("ERROR-TOKEN", response.errors().get(0).message());
                         }
                     }
 
                     @Override
                     public void onFailure(@NotNull ApolloException e) {
-                        Log.i("APOLLO ERRO", e.getMessage());
-                        criarToken();
+                        Log.e("ERROR-TOKEN", e.getMessage());
                     }
                 });
+    }
+
+    public ApolloMutationCall<CriarTokenMutation.Data> criarToken(String email, String senha) {
+        return getMyApolloClient().mutate(
+                CriarTokenMutation.builder()
+                        .email(email)
+                        .senha(senha).build());
+    }
+
+    private void setAcessURL() {
+        session.setPreferencesPortAccess("3000");
+        session.setPreferencesAccessURL(
+                "http://" + session.getPreferencesIP() + ":" + session.getPreferencesPortAccess() + "/access");
     }
 
 }

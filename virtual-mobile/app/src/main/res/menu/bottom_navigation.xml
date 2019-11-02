@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/search_menu"
-        android:icon="@drawable/search_menu"
-        android:title="Search" />
+        android:icon="@drawable/search_files_menu"
+        android:title="Procurar" />
 
     <item
         android:id="@+id/upload_menu"
-        android:icon="@drawable/upload_menu"
+        android:icon="@drawable/cloud_upload_menu"
         android:title="Upload" />
 
     <item

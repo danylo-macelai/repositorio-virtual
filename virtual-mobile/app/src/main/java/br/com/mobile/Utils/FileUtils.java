@@ -12,6 +12,8 @@ import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
+import br.com.mobile.R;
+
 /**
  * Description: FIXME: Document this type Project: virtual-mobile
  *
@@ -125,5 +127,45 @@ public class FileUtils {
      */
     private static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    public static int getFileImageExtension(String extension) {
+        int image = R.drawable.file_icon;
+        switch (extension) {
+        case ".xls":
+            image = R.drawable.xls;
+            break;
+        case ".pdf":
+            image = R.drawable.pdf;
+            break;
+        case ".doc":
+            image = R.drawable.doc;
+            break;
+        case ".jpg":
+            image = R.drawable.jpg;
+            break;
+        case ".jpeg":
+            image = R.drawable.jpg;
+            break;
+        case ".txt":
+            image = R.drawable.txt;
+            break;
+        case ".mp3":
+            image = R.drawable.mp3;
+            break;
+        case ".zip":
+            image = R.drawable.zip;
+            break;
+        case ".csv":
+            image = R.drawable.csv;
+            break;
+        case ".ppt":
+            image = R.drawable.ppt;
+            break;
+        case ".gif":
+            image = R.drawable.gif;
+            break;
+        }
+        return image;
     }
 }

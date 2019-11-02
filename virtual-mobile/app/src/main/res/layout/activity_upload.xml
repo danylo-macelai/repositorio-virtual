@@ -6,48 +6,47 @@
 
     <TextView
         android:id="@+id/txtUploadName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:fontFamily="@font/robotoregular"
-        android:text="Upload Files"
-        android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@+id/btnSelectFiles"
+        android:layout_width="168dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="52dp"
+        android:fontFamily="@font/robotolight"
+        android:text="Upload de Arquivos"
+        android:textSize="19.2dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.405" />
-
-    <Button
-        android:id="@+id/btnSelectFiles"
-        android:layout_width="343dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="108dp"
-        android:background="@drawable/button_activity_upload"
-        android:shadowColor="#A8A8A8"
-        android:text="Select Files to Upload"
-        android:textColor="#FFFFFFFF"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/btnSelectFiles"
+        android:layout_width="196dp"
+        android:layout_height="50dp"
+        android:background="@drawable/button_api_connection"
+        android:fontFamily="@font/robotolight"
+        android:shadowColor="#A8A8A8"
+        android:text="Selecionar Arquivos"
+        android:textColor="#616161"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rcvFilesUpload"
+        app:layout_constraintVertical_bias="0.403" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rcvFilesUpload"
-        android:layout_width="0dp"
-        android:layout_height="445dp"
-        android:layout_marginBottom="48dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="383dp"
+        android:layout_height="402dp"
+        android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSelectFiles"
-        app:layout_constraintVertical_bias="0.67" />
+        app:layout_constraintTop_toBottomOf="@+id/txtUploadName" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="wrap_content"
         android:background="?android:attr/windowBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_navigation" />

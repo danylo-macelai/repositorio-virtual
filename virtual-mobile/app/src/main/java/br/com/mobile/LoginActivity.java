@@ -6,10 +6,10 @@ import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,23 +24,63 @@ import br.com.mobile.Task.TaskUpdateToken;
  * @author breni > _@date: 18/10/2019 > _@version $$ >
  */
 public class LoginActivity extends AppCompatActivity {
-    SessionResource session;
-    EditText        edtUsername;
-    EditText        edtPassword;
-    TaskUpdateToken taskUpdateToken;
+    SessionResource        session;
+    EditText               edtUsername;
+    EditText               edtPassword;
+    TaskUpdateToken        taskUpdateToken;
+    Intent                 intent;
+    private AccessResource access;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         session = new SessionResource(this);
+        access = new AccessResource(this);
         edtUsername = (EditText) findViewById(R.id.edtEmail);
         edtPassword = (EditText) findViewById(R.id.edtSenha);
-        taskUpdateToken = new TaskUpdateToken(this.getApplicationContext());
+
+        intent = new Intent(this, UploadActivity.class);
+        verificaSessao(intent);
     }
 
     public void login(View v) {
-        criarToken();
+        if (isEmpty()) {
+            login();
+        }
+    }
+
+    private void login() {
+        access.criarToken(session.getPreferencesUserName(), session.getPreferencesPassword())
+                .enqueue(new ApolloCall.Callback<CriarTokenMutation.Data>() {
+                    @Override
+                    public void onResponse(@NotNull final Response<CriarTokenMutation.Data> response) {
+                        try {
+                            session.setPreferencesToken(response.data().criarToken().token());
+                            LoginActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "LOGIN EFETUADO COM SUCESSO",
+                                            Toast.LENGTH_LONG).show();
+                                    startActivity(intent);
+                                }
+                            });
+                        } catch (Exception e) {
+                            LoginActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), response.errors().get(0).message(),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NotNull ApolloException e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     private boolean isEmpty() {
@@ -52,46 +92,20 @@ public class LoginActivity extends AppCompatActivity {
             edtPassword.setError("O Campo SENHA é obrigatorio!");
 
         } else {
+            session.setPreferenceUserName(edtUsername.getText().toString());
             session.setPreferencePassword(edtPassword.getText().toString());
             result = true;
         }
         return result;
     }
 
-    public void criarToken() {
-        AccessResource.getMyApolloClient().mutate(
-                CriarTokenMutation.builder()
-                        .email(session.getPreferencesUserName())
-                        .senha(session.getPreferencesPassword()).build())
-                .enqueue(new ApolloCall.Callback<CriarTokenMutation.Data>() {
-                    @Override
-                    public void onResponse(@NotNull final Response<CriarTokenMutation.Data> response) {
-                        LoginActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                session.setPreferencesToken(response.data().criarToken().token());
-                                if (isEmpty()) {
-                                    if (!session.getPreferencesToken().equals("")) {
-                                        Log.i("APOLLO - token", session.getPreferencesToken());
-                                        Toast.makeText(LoginActivity.this, "LOGIN EFETUADO COM SUCESSO!",
-                                                Toast.LENGTH_LONG).show();
-                                        taskUpdateToken.run();
-                                    }
-                                } else {
-                                    Toast.makeText(LoginActivity.this, "CAMPOS REQUERIDOS NÃO PREENCHIDOS!",
-                                            Toast.LENGTH_LONG)
-                                            .show();
-                                }
-
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onFailure(@NotNull ApolloException e) {
-                        Log.i("APOLLO ERRO", e.getMessage());
-                    }
-                });
+    private void verificaSessao(Intent intent) {
+        if (session.getPreferencesApiURL().equals("")) {
+            intent = new Intent(LoginActivity.this, ApiConnection.class);
+            startActivity(intent);
+        } else {
+            taskUpdateToken = new TaskUpdateToken(this.getApplicationContext());
+        }
     }
 
 }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PesquisaArquivosActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="209dp"
+        android:layout_height="109dp"
+        android:src="@drawable/virteca"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnPesquisar"
+        android:layout_width="196dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/layoutConnection"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="88dp"
+        android:layout_marginBottom="116dp"
+        android:background="@drawable/button_api_connection"
+        android:fontFamily="@font/robotolight"
+        android:shadowColor="#bbdefb"
+        android:shadowDx="1"
+        android:shadowDy="0"
+        android:shadowRadius="50"
+        android:text="PESQUISAR"
+        android:textColor="#616161"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.831"
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="getArquivos" />
+
+    <EditText
+        android:id="@+id/edtPesquisa"
+        android:layout_width="371dp"
+        android:layout_height="70dp"
+        android:fontFamily="@font/robotolight"
+        android:textSize="19sp"
+        android:layout_marginStart="8dp"
+        android:hint="Digite aqui o nome do arquivo"
+        android:drawableLeft="@drawable/search_menu"
+        app:layout_constraintBottom_toTopOf="@+id/btnPesquisar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.589"
+        android:inputType="textCapCharacters" />
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/windowBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation" />
+
+</android.support.constraint.ConstraintLayout>

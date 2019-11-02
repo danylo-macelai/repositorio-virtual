@@ -23,8 +23,24 @@ public class SessionResource {
         prefs.edit().putString("password", password).commit();
     }
 
-    public void setPreferencesApiConnection(String apiURL) {
+    public void setPreferencesApiURL(String apiURL) {
         prefs.edit().putString("apiURL", apiURL).apply();
+    }
+
+    public void setPreferencesAccessURL(String apiURL) {
+        prefs.edit().putString("accessURL", apiURL).apply();
+    }
+
+    public void setPreferencesIP(String ip) {
+        prefs.edit().putString("IP", ip).apply();
+    }
+
+    public void setPreferencesPortApi(String port) {
+        prefs.edit().putString("apiPort", port).apply();
+    }
+
+    public void setPreferencesPortAccess(String port) {
+        prefs.edit().putString("accessPort", port).apply();
     }
 
     public boolean setPreferencesToken(String tokenAcess) {
@@ -39,12 +55,28 @@ public class SessionResource {
         return prefs.getString("password", "");
     }
 
-    public String getPreferencesApiConnection() {
+    public String getPreferencesApiURL() {
         return prefs.getString("apiURL", "");
+    }
+
+    public String getPreferencesAccessURL() {
+        return prefs.getString("accessURL", "");
     }
 
     public String getPreferencesToken() {
         return prefs.getString("token", "");
+    }
+
+    public String getPreferencesIP() {
+        return prefs.getString("IP", "");
+    }
+
+    public String getPreferencesPortApi() {
+        return prefs.getString("apiPort", "");
+    }
+
+    public String getPreferencesPortAccess() {
+        return prefs.getString("accessPort", "");
     }
 
 }

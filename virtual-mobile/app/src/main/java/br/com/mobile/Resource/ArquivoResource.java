@@ -1,10 +1,12 @@
 package br.com.mobile.Resource;
 
 import java.io.File;
+import java.util.List;
 
 import android.content.Context;
 import android.net.Uri;
 
+import br.com.mobile.Domain.ArquivoTO;
 import br.com.mobile.Model.IArquivoModel;
 import br.com.mobile.Utils.FileUtils;
 import okhttp3.MultipartBody;
@@ -46,5 +48,10 @@ public class ArquivoResource {
                 session.getPreferencesToken());
 
         return callUpload;
+    }
+
+    public Call<List<ArquivoTO>> Arquivos(String nome) {
+        Call<List<ArquivoTO>> call = arquivoModel.getArquivos(nome);
+        return call;
     }
 }

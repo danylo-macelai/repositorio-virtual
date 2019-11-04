@@ -9,7 +9,15 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+
+import { virtualWebStore } from './stores';
 
 import App from './App';
 
-ReactDOM.render(<App />, document.querySelector('#root'));
+ReactDOM.render(
+  <Provider store={virtualWebStore}>
+    <App />
+  </Provider>,
+  document.querySelector('#root')
+);

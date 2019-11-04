@@ -9,24 +9,88 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+
+import { VirtualWebState } from '../../reducers';
 
 import './scss/MenuTop.scss';
+import UserAction from '../../actions/users';
 
-class MenuTop extends React.Component {
+const mapStateToProps = (state: VirtualWebState) => ({
+  user: state.user,
+});
+
+const mapDispatchToProps = {
+  clearUser: UserAction.clearUser,
+};
+
+type MenuTopProps = ReturnType<typeof mapStateToProps> &
+  typeof mapDispatchToProps;
+
+interface MenuTopState {}
+
+class MenuTop extends React.Component<MenuTopProps, MenuTopState> {
+  isUserLogged() {
+    return !!this.props.user.token;
+  }
+
+  logout() {
+    this.props.clearUser();
+  }
+
+  loggedOptions() {
+    const { nome, email } = this.props.user;
+
+    return (
+      <li className="item ui dropdown pointing top right icon simple logged">
+        {nome} <i className="chevron down icon small"></i>
+        <div className="ui vertical menu">
+          <div className="name">{nome}</div>
+          <div className="email">{email}</div>
+
+          <div className="ui divider"></div>
+
+          <button
+            type="button"
+            className="ui button basic fluid small"
+            onClick={() => this.logout()}
+          >
+            Sair
+          </button>
+        </div>
+      </li>
+    );
+  }
+
+  unloggedOptions() {
+    return (
+      <>
+        <li className="item">
+          <Link to="/login">Login</Link>
+        </li>
+        <li className="item">
+          <Link to="/sign-up">Cadastrar</Link>
+        </li>
+      </>
+    );
+  }
+
   render() {
     return (
       <nav className="menu-top">
-        <ul className="ui list celled horizontal link">
-          <li className="item">
-            <Link to="/sign-in">Login</Link>
-          </li>
-          <li className="item">
-            <Link to="/sign-up">Cadastrar</Link>
-          </li>
+        <ul
+          className={`ui list horizontal link ${
+            !this.isUserLogged() ? 'celled' : ''
+          }`}
+        >
+          {this.isUserLogged() ? this.loggedOptions() : this.unloggedOptions()}
         </ul>
       </nav>
     );
   }
 }
 
-export default MenuTop;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MenuTop);

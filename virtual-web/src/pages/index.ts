@@ -8,5 +8,6 @@
  */
 
 import ArquivoPage from './ArquivoPage';
+import LoginPage from './LoginPage';
 
-export { ArquivoPage };
+export { ArquivoPage, LoginPage };

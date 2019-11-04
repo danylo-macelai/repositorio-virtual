@@ -13,7 +13,12 @@ import { transitions, positions, Provider as AlertProvider } from 'react-alert';
 import { connect } from 'react-redux';
 
 import { AlertTemplate, Header } from './components/layout/index';
-import { ArquivoPage, LoginPage } from './pages/index';
+import {
+  ArquivoPage,
+  LoginPage,
+  CadastrarPage,
+  BemVindoPage,
+} from './pages/index';
 
 import './App.scss';
 import { VirtualWebState } from './reducers';
@@ -54,6 +59,16 @@ class App extends React.Component<AppProps, AppState> {
                 <Route path="/" exact={true} component={ArquivoPage} />
                 <Route path="/arquivo" exact={true} component={ArquivoPage} />
                 <Route path="/login" exact={true} component={LoginPage} />
+                <Route
+                  path="/cadastrar"
+                  exact={true}
+                  component={CadastrarPage}
+                />
+                <Route
+                  path="/bem-vindo"
+                  exact={true}
+                  component={BemVindoPage}
+                />
               </div>
             </div>
           </div>

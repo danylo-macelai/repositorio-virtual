@@ -10,6 +10,7 @@
 export default interface User {
   id: string;
   nome: string;
+  senha: string;
   email: string;
   token: string;
   perfilType: string;
@@ -18,6 +19,7 @@ export default interface User {
 export const EMPTY_USER: User = {
   id: '',
   nome: '',
+  senha: '',
   email: '',
   token: '',
   perfilType: '',

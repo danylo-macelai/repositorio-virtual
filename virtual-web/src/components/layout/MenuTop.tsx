@@ -50,13 +50,13 @@ class MenuTop extends React.Component<MenuTopProps, MenuTopState> {
 
           <div className="ui divider"></div>
 
-          <button
-            type="button"
+          <Link
+            to="/"
             className="ui button basic fluid small"
             onClick={() => this.logout()}
           >
             Sair
-          </button>
+          </Link>
         </div>
       </li>
     );
@@ -69,7 +69,7 @@ class MenuTop extends React.Component<MenuTopProps, MenuTopState> {
           <Link to="/login">Login</Link>
         </li>
         <li className="item">
-          <Link to="/sign-up">Cadastrar</Link>
+          <Link to="/cadastrar">Cadastrar</Link>
         </li>
       </>
     );

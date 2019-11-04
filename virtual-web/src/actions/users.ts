@@ -7,12 +7,12 @@
  * version $
  */
 
-import AccessApi from '../services/AccessApi';
 import { ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
 
 import { VirtualWebState } from '../reducers';
 import User, { EMPTY_USER } from '../common/models/user';
+import { getUserByToken, validaToken } from '../services/servicosApi';
 
 const localStorage = window.localStorage;
 
@@ -39,7 +39,7 @@ class UserAction {
   ): ThunkAction<any, VirtualWebState, null, Action<string>> {
     return async dispatch => {
       // Pega o usuario pelo token
-      const user = await AccessApi.getUserByToken(token);
+      const user = await getUserByToken(token);
 
       // Seta o usuario no localStorage
       localStorage.setItem('user', JSON.stringify(user));
@@ -62,7 +62,7 @@ class UserAction {
       const user: any = JSON.parse(localStorage.getItem('user') || '{}');
 
       // Valida o token
-      const response = await AccessApi.validaToken(user.token);
+      const response = await validaToken(user.token);
 
       // Se o token for valido o usuario eh retornado, caso contrario ele eh removido do localStorage
       if (!response) {

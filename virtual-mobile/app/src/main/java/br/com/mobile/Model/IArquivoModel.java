@@ -12,6 +12,8 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Query;
+import retrofit2.http.Streaming;
+import retrofit2.http.Url;
 
 /**
  * Description: FIXME: Document this type Project: virtual-mobile
@@ -28,5 +30,9 @@ public interface IArquivoModel {
 
     @GET("arquivos")
     Call<List<ArquivoTO>> getArquivos(@Query("nome") String nome);
+
+    @Streaming
+    @GET
+    Call<ResponseBody> arquivoDownloadStream(@Url String url);
 
 }

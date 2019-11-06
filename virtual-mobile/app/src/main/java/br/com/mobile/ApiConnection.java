@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import br.com.mobile.Resource.SessionResource;
 
@@ -22,6 +23,8 @@ public class ApiConnection extends AppCompatActivity {
     private ImageView            imgStatus;
     private BottomNavigationView bottomNavigationView;
     private SessionResource      session;
+    private MenuItem             menuItem;
+    private Menu                 menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +37,8 @@ public class ApiConnection extends AppCompatActivity {
         imgStatus = (ImageView) findViewById(R.id.imgStatus);
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        Menu menu = bottomNavigationView.getMenu();
-        MenuItem menuItem = menu.getItem(3);
+        menu = bottomNavigationView.getMenu();
+        menuItem = menu.getItem(3);
         menuItem.setChecked(true);
 
         bottomNavigationView
@@ -49,25 +52,44 @@ public class ApiConnection extends AppCompatActivity {
                                 switch (menuItem.getItemId()) {
                                 case (R.id.search_menu):
                                     intent = new Intent(ApiConnection.this, PesquisaArquivosActivity.class);
-                                    startActivity(verificaSessao(intent));
-                                    overridePendingTransition(0, 0);
-                                    finish();
+                                    if (verificaSessao()) {
+                                        startActivity(intent);
+                                        overridePendingTransition(0, 0);
+                                        finish();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "CONEXÃO NÃO CONFIGURADA!",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+
                                     break;
 
                                 case (R.id.upload_menu):
-                                    intent = new Intent(ApiConnection.this, UploadActivity.class);
-                                    startActivity(verificaSessao(intent));
-                                    overridePendingTransition(0, 0);
-                                    finish();
+                                    intent = new Intent(ApiConnection.this, LoginActivity.class);
+                                    intent.putExtra("action", 0);
+                                    if (verificaSessao()) {
+                                        startActivity(intent);
+                                        overridePendingTransition(0, 0);
+                                        finish();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "CONEXÃO NÃO CONFIGURADA!",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
                                     break;
+                                case (R.id.user_menu):
+                                    intent = new Intent(ApiConnection.this, LoginActivity.class);
+                                    intent.putExtra("action", R.id.user_menu);
+                                    if (verificaSessao()) {
+                                        startActivity(intent);
+                                        overridePendingTransition(0, 0);
+                                        finish();
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "CONEXÃO NÃO CONFIGURADA!",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
 
-                                case (R.id.apiconnection_menu):
-                                    intent = new Intent(ApiConnection.this, ApiConnection.class);
-                                    startActivity(verificaSessao(intent));
-                                    overridePendingTransition(0, 0);
-                                    finish();
                                     break;
                                 }
+
                                 return true;
                             }
                         });
@@ -79,7 +101,7 @@ public class ApiConnection extends AppCompatActivity {
         verificaStatus();
     }
 
-    public void salvar(View v) {
+    public void conectar(View v) {
         String ip = edtUrl.getText().toString();
         String apiPort = edtPort.getText().toString();
 
@@ -115,11 +137,14 @@ public class ApiConnection extends AppCompatActivity {
         imgStatus.setVisibility(View.VISIBLE);
     }
 
-    private Intent verificaSessao(Intent intent) {
+    private boolean verificaSessao() {
+        boolean status;
         if (session.getPreferencesApiURL().equals("")) {
-            intent = new Intent(ApiConnection.this, ApiConnection.class);
+            status = false;
+        } else {
+            status = true;
         }
-        return intent;
+        return status;
     }
 
 }

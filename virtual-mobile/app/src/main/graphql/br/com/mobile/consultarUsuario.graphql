@@ -1,0 +1,8 @@
+query consultarUsuarioQuery($token: String!){
+  validarToken(token: $token){
+    nome,
+    email,
+    perfilType,
+    ativo
+  }
+}

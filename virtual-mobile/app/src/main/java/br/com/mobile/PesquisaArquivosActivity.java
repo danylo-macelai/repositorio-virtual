@@ -1,31 +1,19 @@
 package br.com.mobile;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import br.com.mobile.Domain.ArquivoTO;
-import br.com.mobile.Resource.ArquivoResource;
 import br.com.mobile.Resource.SessionResource;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class PesquisaArquivosActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
-    private List<ArquivoTO>      arquivos;
     private EditText             edtPesquisa;
-    private ArquivoResource      arquivoResource;
     private SessionResource      session;
 
     @Override
@@ -34,8 +22,6 @@ public class PesquisaArquivosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pesquisa_arquivos);
         session = new SessionResource(this);
         verificaSessao();
-        arquivos = new ArrayList<>();
-        arquivoResource = new ArquivoResource();
         edtPesquisa = (EditText) findViewById(R.id.edtPesquisa);
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -56,7 +42,8 @@ public class PesquisaArquivosActivity extends AppCompatActivity {
                             break;
 
                         case (R.id.upload_menu):
-                            intent = new Intent(PesquisaArquivosActivity.this, UploadActivity.class);
+                            intent = new Intent(PesquisaArquivosActivity.this, LoginActivity.class);
+                            intent.putExtra("action", 0);
                             startActivity(verificaSessao(intent));
                             overridePendingTransition(0, 0);
                             finish();
@@ -68,6 +55,13 @@ public class PesquisaArquivosActivity extends AppCompatActivity {
                             overridePendingTransition(0, 0);
                             finish();
                             break;
+                        case (R.id.user_menu):
+                            intent = new Intent(PesquisaArquivosActivity.this, LoginActivity.class);
+                            intent.putExtra("action", R.id.user_menu);
+                            startActivity(verificaSessao(intent));
+                            overridePendingTransition(0, 0);
+                            finish();
+                            break;
                         }
                         return true;
                     }
@@ -75,29 +69,12 @@ public class PesquisaArquivosActivity extends AppCompatActivity {
 
     }
 
-    public void getArquivos(View v) {
-        String nome = edtPesquisa.getText().toString();
-        // String nome = edtPesquisa.getText().toString();
-        Call<List<ArquivoTO>> callArquivos = arquivoResource.Arquivos(nome);
+    public void getNomeConsulta(View v) {
+        String consulta = edtPesquisa.getText().toString();
 
-        callArquivos.enqueue(new Callback<List<ArquivoTO>>() {
-            @Override
-            public void onResponse(Call<List<ArquivoTO>> call, Response<List<ArquivoTO>> response) {
-
-                Iterator<ArquivoTO> iterator = response.body().iterator();
-                while (iterator.hasNext()) {
-                    ArquivoTO arquivoTo = iterator.next();
-                    Log.i("ARQUIVOS", "\n ID: " + arquivoTo.getId() + " NOME: " + arquivoTo.getNome() + " MimeType: "
-                            + arquivoTo.getMimeType());
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<ArquivoTO>> call, Throwable t) {
-
-            }
-        });
+        Intent intent = new Intent(PesquisaArquivosActivity.this, ListArquivosActivity.class);
+        intent.putExtra("consulta", consulta);
+        startActivity(intent);
     }
 
     private Intent verificaSessao(Intent intent) {

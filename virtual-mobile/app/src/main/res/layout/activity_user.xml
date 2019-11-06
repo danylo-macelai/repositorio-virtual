@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UserActivity">
+
+    <ImageView
+        android:id="@+id/imgUser"
+        android:layout_width="145dp"
+        android:layout_height="172dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/user_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtEmail"
+        android:layout_width="226dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/robotolight"
+        android:text="Email"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/imgUser"
+        app:layout_constraintTop_toBottomOf="@+id/txtUserName" />
+
+    <TextView
+        android:id="@+id/txtUserName"
+        android:layout_width="226dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
+        android:fontFamily="@font/robotolight"
+        android:text="Username"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/imgUser"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtStatus"
+        android:layout_width="226dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/robotolight"
+        android:text="Status"
+        android:textSize="17sp"
+        app:layout_constraintStart_toEndOf="@+id/imgUser"
+        app:layout_constraintTop_toBottomOf="@+id/txtPerfilType" />
+
+    <TextView
+        android:id="@+id/txtPerfilType"
+        android:layout_width="226dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:fontFamily="@font/robotolight"
+        android:text="PerfilType"
+        android:textSize="17sp"
+        app:layout_constraintStart_toEndOf="@+id/imgUser"
+        app:layout_constraintTop_toBottomOf="@+id/txtEmail" />
+
+    <Button
+        android:id="@+id/btnLogoff"
+        android:layout_width="231dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="188dp"
+        android:background="@drawable/button_activity_user"
+        android:fontFamily="@font/robotolight"
+        android:shadowColor="#bbdefb"
+        android:shadowDx="1"
+        android:shadowDy="0"
+        android:shadowRadius="50"
+        android:text="Desconectar Usuario"
+        android:textColor="#313131"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.537"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtStatus"
+        android:onClick="desconectarUsuario" />
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/windowBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation" />
+
+
+</android.support.constraint.ConstraintLayout>

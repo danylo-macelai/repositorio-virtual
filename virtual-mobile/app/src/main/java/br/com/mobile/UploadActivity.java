@@ -3,15 +3,20 @@ package br.com.mobile;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,13 +53,14 @@ public class UploadActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        verifyPermissionsREADSTORAGE();
         setContentView(R.layout.activity_upload);
 
         session = new SessionResource(this);
         btnSelectFiles = (Button) findViewById(R.id.btnSelectFiles);
         listUploadFiles = (RecyclerView) findViewById(R.id.rcvFilesUpload);
 
-        arquivoResource = new ArquivoResource();
+        arquivoResource = new ArquivoResource(this);
         fileNameList = new ArrayList<>();
         fileDoneList = new ArrayList<>();
         new TaskUpdateToken(this).run();
@@ -101,15 +107,15 @@ public class UploadActivity extends AppCompatActivity {
                             finish();
                             break;
 
-                        case (R.id.upload_menu):
-                            intent = new Intent(UploadActivity.this, UploadActivity.class);
+                        case (R.id.apiconnection_menu):
+                            intent = new Intent(UploadActivity.this, ApiConnection.class);
                             startActivity(intent);
                             overridePendingTransition(0, 0);
                             finish();
                             break;
-
-                        case (R.id.apiconnection_menu):
-                            intent = new Intent(UploadActivity.this, ApiConnection.class);
+                        case (R.id.user_menu):
+                            intent = new Intent(UploadActivity.this, UserActivity.class);
+                            intent.putExtra("user", R.id.user_menu);
                             startActivity(intent);
                             overridePendingTransition(0, 0);
                             finish();
@@ -137,7 +143,7 @@ public class UploadActivity extends AppCompatActivity {
                 for (int i = 0; i < totalItemsSelected; i++) {
 
                     Uri fileUri = data.getClipData().getItemAt(i).getUri();
-                    String fileName = FileUtils.getFileName(fileUri, UploadActivity.this);
+                    final String fileName = FileUtils.getFileName(fileUri, UploadActivity.this);
 
                     fileNameList.add(fileName);
                     fileDoneList.add("uploading");
@@ -153,16 +159,20 @@ public class UploadActivity extends AppCompatActivity {
                             fileDoneList.add(finalI, "done");
                             uploadListAdapter.notifyDataSetChanged();
                             try {
-                                Toast.makeText(getApplicationContext(), response.body().string(), Toast.LENGTH_LONG)
+                                Toast.makeText(getApplicationContext(),
+                                        "O Upload do arquivo: " + fileName + " foi realizado com sucesso!",
+                                        Toast.LENGTH_SHORT)
                                         .show();
                             } catch (Exception ex) {
-                                ex.printStackTrace();
+                                Toast.makeText(getApplicationContext(), "ERRO: " + ex.getMessage(), Toast.LENGTH_SHORT)
+                                        .show();
                             }
                         }
 
                         @Override
                         public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                            Toast.makeText(getApplicationContext(), "ERRO AO FAZER O UPLOAD: " + t.getMessage(),
+                                    Toast.LENGTH_LONG).show();
                         }
                     });
 
@@ -182,23 +192,42 @@ public class UploadActivity extends AppCompatActivity {
                 uploadList.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        Log.i("UPLOAD", response.body().toString());
                         fileDoneList.remove(0);
                         fileDoneList.add(0, "done");
                         uploadListAdapter.notifyDataSetChanged();
                         try {
-                            Toast.makeText(getApplicationContext(), response.body().string(), Toast.LENGTH_LONG)
+                            Toast.makeText(getApplicationContext(),
+                                    "O Upload do arquivo: " + fileName + " foi realizado com sucesso!",
+                                    Toast.LENGTH_SHORT)
                                     .show();
                         } catch (Exception ex) {
-                            ex.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "ERRO: " + ex.getMessage(), Toast.LENGTH_SHORT)
+                                    .show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                        Toast.makeText(getApplicationContext(), "ERRO AO FAZER O UPLOAD: " + t.getMessage(),
+                                Toast.LENGTH_LONG).show();
                     }
                 });
             }
         }
+    }
+
+    private void verifyPermissionsREADSTORAGE() {
+        int MY_PERMISSIONS_REQUEST_READ_STORAGE = 0;
+
+        if (ContextCompat.checkSelfPermission(UploadActivity.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(UploadActivity.this,
+                    new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+                    MY_PERMISSIONS_REQUEST_READ_STORAGE);
+
+        }
+
     }
 }

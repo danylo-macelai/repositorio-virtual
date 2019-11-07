@@ -71,7 +71,7 @@ class UserAction {
 
       dispatch({
         type: 'GET_USER',
-        payload: response ? user : EMPTY_USER,
+        payload: response ? user : {},
       });
     };
   }

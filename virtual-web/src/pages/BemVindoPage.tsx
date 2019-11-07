@@ -31,7 +31,7 @@ class BemVindoPage extends React.Component<BemVindoProps, BemVindoState> {
       <div className="ui grid centered bem-vindo-page">
         <div className="ui center aligned basic segment">
           <div className="img">
-            <img src={virtecaVerticalLogo} />
+            <img src={virtecaVerticalLogo} alt="Virteca" />
           </div>
           <div className="ui header">Olá {this.props.user.nome},</div>
           <div className="ui content">

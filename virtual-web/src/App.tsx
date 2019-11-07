@@ -18,11 +18,13 @@ import {
   LoginPage,
   CadastrarPage,
   BemVindoPage,
+  ArquivoUploadPage,
 } from './pages/index';
 
 import './App.scss';
 import { VirtualWebState } from './reducers';
 import UserAction from './actions/users';
+import virtecaVerticalLogo from './assets/images/virteca-vertical.png';
 
 const options: any = {
   position: positions.TOP_RIGHT,
@@ -31,7 +33,9 @@ const options: any = {
   transition: transitions.FADE,
 };
 
-const mapStateToProps = (state: VirtualWebState) => ({});
+const mapStateToProps = (state: VirtualWebState) => ({
+  user: state.user,
+});
 
 const mapDispatchToProps = {
   setUserFromStorage: UserAction.setUserFromStorage,
@@ -39,16 +43,41 @@ const mapDispatchToProps = {
 
 type AppProps = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-interface AppState {}
+interface AppState {
+  isUserLoaded: Boolean;
+}
 
 class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
 
     this.props.setUserFromStorage();
+    this.state = {
+      isUserLoaded: false,
+    };
+  }
+
+  componentWillReceiveProps(nextProps: AppProps, prevProps: AppProps) {
+    if (!prevProps.user) {
+      setTimeout(() => {
+        this.setState({
+          isUserLoaded: true,
+        });
+      }, 1000);
+    }
   }
 
   render() {
+    if (!this.state.isUserLoaded) {
+      return (
+        <div className="app-loading">
+          <div className="ui active loader">
+            <img src={virtecaVerticalLogo} alt="Virteca" />
+          </div>
+        </div>
+      );
+    }
+
     return (
       <HashRouter basename="/">
         <AlertProvider template={AlertTemplate} {...options}>
@@ -68,6 +97,11 @@ class App extends React.Component<AppProps, AppState> {
                   path="/bem-vindo"
                   exact={true}
                   component={BemVindoPage}
+                />
+                <Route
+                  path="/arquivo-upload"
+                  exact={true}
+                  component={ArquivoUploadPage}
                 />
               </div>
             </div>

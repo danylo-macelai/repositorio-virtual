@@ -1,6 +1,10 @@
 .menu-top {
   padding-top: 8px;
 
+  &.logged {
+    padding-top: 0;
+  }
+
   .logged.simple {
     padding-bottom: 6px !important;
 

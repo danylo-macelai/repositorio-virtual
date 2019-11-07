@@ -11,5 +11,12 @@ import ArquivoPage from './ArquivoPage';
 import LoginPage from './LoginPage';
 import CadastrarPage from './CadastrarPage';
 import BemVindoPage from './BemVindoPage';
+import ArquivoUploadPage from './ArquivoUploadPage';
 
-export { ArquivoPage, LoginPage, CadastrarPage, BemVindoPage };
+export {
+  ArquivoPage,
+  LoginPage,
+  CadastrarPage,
+  BemVindoPage,
+  ArquivoUploadPage,
+};

@@ -135,6 +135,9 @@ public class FileUtils {
         case ".xls":
             image = R.drawable.xls;
             break;
+        case ".xlsx":
+            image = R.drawable.xls;
+            break;
         case ".pdf":
             image = R.drawable.pdf;
             break;

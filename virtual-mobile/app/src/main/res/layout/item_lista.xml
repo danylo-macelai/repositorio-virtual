@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:weightSum="10">
+
+        <ImageView
+            android:id="@+id/imgFileList"
+            android:layout_width="61dp"
+            android:layout_height="54dp"
+            android:layout_weight="2"
+            app:srcCompat="@drawable/file_icon" />
+
+        <LinearLayout
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtFileNameList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="6"
+                android:fontFamily="@font/roboto"
+                android:gravity="center_vertical"
+                android:text="Filename.type"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txtFileSizeList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="6"
+                android:fontFamily="@font/roboto"
+                android:gravity="center_vertical"
+                android:text="File.Size"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imgDownloadSuccess"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp"
+            android:layout_weight="2" />
+
+        <ImageView
+            android:id="@+id/imgMoreOptionsList"
+            android:layout_width="23dp"
+            android:layout_height="61dp"
+            android:background="?android:attr/windowBackground"
+            android:src="@drawable/more_options" />
+
+    </LinearLayout>
+</android.widget.RelativeLayout>

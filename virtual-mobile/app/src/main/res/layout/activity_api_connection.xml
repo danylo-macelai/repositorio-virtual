@@ -95,7 +95,7 @@
         android:fontFamily="@font/robotolight" />
 
     <Button
-        android:id="@+id/btnSalvar"
+        android:id="@+id/btnConectar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_below="@+id/layoutConnection"
@@ -110,7 +110,7 @@
         android:textSize="17sp"
         android:textColor="#616161"
         android:background="@drawable/button_api_connection"
-        android:onClick="salvar"
+        android:onClick="conectar"
         android:fontFamily="@font/robotolight" />
 
     <android.support.design.widget.BottomNavigationView

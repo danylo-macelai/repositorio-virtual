@@ -1,5 +1,7 @@
 package br.com.mobile.Domain;
 
+import java.io.Serializable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -7,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
  *
  * @author breni > _@date: 30/10/2019 > _@version $$ >
  */
-public class TokenTO {
+public class TokenTO implements Serializable {
     @SerializedName("id")
     private int id;
 

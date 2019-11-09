@@ -47,6 +47,12 @@ public class SessionResource {
         return prefs.edit().putString("token", tokenAcess).commit();
     }
 
+    public void setRemoveUserSession() {
+        prefs.edit().remove("username").apply();
+        prefs.edit().remove("password").apply();
+        prefs.edit().remove("token").apply();
+    }
+
     public String getPreferencesUserName() {
         return prefs.getString("username", "");
     }

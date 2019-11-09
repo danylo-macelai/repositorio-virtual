@@ -14,6 +14,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".UserActivity"></activity>
+        <activity
+            android:name=".ListArquivosActivity"
+            android:parentActivityName=".PesquisaArquivosActivity"
+            android:theme="@style/AppThemeActionBar"></activity>
         <activity android:name=".PesquisaArquivosActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,18 +32,13 @@
             android:theme="@style/ApiConnectionTheme" />
         <activity
             android:name=".LoginActivity"
+            android:parentActivityName=".PesquisaArquivosActivity"
             android:label="@string/login_activity_name"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppThemeActionBar" />
         <activity
             android:name=".UploadActivity"
             android:label="@string/login_activity_name"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

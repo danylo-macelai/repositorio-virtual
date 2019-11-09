@@ -5,12 +5,14 @@ import org.jetbrains.annotations.NotNull;
 import com.apollographql.apollo.ApolloCall;
 import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloMutationCall;
+import com.apollographql.apollo.ApolloQueryCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 
 import android.content.Context;
 import android.util.Log;
 
+import br.com.mobile.ConsultarUsuarioQuery;
 import br.com.mobile.CriarTokenMutation;
 import br.com.mobile.ValidarTokenQuery;
 import okhttp3.OkHttpClient;
@@ -83,6 +85,12 @@ public class AccessResource {
                         Log.e("ERROR-TOKEN", e.getMessage());
                     }
                 });
+    }
+
+    public ApolloQueryCall<ConsultarUsuarioQuery.Data> consultaUsuario() {
+        return getMyApolloClient().query(
+                ConsultarUsuarioQuery.builder()
+                        .token(session.getPreferencesToken()).build());
     }
 
     public ApolloMutationCall<CriarTokenMutation.Data> criarToken(String email, String senha) {

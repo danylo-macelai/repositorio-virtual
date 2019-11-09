@@ -79,13 +79,17 @@ Neste contexto surgiu o VirTeca como projeto, que pretendesse consolidar ao máx
 
 <img src="docs/rv_mod.png" align="right"  height="450">
 
-O VirTeca é sistema de gestão distribuída de arquivos que oferece um serviço para a hospedagem de livros, filmes, softwares, músicas e outros arquivos no formato digital. Qualquer pessoa com uma conta poderá interagir com leitura, gravação e exclusão dos arquivos que estão divididos em blocos de dados distribuídos entre os vários nós de armazenamento.
+A consulta ao acervo é pública, podendo ser de limitada a imagem, áudio, vídeo ou qualquer outro tipo de arquivo.
+
+Os arquivos serão enviados através dos dispositivos cliente e recebidos pelo master que realiza uma divisão em N blocos identificados no diretório temporário. Uma tarefa será executada em background para gravar estes blocos nos servidores slave. Após a realização deste trabalho uma outra tarefa fara a replicação dos blocos em slave diferentes.
 
 _O arquivo remessa.txt está divido em dois blocos ac92.rvf e b508.rvf. Cada bloco foi armazenado em locais diferentes o ac92.rvf está no Slave 1 e sua cópia no Slave 4, já o bloco b508.rvf no Slave 2 e 3._
 
-Quando o cliente solicitar a leitura do arquivo o Master deverá recuperar os blocos nas instâncias dos Slaves e reconstruir arquivo que será devolvido ao cliente.
+Uma vez que os blocos já estão gravados e replicados o diretório temporário será apagado. Para baixar um arquivo o máster deverá realizar o processo inverso do envio, recuperando os blocos espalhados nas instancias slaves que estão ativas para a reconstrução do arquivo.
 
-O sistema está dividido nos módulos virtual-common, virtual-master, virtual-slave, virtual-access, virtual-web e virtual-mobile responsáveis por tarefas específicas permitindo assim a utilização de diversas linguagens e frameworks.
+Assim como o envio a edição ou até mesmo a exclusão só será permitida pelo o autor que foi previamente cadastrado no access. O Administrador do sistema poderá gerenciar todo o acervo bem como os usuários ou até mesmo as configurações do master e/ou slave.
+
+Além das tarefas de gravação, replicação e limpeza do diretório outras também deverão ser executadas para manter as instancias slave ativas, migração dos blocos e as informações dos volumes.
 
 # Crítica
 

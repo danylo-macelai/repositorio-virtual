@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.831"
         app:layout_constraintStart_toStartOf="parent"
-        android:onClick="getArquivos" />
+        android:onClick="getNomeConsulta" />
 
     <EditText
         android:id="@+id/edtPesquisa"

@@ -8,8 +8,10 @@ import com.apollographql.apollo.exception.ApolloException;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,22 +26,25 @@ import br.com.mobile.Task.TaskUpdateToken;
  * @author breni > _@date: 18/10/2019 > _@version $$ >
  */
 public class LoginActivity extends AppCompatActivity {
-    SessionResource        session;
-    EditText               edtUsername;
-    EditText               edtPassword;
-    TaskUpdateToken        taskUpdateToken;
-    Intent                 intent;
-    private AccessResource access;
+    private SessionResource session;
+    private EditText        edtUsername;
+    private EditText        edtPassword;
+    private TaskUpdateToken taskUpdateToken;
+    private Intent          intent;
+    private AccessResource  access;
+    private Bundle          extras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Login");
+        extras = getIntent().getExtras();
         session = new SessionResource(this);
         access = new AccessResource(this);
         edtUsername = (EditText) findViewById(R.id.edtEmail);
         edtPassword = (EditText) findViewById(R.id.edtSenha);
-
         intent = new Intent(this, UploadActivity.class);
         verificaSessao(intent);
     }
@@ -48,6 +53,19 @@ public class LoginActivity extends AppCompatActivity {
         if (isEmpty()) {
             login();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case android.R.id.home:
+            startActivity(new Intent(LoginActivity.this, PesquisaArquivosActivity.class));
+            finishAffinity();
+            break;
+        default:
+            break;
+        }
+        return true;
     }
 
     private void login() {
@@ -62,9 +80,19 @@ public class LoginActivity extends AppCompatActivity {
                                 public void run() {
                                     Toast.makeText(getApplicationContext(), "LOGIN EFETUADO COM SUCESSO",
                                             Toast.LENGTH_LONG).show();
-                                    startActivity(intent);
+
+                                    if (extras.getInt("action") == 1) {
+                                        intent = new Intent(LoginActivity.this, UserActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        startActivity(intent);
+                                        finish();
+                                    }
+
                                 }
                             });
+
                         } catch (Exception e) {
                             LoginActivity.this.runOnUiThread(new Runnable() {
                                 @Override
@@ -103,9 +131,16 @@ public class LoginActivity extends AppCompatActivity {
         if (session.getPreferencesApiURL().equals("")) {
             intent = new Intent(LoginActivity.this, ApiConnection.class);
             startActivity(intent);
-        } else {
-            taskUpdateToken = new TaskUpdateToken(this.getApplicationContext());
+            finish();
+        } else if (extras.getInt("action") == R.id.user_menu && !session.getPreferencesToken().equals("")) {
+            intent = new Intent(LoginActivity.this, UserActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (extras.getInt("action") == 0 && !session.getPreferencesToken().equals("")) {
+            startActivity(intent);
+            finish();
         }
+
     }
 
 }

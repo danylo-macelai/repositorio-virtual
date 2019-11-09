@@ -11,10 +11,10 @@ import React from 'react';
 import { withAlert, AlertManager } from 'react-alert';
 import { connect } from 'react-redux';
 
-import AccessApi from '../services/AccessApi';
 import UserAction from '../actions/users';
 import { VirtualWebState } from '../reducers';
 import { Redirect } from 'react-router';
+import { login } from '../services/servicosApi';
 
 const mapStateToProps = (state: VirtualWebState) => {
   return {
@@ -102,7 +102,7 @@ class LoginPage extends React.Component<AllLoginProps, LoginState> {
     }
 
     try {
-      const token = await AccessApi.login(this.state.email, this.state.senha);
+      const token = await login(this.state.email, this.state.senha);
       this.props.setUserByToken(token);
     } catch (e) {
       this.props.alert.error(e);

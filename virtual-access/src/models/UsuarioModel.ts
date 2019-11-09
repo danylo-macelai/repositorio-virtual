@@ -72,7 +72,7 @@ export class UsuarioModel extends Model<UsuarioModel> {
   public perfilType!: string;
 
   @AllowNull(false)
-  @Default(false)
+  @Default(true)
   @Column({
     field: 'ativo',
   })
@@ -139,5 +139,5 @@ export class UsuarioModel extends Model<UsuarioModel> {
 
   public verificarSenha = (encodedSenha: string, senha: string): boolean => {
     return compareSync(senha, encodedSenha);
-  }
+  };
 }

@@ -9,5 +9,7 @@
 
 import ArquivoPage from './ArquivoPage';
 import LoginPage from './LoginPage';
+import CadastrarPage from './CadastrarPage';
+import BemVindoPage from './BemVindoPage';
 
-export { ArquivoPage, LoginPage };
+export { ArquivoPage, LoginPage, CadastrarPage, BemVindoPage };

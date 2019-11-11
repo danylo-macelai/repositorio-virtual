@@ -42,23 +42,30 @@ class MenuTop extends React.Component<MenuTopProps, MenuTopState> {
     const { nome, email } = this.props.user;
 
     return (
-      <li className="item ui dropdown pointing top right icon simple logged">
-        {nome} <i className="chevron down icon small"></i>
-        <div className="ui vertical menu">
-          <div className="name">{nome}</div>
-          <div className="email">{email}</div>
-
-          <div className="ui divider"></div>
-
-          <Link
-            to="/"
-            className="ui button basic fluid small"
-            onClick={() => this.logout()}
-          >
-            Sair
+      <>
+        <li className="item ui">
+          <Link to="/arquivo-upload" className="ui red button tiny">
+            <i className="ui icon plus"></i> Arquivo
           </Link>
-        </div>
-      </li>
+        </li>
+        <li className="item ui dropdown pointing top right icon simple logged">
+          {nome} <i className="chevron down icon small"></i>
+          <div className="ui vertical menu">
+            <div className="name">{nome}</div>
+            <div className="email">{email}</div>
+
+            <div className="ui divider"></div>
+
+            <Link
+              to="/"
+              className="ui button basic fluid small"
+              onClick={() => this.logout()}
+            >
+              Sair
+            </Link>
+          </div>
+        </li>
+      </>
     );
   }
 
@@ -77,7 +84,7 @@ class MenuTop extends React.Component<MenuTopProps, MenuTopState> {
 
   render() {
     return (
-      <nav className="menu-top">
+      <nav className={`menu-top ${this.isUserLogged() ? 'logged' : ''}`}>
         <ul
           className={`ui list horizontal link ${
             !this.isUserLogged() ? 'celled' : ''

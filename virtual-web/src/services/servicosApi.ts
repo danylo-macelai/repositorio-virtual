@@ -20,6 +20,10 @@ const virtualAccessConfig = axios.create({
   baseURL: Constants.ACCESS_RESOURCE,
 });
 
+const virtualMasterConfig = axios.create({
+  baseURL: Constants.ARQUIVO_RESOURCE,
+});
+
 export const consultaArquivo = (
   nome: string,
   filtro: string
@@ -41,7 +45,19 @@ export const leituraArquivo = (id: number): Promise<Arquivo> => {
     .catch(tratarExcecao);
 };
 
-export const gravacaoArquivo = (file: File) => {};
+export const gravacaoArquivo = async (file: File, token: string) => {
+  var formData = new FormData();
+  formData.append('file', file);
+
+  const response: any = await virtualMasterConfig.post('', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: token,
+    },
+  });
+
+  return response;
+};
 
 export const exclusaoArquivo = (id: number) => {};
 
@@ -89,7 +105,7 @@ export const login = async (email: string, senha: string) => {
 
   // Caso nao seja retornado nenhum valor eh enviado uma mensagem padrao
   throw DEFAULT_MESSAGE;
-}
+};
 
 /**
  * Pega o usuario pelo token
@@ -130,7 +146,7 @@ export const getUserByToken = async (token: string) => {
   }
 
   return {};
-}
+};
 
 /**
  * Valida a existencia do token
@@ -156,7 +172,7 @@ export const validaToken = async (token: string) => {
   }
 
   return !!response.data.data.validarToken;
-}
+};
 
 export const cadastrar = async (usuario: User) => {
   const { nome, email, senha } = usuario;
@@ -190,7 +206,7 @@ export const cadastrar = async (usuario: User) => {
 
   // Caso nao seja retornado nenhum valor eh enviado uma mensagem padrao
   throw DEFAULT_MESSAGE;
-}
+};
 
 /*static async gravar(file: File) {
   var formData = new FormData();

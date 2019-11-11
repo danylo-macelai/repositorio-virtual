@@ -9,5 +9,5 @@
 
 export const ENV = {
   URL_API_ACCESS: 'http://localhost:3000/access',
-  URL_API_MASTER: 'http://localhost:8761/',
+  URL_API_MASTER: 'http://localhost:8761',
 };

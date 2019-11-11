@@ -1,3 +1,17 @@
+/* Loading */
+.app-loading {
+  .loader {
+    img {
+      width: 50px;
+      height: auto;
+      position: absolute;
+      top: -76px;
+      left: 50%;
+      margin-left: -25px;
+    }
+  }
+}
+
 /* List */
 ul.ui.list,
 ul.ui.items {

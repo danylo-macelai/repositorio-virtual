@@ -9,6 +9,7 @@ import static br.com.common.utils.Utils.httpGet;
 
 import br.com.common.access.property.ValidarToken;
 import br.com.common.business.DBusiness;
+import br.com.common.utils.Constants;
 
 import br.com.master.business.IArquivo;
 import br.com.master.business.IBloco;
@@ -36,6 +37,8 @@ import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,7 +73,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<ArquivoTO> carregarPor(String nome, SearchTab searchTab) throws MasterException {
+    public List<ArquivoTO> carregarPor(final String nome, final SearchTab searchTab) throws MasterException {
         if (searchTab == null) {
             return persistence.findAllByNomeIgnoreCaseContaining(nome);
         }
@@ -82,7 +85,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      */
     @Override
     @Transactional
-    public void excluir(ValidarToken token, long id) throws MasterException {
+    public void excluir(final ValidarToken token, final long id) throws MasterException {
         final ArquivoTO arquivo = ache(id);
         if (arquivo == null) {
             throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
@@ -98,7 +101,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      */
     @Override
     @Transactional
-    public void excluir(ArquivoTO arquivo) throws MasterException {
+    public void excluir(final ArquivoTO arquivo) throws MasterException {
         try {
             final List<BlocoTO> blocos = blocoBusiness.carregarTodosPor(arquivo);
             if (blocos.isEmpty()) {
@@ -128,7 +131,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      * {@inheritDoc}
      */
     @Override
-    public ArquivoTO gravar(ValidarToken token, MultipartFile multipartFile) throws MasterException {
+    public ArquivoTO gravar(final ValidarToken token, final MultipartFile multipartFile) throws MasterException {
         final ConfiguracaoTO configuracao = configuracaoBusiness.buscar();
 
         final ArquivoTO arquivo = new ArquivoTO();
@@ -170,7 +173,7 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      * {@inheritDoc}
      */
     @Override
-    public InputStreamResource ler(ArquivoTO arquivo) throws MasterException {
+    public InputStreamResource ler(final ArquivoTO arquivo) throws MasterException {
         try {
             final List<BlocoTO> blocos = programmaticTransaction(() -> {
                 return blocoBusiness.carregarTodosPor(arquivo);
@@ -217,7 +220,8 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
         }
     }
 
-    private BlocoTO createBlocoOffline(FileChannel channel, long position, long byteSize, int numero) {
+    private BlocoTO createBlocoOffline(final FileChannel channel, final long position, final long byteSize,
+            final int numero) {
         final String uuid = gerarIdentificador();
         Path path = Paths.get(masterBalance.getPathTmpDirectory());
         path = path.resolve(uuid + VIRTUAL_EXTENSION);
@@ -231,5 +235,14 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
         bloco.setDiretorioOffLine(path.toFile().getAbsolutePath());
 
         return bloco;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ArquivoTO> carregarPor(final ValidarToken access, final Integer page) {
+        final int p = page != null && page >= 0 ? page : Constants.PAGINATION_FIRST_PAGE;
+        return persistence.findAllByToken(access, PageRequest.of(p, Constants.PAGINATION_ITEMS_PER_PAGE));
     }
 }

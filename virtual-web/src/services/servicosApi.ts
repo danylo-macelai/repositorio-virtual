@@ -38,11 +38,13 @@ export const consultaArquivo = (
 
 export const leituraArquivo = (id: number): Promise<Arquivo> => {
   return axios
-    .get(Constants.ARQUIVO_RESOURCE, {
-      baseURL: `${id}`,
-    })
+    .get(Constants.ARQUIVO_RESOURCE + `/${id}`)
     .then(response => Promise.resolve(response.data))
     .catch(tratarExcecao);
+};
+
+export const visualizarArquivoURL = (id: number): string => {
+  return Constants.ARQUIVO_RESOURCE + `/${id}`;
 };
 
 export const gravacaoArquivo = async (file: File, token: string) => {
@@ -59,11 +61,30 @@ export const gravacaoArquivo = async (file: File, token: string) => {
   return response;
 };
 
-export const exclusaoArquivo = (id: number) => {};
+export const exclusaoArquivo = (id: number, token: string) => {
+  return axios
+    .delete(Constants.ARQUIVO_RESOURCE + `/${id}`, {
+      headers: {
+        Authorization: token,
+      },
+    })
+    .then(response => Promise.resolve(response.data))
+    .catch(tratarExcecao);
+};
 
 export const consultaConfiguracao = (id: number) => {};
 
 export const alteracaoConfiguracao = (id: number) => {};
+
+export const arquivosUsuario = async (token: string, page: number) => {
+  const response: any = await virtualMasterConfig.get(`/usuario?page=${page}`, {
+    headers: {
+      Authorization: token,
+    },
+  });
+
+  return response.data;
+};
 
 /**
  * Access methods
@@ -207,36 +228,3 @@ export const cadastrar = async (usuario: User) => {
   // Caso nao seja retornado nenhum valor eh enviado uma mensagem padrao
   throw DEFAULT_MESSAGE;
 };
-
-/*static async gravar(file: File) {
-  var formData = new FormData();
-  formData.append('file', file);
-  const response: any = await virtualMasterConfig.post('arquivos', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
-
-  return response;
-}*/
-
-/*
-  static async login(email: string, senha: string) {
-    const mutation = `mutation {
-      criarToken(email: "${email}", senha: "${senha}") {
-        token,
-      }
-    }`;
-
-    const response: any = await virtualAccessConfig.post('', {
-      query: mutation,
-    });
-
-    if (response.data.data.criarToken) {
-      return response.data.data.criarToken.token;
-    }
-
-    return '';
-  }
-
-*/

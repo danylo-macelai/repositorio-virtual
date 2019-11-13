@@ -1,10 +1,14 @@
 package br.com.master.persistence;
 
+import br.com.common.access.property.ValidarToken;
+
 import br.com.master.domain.ArquivoTO;
 import br.com.master.wrappers.SearchTab;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -33,5 +37,16 @@ public interface ArquivoDAO extends JpaRepository<ArquivoTO, Long> {
      * @return List<ArquivoTO>
      */
     List<ArquivoTO> findAllBySearchTabAndNomeIgnoreCaseContaining(SearchTab tab, String nome);
+
+    /**
+     *
+     * Consulta os arquivos do usuario
+     *
+     * @apiNote $
+     *
+     * @param token
+     * @return
+     */
+    Page<ArquivoTO> findAllByToken(ValidarToken token, Pageable pageable);
 
 }

@@ -11,6 +11,7 @@ import br.com.master.wrappers.SearchTab;
 import java.util.List;
 
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -59,4 +60,14 @@ public interface IArquivo extends IBusiness<ArquivoTO> {
      * @throws MasterException
      */
     void excluir(ValidarToken access, long id) throws MasterException;
+
+    /**
+     * Consulta os arquivos do usuario
+     *
+     * @apiNote $
+     *
+     * @param access
+     * @param page
+     */
+    Page<ArquivoTO> carregarPor(ValidarToken access, Integer page);
 }

@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 class Menu extends React.Component {
   render() {
     return (
-      <nav className="menu">
+      <nav className="menu main-menu">
         <ul className="ui list horizontal link">
           <li className="item">
             <Link to="/">Home</Link>

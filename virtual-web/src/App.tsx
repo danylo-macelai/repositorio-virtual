@@ -19,6 +19,7 @@ import {
   CadastrarPage,
   BemVindoPage,
   ArquivoUploadPage,
+  MeusArquivosPage,
 } from './pages/index';
 
 import './App.scss';
@@ -103,6 +104,11 @@ class App extends React.Component<AppProps, AppState> {
                   exact={true}
                   component={ArquivoUploadPage}
                 />
+                <Route
+                  path="/meus-arquivos"
+                  exact={true}
+                  component={MeusArquivosPage}
+                />
               </div>
             </div>
           </div>
@@ -112,7 +118,4 @@ class App extends React.Component<AppProps, AppState> {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

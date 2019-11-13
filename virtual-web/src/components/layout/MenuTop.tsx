@@ -48,6 +48,11 @@ class MenuTop extends React.Component<MenuTopProps, MenuTopState> {
             <i className="ui icon plus"></i> Arquivo
           </Link>
         </li>
+        <li className="item ui">
+          <Link to="/meus-arquivos" className="ui basic button tiny">
+            Meus arquivos
+          </Link>
+        </li>
         <li className="item ui dropdown pointing top right icon simple logged">
           {nome} <i className="chevron down icon small"></i>
           <div className="ui vertical menu">
@@ -97,7 +102,4 @@ class MenuTop extends React.Component<MenuTopProps, MenuTopState> {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(MenuTop);
+export default connect(mapStateToProps, mapDispatchToProps)(MenuTop);

@@ -12,6 +12,7 @@ import LoginPage from './LoginPage';
 import CadastrarPage from './CadastrarPage';
 import BemVindoPage from './BemVindoPage';
 import ArquivoUploadPage from './ArquivoUploadPage';
+import MeusArquivosPage from './MeusArquivosPage';
 
 export {
   ArquivoPage,
@@ -19,4 +20,5 @@ export {
   CadastrarPage,
   BemVindoPage,
   ArquivoUploadPage,
+  MeusArquivosPage,
 };

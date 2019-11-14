@@ -9,6 +9,7 @@
 
 import * as React from 'react';
 import { withAlert, AlertManager } from 'react-alert';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { Filtro, Arquivo } from '../common/models';
 import { consultaArquivo } from '../services/servicosApi';
 import { mensagem } from '../common/utils';
@@ -23,6 +24,9 @@ interface State {
   filtro: Filtro;
   texto: string;
   arquivos: Arquivo[];
+  message: string;
+  page: number;
+  totalPages: number;
 }
 
 class ArquivoPage extends React.Component<Props, State> {
@@ -31,13 +35,20 @@ class ArquivoPage extends React.Component<Props, State> {
       filtro: Filtro.ALL,
       texto: '',
       arquivos: [],
+      message: '',
+      page: 0,
+      totalPages: 0,
     });
+  }
+
+  componentDidMount() {
+    this.consultaInicial(Filtro.ALL);
   }
 
   enter(event: any) {
     switch (event.keyCode) {
       case 13:
-        this.consulta(this.state.filtro);
+        this.consulta(this.state.filtro, 0);
     }
   }
 
@@ -52,21 +63,42 @@ class ArquivoPage extends React.Component<Props, State> {
     return this.state.filtro === filtro ? 'active' : '';
   }
 
-  consulta(filtro: Filtro) {
+  consulta(filtro: Filtro, page: number) {
+    this.setState({
+      page,
+    });
+
     const { texto } = this.state;
-    consultaArquivo(texto, filtro.tipo)
-      .then((arquivos: Arquivo[]) => {
+    consultaArquivo(texto, filtro.tipo, page)
+      .then((result: any) => {
         this.setState({
-          arquivos,
-          filtro,
+          arquivos: [...this.state.arquivos, ...result.content],
+          message: '',
+          totalPages: result.totalPages,
         });
       })
       .catch(erro => {
         let message: string = mensagem(erro);
-        this.props.alert.error(message, {
-          timeout: 2000,
+
+        this.setState({
+          arquivos: [],
+          message,
+          totalPages: 0,
         });
       });
+  }
+
+  consultaInicial(filtro: Filtro) {
+    this.setState({
+      filtro,
+      arquivos: [],
+      totalPages: 0,
+    });
+    this.consulta(filtro, 0);
+  }
+
+  consultaInfinita(filtro: Filtro) {
+    this.consulta(filtro, this.state.page + 1);
   }
 
   arquivoFiltro() {
@@ -85,7 +117,7 @@ class ArquivoPage extends React.Component<Props, State> {
       <ArquivoFiltro
         filtro={filtro}
         selecionarFiltro={filtro => this.selecionarFiltro(filtro)}
-        consulta={filtro => this.consulta(filtro)}
+        consulta={filtro => this.consultaInicial(filtro)}
       />
     );
   }
@@ -93,7 +125,10 @@ class ArquivoPage extends React.Component<Props, State> {
   arquivoBusca(filtro: Filtro) {
     return (
       <div className="ui icon input fluid large">
-        <i className="search icon" onClick={() => this.consulta(filtro)}></i>
+        <i
+          className="search icon"
+          onClick={() => this.consultaInicial(filtro)}
+        ></i>
         <input
           type="text"
           placeholder="Digite o que deseja pesquisar em nosso site."
@@ -105,12 +140,19 @@ class ArquivoPage extends React.Component<Props, State> {
   }
 
   render() {
-    const { arquivos, filtro } = this.state;
+    const { arquivos, filtro, message } = this.state;
     return (
       <div className="search ui vertical segment">
         {this.arquivoFiltro()}
         {this.arquivoBusca(filtro)}
-        <ArquivoListagem arquivos={arquivos} />
+        <InfiniteScroll
+          dataLength={arquivos.length}
+          next={() => this.consultaInfinita(filtro)}
+          hasMore={this.state.totalPages > this.state.page + 1}
+          loader={<div className="loader">Carregando...</div>}
+        >
+          <ArquivoListagem arquivos={arquivos} message={message} />
+        </InfiniteScroll>
       </div>
     );
   }

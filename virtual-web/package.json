@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/react-infinite-scroll-component": "^4.2.5",
     "@types/react-redux": "^7.1.5",
     "@types/redux-thunk": "^2.1.0",
     "axios": "^0.19.0",
@@ -10,6 +11,7 @@
     "react-alert": "^5.5.0",
     "react-alert-template-basic": "^1.0.0",
     "react-dom": "^16.8.6",
+    "react-infinite-scroll-component": "^5.0.3",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.0.1",
     "react-transition-group": "^4.2.2",

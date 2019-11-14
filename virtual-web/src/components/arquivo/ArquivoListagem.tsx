@@ -8,38 +8,49 @@
  */
 
 import * as React from 'react';
-import './scss/ArquivoListagem.scss';
 
 import { Arquivo } from '../../common/models/index';
-import { ArquivoListagemItem, ArquivoFiltro } from './index';
+import { ArquivoListagemItem } from './index';
+
+import './scss/ArquivoListagem.scss';
 
 interface Props {
   arquivos: Arquivo[];
+  message: string;
 }
 
 interface State {}
 
 class ArquivoListagem extends React.Component<Props, State> {
   arquivoListagemItems(arquivos: Arquivo[]) {
-    return arquivos.map((arquivo: any) => (
-      <ArquivoListagemItem key={arquivo.id} arquivo={arquivo} />
-    ));
+    return (
+      <div className="ui three cards">
+        {arquivos.map((arquivo: any) => (
+          <ArquivoListagemItem key={arquivo.id} arquivo={arquivo} />
+        ))}
+      </div>
+    );
+  }
+
+  renderMessage() {
+    if (!this.props.message) {
+      return <></>;
+    }
+
+    return (
+      <div className="ui padded segment center aligned search-message">
+        {this.props.message}
+      </div>
+    );
   }
 
   render() {
     return (
-      <div>
-        <div
-          id="content"
-          className="sixteen wide mobile thirteen wide tablet thirteen wide computer right floated column"
-        >
-          <div className="ui padded grid ">
-            <div className="center aligned row">
-              {this.arquivoListagemItems(this.props.arquivos)}
-            </div>
-          </div>
-        </div>
-      </div>
+      <>
+        {this.props.arquivos && this.props.arquivos.length > 0
+          ? this.arquivoListagemItems(this.props.arquivos)
+          : this.renderMessage()}
+      </>
     );
   }
 }

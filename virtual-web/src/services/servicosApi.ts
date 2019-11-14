@@ -26,11 +26,12 @@ const virtualMasterConfig = axios.create({
 
 export const consultaArquivo = (
   nome: string,
-  filtro: string
+  filtro: string,
+  page: number
 ): Promise<Arquivo[]> => {
   return axios
     .get(Constants.ARQUIVO_RESOURCE, {
-      params: { nome: nome, search_tab: filtro },
+      params: { nome: nome, search_tab: filtro, page: page },
     })
     .then(response => Promise.resolve(response.data))
     .catch(tratarExcecao);
@@ -77,7 +78,10 @@ export const consultaConfiguracao = (id: number) => {};
 export const alteracaoConfiguracao = (id: number) => {};
 
 export const arquivosUsuario = async (token: string, page: number) => {
-  const response: any = await virtualMasterConfig.get(`/usuario?page=${page}`, {
+  const response: any = await virtualMasterConfig.get(`/usuario`, {
+    params: {
+      page,
+    },
     headers: {
       Authorization: token,
     },

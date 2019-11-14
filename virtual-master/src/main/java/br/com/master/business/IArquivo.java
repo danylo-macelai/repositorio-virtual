@@ -36,6 +36,18 @@ public interface IArquivo extends IBusiness<ArquivoTO> {
     List<ArquivoTO> carregarPor(String nome, SearchTab searchTab) throws MasterException;
 
     /**
+     * Consulta o arquivo por nome
+     *
+     * @param nome - Nome do arquivo
+     * @param searchTab - Grupo do arquivo
+     * @param page - Pagina inicial da consulta
+     *
+     * @return List<ArquivoTO>
+     * @throws MasterException
+     */
+    Page<ArquivoTO> carregarPor(String nome, SearchTab searchTab, Integer page) throws MasterException;
+
+    /**
      * Realiza o upload e grava o arquivo enviado
      *
      * @param access

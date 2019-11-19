@@ -63,7 +63,7 @@ public class ArquivoResource extends CommonResource {
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Nenhum arquivo foi localizado!")
     })
-    public ResponseEntity<List<ArquivoTO>> consulta(
+    public ResponseEntity<Page<ArquivoTO>> consulta(
             @ApiParam(name = "nome", //
                     value = "Nome é a identificação do arquivo digital.", //
                     required = true) //
@@ -71,8 +71,12 @@ public class ArquivoResource extends CommonResource {
             @ApiParam(name = "search_tab", //
                     value = "Search Tab é o grupo do arquivo digital.", //
                     required = false) //
-            @RequestParam(name = "search_tab", required = false) final String searchTab) {
-        final List<ArquivoTO> arquivos = arquivoBusiness.carregarPor(nome, SearchTab.of(searchTab));
+            @RequestParam(name = "search_tab", required = false) final String searchTab,
+            @ApiParam(name = "page", //
+                    value = "Page é a pagina para retorno com um limite de 10 itens", //
+                    required = true) //
+            @RequestParam(name = "page", required = true) final Integer page) {
+        final Page<ArquivoTO> arquivos = arquivoBusiness.carregarPor(nome, SearchTab.of(searchTab), page);
         if (arquivos.isEmpty()) {
             throw new MasterException("slave.obj.nao.localizado").status(Status.NOT_FOUND);
         }
@@ -180,6 +184,9 @@ public class ArquivoResource extends CommonResource {
                     value = "<p>O token é uma string criptografada, gerada pelo servidor <strong>virtual-access</strong> que deve ser enviada como um <strong>queryParam</strong></p>", //
                     required = false) //
             @RequestParam(value = "token", required = false) final String token,
+            @ApiParam(name = "page", //
+                    value = "Page é a pagina para retorno com um limite de 10 itens", //
+                    required = true) //
             @RequestParam(value = "page", required = true) final Integer page) {
 
         final ValidarToken access = validarTokenAccess(authorization, token);

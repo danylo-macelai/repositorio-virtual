@@ -84,6 +84,23 @@ public class ArquivoBusiness extends DBusiness<ArquivoTO> implements IArquivo {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = true)
+    public Page<ArquivoTO> carregarPor(final String nome, final SearchTab searchTab, final Integer page)
+            throws MasterException {
+        final int p = page != null && page >= 0 ? page : Constants.PAGINATION_FIRST_PAGE;
+
+        final PageRequest pr = PageRequest.of(p, Constants.PAGINATION_ITEMS_PER_PAGE);
+
+        if (searchTab == null) {
+            return persistence.findAllByNomeIgnoreCaseContaining(nome, pr);
+        }
+        return persistence.findAllBySearchTabAndNomeIgnoreCaseContaining(searchTab, nome, pr);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Transactional
     public void excluir(final ValidarToken token, final long id) throws MasterException {
         final ArquivoTO arquivo = ache(id);

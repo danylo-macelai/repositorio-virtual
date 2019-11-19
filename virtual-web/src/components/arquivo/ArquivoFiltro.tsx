@@ -29,6 +29,7 @@ export class ArquivoFiltro extends React.Component<Props, State> {
 
   render() {
     const filtro = this.props.filtro;
+
     return (
       <button
         type="button"

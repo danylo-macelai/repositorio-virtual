@@ -13,7 +13,6 @@ import { Redirect } from 'react-router';
 
 import {
   arquivosUsuario,
-  leituraArquivo,
   exclusaoArquivo,
   visualizarArquivoURL,
 } from '../services/servicosApi';

@@ -24,7 +24,7 @@ public interface ArquivoDAO extends JpaRepository<ArquivoTO, Long> {
     /**
      * Consulta o arquivo por nome
      *
-     * @param nome
+     * @param nome - Nome do arquivo
      * @return List<ArquivoTO>
      */
     List<ArquivoTO> findAllByNomeIgnoreCaseContaining(String nome);
@@ -33,19 +33,37 @@ public interface ArquivoDAO extends JpaRepository<ArquivoTO, Long> {
      * Consulta o arquivo por nome
      *
      * @param nome - Nome do arquivo
-     * @param searchTab - Grupo do arquivo
+     * @param pageable - Configuracao de pagina e quantidade de itens para retorno
+     * @return Page<ArquivoTO>
+     */
+    Page<ArquivoTO> findAllByNomeIgnoreCaseContaining(String nome, Pageable pageable);
+
+    /**
+     * Consulta o arquivo por nome
+     *
+     * @param tab - Grupo do arquivo
+     * @param nome - Nome do arquivo
      * @return List<ArquivoTO>
      */
     List<ArquivoTO> findAllBySearchTabAndNomeIgnoreCaseContaining(SearchTab tab, String nome);
 
     /**
+     * Consulta o arquivo por nome
      *
+     * @param tab - Grupo do arquivo
+     * @param nome - Nome do arquivo
+     * @param pageable - Configuracao de pagina e quantidade de itens para retorno
+     * @return Page<ArquivoTO>
+     */
+    Page<ArquivoTO> findAllBySearchTabAndNomeIgnoreCaseContaining(SearchTab tab, String nome, Pageable pageable);
+
+    /**
      * Consulta os arquivos do usuario
      *
      * @apiNote $
      *
      * @param token
-     * @return
+     * @return Page<ArquivoTO>
      */
     Page<ArquivoTO> findAllByToken(ValidarToken token, Pageable pageable);
 

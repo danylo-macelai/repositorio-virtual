@@ -10,102 +10,29 @@
     }
   }
 
-  #content {
-    padding-top: 56px;
-    padding-left: 20px;
-    padding-right: 20px;
+  .infinite-scroll-component {
+    padding: 0 15px;
+    margin: 0 -15px;
+  }
 
-    div.row {
-      vertical-align: middle;
-      display: block;
-      float: none;
-      font-weight: normal;
-      border-style: none;
-      padding: 0px 0px 0px 3px;
-      overflow-x: auto;
-    }
+  .ui.segment.search-message {
+    margin: 1rem 0;
+  }
 
-    div.column {
-      padding: 0 8px 8px 0 !important;
-      border: none;
-      background: transparent;
-    }
+  .ui.three.cards {
+    margin-top: 3px;
+    margin-bottom: 3px;
 
-    div.column a {
-      font: normal 12px/14px Arial, Helvetica, sans-serif;
-      color: #666666;
-      text-shadow: 1px 1px #ffffff;
-      background: none repeat scroll 0 0 #ffffff;
-      border: 1px solid #cccbc9;
-      border-radius: 6px;
-      box-shadow: 0 0 1px 1px #ffffff inset,
-        0 0 20px 3px rgba(230, 226, 220, 0.6) inset;
-      display: block;
-      transition: all 0.18s ease 0s;
-      display: block;
-      padding: 8px 4px 2px;
-      text-align: center;
-      text-shadow: 1px 1px #ffffff;
-      width: 168px;
-    }
-
-    div.column a:hover {
-      border: solid 1px #e0e0e0;
-      background: none repeat scroll 0 0 #fcfcf7;
-      box-shadow: 0 3px 0 rgba(255, 255, 255, 0.5) inset,
-        4px 4px 8px rgba(0, 0, 0, 0.5);
-      text-decoration: none;
-    }
-
-    div.column a h4 {
-      margin: 0 0 0 23px;
-    }
-
-    div.column a h4 div {
-      background: transparent !important;
-      background-position: 40% 50% !important;
-      margin: 0 !important;
-      cursor: pointer;
-      border: 1px solid #ccc;
-      -webkit-border-radius: 10;
-      -moz-border-radius: 10px;
-      border-radius: 10px;
-      height: 138px;
-      width: 109px;
-      padding: 2px;
-      text-align: center;
-    }
-
-    div.column a h4 div img {
-      width: 104px;
-      height: 132px;
-      border-radius: 10px;
-      margin: 3px 0 0;
-    }
-
-    div.column a span {
-      font: small-caps bold 14px/20px 'Trebuchet MS', Times, Sans-Serif;
-      color: #666666;
-      text-shadow: 1px 1px #ffffff;
-      text-overflow: ellipsis;
-      -o-text-overflow: ellipsis;
-      text-align: center;
-      float: left;
-      white-space: nowrap;
+    .header {
       overflow: hidden;
-      clear: both;
-      width: 158px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    div.column a span.nome {
-      font: small-caps bold 14px/20px 'Trebuchet MS', Times, Sans-Serif;
-      color: #222;
-    }
-
-    div.column a span.info {
-      font: normal 12px/14px Arial, Helvetica, sans-serif;
-      color: #666666;
-      text-shadow: 1px 1px #ffffff;
+    .image {
+      img {
+        max-width: 120px;
+      }
     }
   }
 }

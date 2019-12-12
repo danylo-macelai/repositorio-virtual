@@ -77,15 +77,43 @@ Neste contexto surgiu o VirTeca como projeto, que pretendesse consolidar ao máx
 
 # Funcionalidade
 
-<img src="docs/rv_mod.png" align="right"  height="450">
+Os módulos web e mobile refere-se ao lado do cliente, será as ferramentas utilizadas para os usuários terem acesso as funcionalidades dos demais módulos que possuem papeis, responsabilidades e ambientes diferentes.
 
-A consulta ao acervo é pública, podendo ser de limitada a imagem, áudio, vídeo ou qualquer outro tipo de arquivo.
+O master atendera as solicitações de armazenamento, leitura e configurações relacionadas a arquivos já o access as operações com os usuários e controle de acesso.
 
-Os arquivos serão enviados através dos dispositivos cliente e recebidos pelo master que realiza uma divisão em N blocos identificados no diretório temporário. Uma tarefa será executada em background para gravar estes blocos nos servidores slave. Após a realização deste trabalho uma outra tarefa fara a replicação dos blocos em slave diferentes.
+O eureka é um serviço que permite os servidores slave se registem. Assim sempre que o master informar uma instanceId ele devolverá a sua respectiva homePageUrl.
 
-_O arquivo remessa.txt está divido em dois blocos ac92.rvf e b508.rvf. Cada bloco foi armazenado em locais diferentes o ac92.rvf está no Slave 1 e sua cópia no Slave 4, já o bloco b508.rvf no Slave 2 e 3._
+O slave sempre que inicializado se auto registra no eureka para que através da sua instanceId possa atender as solicitações do master realizado a armazenamento, leitura, replicação ou ate mesmo a exclusão de blocos em disco.
 
-Uma vez que os blocos já estão gravados e replicados o diretório temporário será apagado. Para baixar um arquivo o máster deverá realizar o processo inverso do envio, recuperando os blocos espalhados nas instancias slaves que estão ativas para a reconstrução do arquivo.
+<div align="center">
+    <img src="docs/modulo.gif">
+</div>
+
+Para o armazenamento de arquivos o usuário deve se autenticar no access para receber um token que deverá ser enviando junto com arquivo ao master. Antes de atender a requisição este token deverá ser validado no access para o prosseguimendo do processamento, que se inicializará com a divisão do arquivo em blocos de tamanho fixo conforme o definido nas configurações do master, para o seu envio imediato ao diretório temporário do master.
+
+Uma tarefa será executada periodicamente para enviar estes blocos do diretório temporário do master para os servidores slave's registrados no eureka. Mantendo assim o instanceId para onde o bloco foi enviado para a gravação em disco.
+
+Apos a gravação uma outra tarefa periodicamente será executada desta vez para replicar de acordo os blocos gravados de acordo com a quantidade de réplicas definidas nas configurações do master. Recuperando uma instanceId do eureka onde o tal bloco não existe e logo em seguida delegando ao slave que envie uma cópia do bloco para a tal instanceId.
+
+Uma vez realizado todo este processo uma outra tarefa periodicamente será executada para apagar estes blocos que estão armazenados no diretório temporário do master para liberação do espaço em disco.
+
+<div align="center">
+    <img src="docs/upload.gif">
+</div>
+
+> _O arquivo Demonstrativo Financeiro.pdf está divido em tres blocos 1Z4A5Q.rvf, 2X6S7W.rvf e 3C8D9E.rvf. Cada bloco foi armazenado em locais diferentes o 1Z4A5Q.rvf está gravado no localhost:APP-SLAVE:8080 e replicado no localhost:APP-SLAVE:8083, já o bloco 2X6S7W.rvf no localhost:APP-SLAVE:8081 e localhost:APP-SLAVE:8080 e por último o 3C8D9E.rvf no localhost:APP-SLAVE:8082 e localhost:APP-SLAVE:8081._
+
+Para ler o arquivo o usuário não precisará estar autenticado, basta informar o arquivo que servidor master buscará todas as instanceId independente de ser ou não réplicas dos blocos.
+
+O master deverá recupera a homePageUrl da instanceId que esta ativa no eureka para realizar o download do bloco para o seu diretório temporário, repetindo assim esta atividade ate obter todos os blocos que serão necessários para reconstrução do arquivo.
+
+A reconstrução do arquivo considera a mesma ordem em que os blocos foram divididos, colocando assim cada bloco em seu devido lugar ate gerar o arquivo final que será devolvido ao dispositivo cliente.
+
+Uma vez finalizado este processo a mesma tarefa de limpeza citada no armazenamento ficará responsável de remover estes arquivos do diretório temporário.
+
+<div align="center">
+    <img src="docs/download.gif">
+</div>
 
 Assim como o envio a edição ou até mesmo a exclusão só será permitida pelo o autor que foi previamente cadastrado no access. O Administrador do sistema poderá gerenciar todo o acervo bem como os usuários ou até mesmo as configurações do master e/ou slave.
 

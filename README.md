@@ -4,11 +4,11 @@
 
 O VirTeca é um serviço de hospedagem de arquivos baseado em nuvem, que permite os usuários a armazenar ou consultar livros, filmes, softwares, músicas e outros arquivos no formato digital, através de dispositivos clientes Web ou Mobile. Os usuários também poderão se registrar através destas interfaces.
 
-O método de armazenamento permite que um arquivo seja dividido em blocos usando uma convenção própria que inviabilizara a sua reconstrução por outros agentes leigos. Após a divisão, estes blocos são enviados a um ou mais servidores para a gravação em disco. Além disso, será mantida uma política de redundância para garantir disponibilidade dos dados em caso de falha em alguma instância de servidor.
+O método de gravação permite que um arquivo seja dividido em blocos usando uma convenção própria que inviabilizara a sua reconstrução por outros agentes leigos. Após a divisão, estes blocos são enviados a um ou mais servidores para a gravação em disco. Além disso, será mantida uma política de redundância para garantir disponibilidade dos dados em caso de falha em alguma instância de servidor.
 
-Quando o dispositivo cliente solicitar o download do arquivo, o servidor recupera os blocos espalhados nas instâncias dos outros servidores para reconstruir arquivo que será devolvido.
+Quando o dispositivo cliente solicitar a leitura do arquivo, o servidor recupera os blocos espalhados nas instâncias dos outros servidores para reconstruir arquivo que será devolvido.
 
-Para armazenar arquivos o usuário deverá estar registrado e autenticado na aplicação.
+Para armazenar os arquivos o usuário deverá estar registrado e autenticado na aplicação.
 
 <table border="0" >
     <tbody>
@@ -77,15 +77,43 @@ Neste contexto surgiu o VirTeca como projeto, que pretendesse consolidar ao máx
 
 # Funcionalidade
 
-<img src="docs/rv_mod.png" align="right"  height="450">
+Os módulos **Web** e **Mobile** referem-se ao lado do cliente, serão as ferramentas utilizadas que os usuários utilizarão para acessarem as funcionalidades dos demais módulos que possuem responsabilidades, papeis e ambientes diferentes.
 
-A consulta ao acervo é pública, podendo ser de limitada a imagem, áudio, vídeo ou qualquer outro tipo de arquivo.
+O **Master** atendera as solicitações de gravação, leitura e as configurações relacionadas aos arquivos, já o **Access** todas operações que envolverá os usuários e o controle de acesso a aplicação.
 
-Os arquivos serão enviados através dos dispositivos cliente e recebidos pelo master que realiza uma divisão em N blocos identificados no diretório temporário. Uma tarefa será executada em background para gravar estes blocos nos servidores slave. Após a realização deste trabalho uma outra tarefa fara a replicação dos blocos em slave diferentes.
+O **Eureka** oferece uma estrutura de dados que permite cada servidor **Slave** se ligar a uma _instanceId_, sempre que o **Master** informar uma _instanceId_ ele devolverá a sua respectiva _homePageUrl_.
 
-_O arquivo remessa.txt está divido em dois blocos ac92.rvf e b508.rvf. Cada bloco foi armazenado em locais diferentes o ac92.rvf está no Slave 1 e sua cópia no Slave 4, já o bloco b508.rvf no Slave 2 e 3._
+O **Slave** quando inicializado se auto registrara no **Eureka** através da sua _instanceId_ para atender as solicitações do **Master** realizado a gravação, leitura, replicação ou até mesmo a exclusão dos blocos em disco.
 
-Uma vez que os blocos já estão gravados e replicados o diretório temporário será apagado. Para baixar um arquivo o máster deverá realizar o processo inverso do envio, recuperando os blocos espalhados nas instancias slaves que estão ativas para a reconstrução do arquivo.
+<div align="center">
+    <img src="docs/modulo.gif">
+</div>
+
+Para a gravação dos arquivos o usuário deve se autenticar no **Access** para receber um token que precisará ser enviando junto com arquivo ao **Master**. Mas antes de começar o processamento este token deverá ser validado no **Access**. O processamento realizara a divisão do arquivo em blocos de tamanho fixo conforme as configurações do **Master** e identificam-no de forma única para o armazenamento no diretório temporário do **Master**.
+
+Uma tarefa será executada periodicamente para enviar estes blocos do diretório temporário do **Master** para os servidores **Slave** que estão registrados no **Eureka**, mantendo assim a _instanceId_ do servidor que o bloco foi enviado.
+
+Após a gravação uma outra tarefa periodicamente será executada, desta vez para replicar os blocos gravados de acordo com a quantidade de réplicas definidas nas configurações do **Master**. Para replicar será necessário recuperar uma _instanceId_ no **Eureka** onde o tal bloco não existe e solicitar ao **Slave** detentor que envie uma cópia para a nova _instanceId_.
+
+Uma vez realizado a replicação uma outra tarefa periodicamente será executada para liberar espaço do diretório temporário do **Master** removendo os arquivos que já foram totalmente processados.
+
+<div align="center">
+    <img src="docs/upload.gif">
+</div>
+
+> _O arquivo Demonstrativo Financeiro.pdf está divido em três blocos **1Z4A5Q.rvf**, **2X6S7W.rvf** e **3C8D9E.rvf**. Cada bloco foi armazenado em locais diferentes o **1Z4A5Q.rvf** está gravado no **localhost:APP-SLAVE:8080** e replicado no **localhost:APP-SLAVE:8083**, já o bloco **2X6S7W.rvf** no **localhost:APP-SLAVE:8081** e **localhost:APP-SLAVE:8080** e por último o **3C8D9E.rvf** no **localhost:APP-SLAVE:8082** e **localhost:APP-SLAVE:8081**._
+
+Para leitura de arquivos o usuário não precisará estar autenticado, basta informar o arquivo que servidor **Master** buscará todas as _instanceId_ independentemente de serem ou não réplicas dos blocos.
+
+O **Master** deverá recupera a _homePageUrl_ da _instanceId_ que está ativa no **Eureka** para realizar o download do bloco para o seu diretório temporário, repetindo assim esta atividade até obter todos os blocos que serão necessários para reconstrução do arquivo.
+
+A reconstrução do arquivo respeitara a mesma ordem em que os blocos foram divididos, colocando assim cada bloco em seu devido lugar até gerar o arquivo final que será devolvido ao dispositivo cliente.
+
+Uma vez finalizado este processo a mesma tarefa de limpeza citada no armazenamento ficará responsável de remover estes arquivos do diretório temporário.
+
+<div align="center">
+    <img src="docs/download.gif">
+</div>
 
 Assim como o envio a edição ou até mesmo a exclusão só será permitida pelo o autor que foi previamente cadastrado no access. O Administrador do sistema poderá gerenciar todo o acervo bem como os usuários ou até mesmo as configurações do master e/ou slave.
 
@@ -97,4 +125,4 @@ A velocidade lenta da conexão de banda larga pode dificultar a transmissão de 
 
 Somente o servidor Máster detêm o conhecimento lógico para reconstruir o arquivo.
 
-Enquanto os blocos estão armazenados no Slave, esse conteúdo ainda está acessível aos usuários do VirTeca.
+Enquanto os blocos estão armazenados no Slave, esse conteúdo ainda está acessível aos usuários do VirTeca.

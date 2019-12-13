@@ -89,7 +89,7 @@ O slave sempre que inicializado se auto registra no eureka para que através da 
     <img src="docs/modulo.gif">
 </div>
 
-Para o armazenamento de arquivos o usuário deve se autenticar no access para receber um token que deverá ser enviando junto com arquivo ao master. Antes de atender a requisição este token deverá ser validado no access para o prosseguimendo do processamento, que se inicializará com a divisão do arquivo em blocos de tamanho fixo conforme o definido nas configurações do master, para o seu envio imediato ao diretório temporário do master.
+Para o upload de arquivos o usuário deve se autenticar no access para receber um token que deverá ser enviando junto com arquivo ao master. Antes de atender a requisição este token deverá ser validado no access para prosseguir com o processamento que se inicializará com a divisão do arquivo em blocos de tamanho fixo conforme o definido nas configurações do master. Após isso ele será enviado para o diretorio temporario do virtual-master.
 
 Uma tarefa será executada periodicamente para enviar estes blocos do diretório temporário do master para os servidores slave's registrados no eureka. Mantendo assim o instanceId para onde o bloco foi enviado para a gravação em disco.
 

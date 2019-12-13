@@ -81,7 +81,7 @@ Os módulos web e mobile refere-se ao lado do cliente, será as ferramentas util
 
 O master atendera as solicitações de armazenamento, leitura e configurações relacionadas a arquivos já o access as operações com os usuários e controle de acesso.
 
-O eureka é um serviço que permite os servidores slave se registem. Assim sempre que o master informar uma instanceId ele devolverá a sua respectiva homePageUrl.
+O eureka é um serviço que permite os servidores slave se registrem. Assim sempre que o master informar uma instanceId ele devolverá a sua respectiva homePageUrl.
 
 O slave sempre que inicializado se auto registra no eureka para que através da sua instanceId possa atender as solicitações do master realizado a armazenamento, leitura, replicação ou ate mesmo a exclusão de blocos em disco.
 

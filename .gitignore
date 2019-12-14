@@ -69,5 +69,6 @@ virtual-slave/men
 /virtual-mobile/.gitignore
 /virtual-mobile/app/.gitignore
 
-
+# Env Ignore
+/virtual-web/.env
 

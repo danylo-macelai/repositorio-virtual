@@ -20,6 +20,7 @@ import {
   BemVindoPage,
   ArquivoUploadPage,
   MeusArquivosPage,
+  SobrePage,
 } from './pages/index';
 
 import './App.scss';
@@ -109,6 +110,7 @@ class App extends React.Component<AppProps, AppState> {
                   exact={true}
                   component={MeusArquivosPage}
                 />
+                <Route path="/sobre" exact={true} component={SobrePage} />
               </div>
             </div>
           </div>

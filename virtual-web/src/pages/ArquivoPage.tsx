@@ -48,7 +48,7 @@ class ArquivoPage extends React.Component<Props, State> {
   enter(event: any) {
     switch (event.keyCode) {
       case 13:
-        this.consulta(this.state.filtro, 0);
+        this.consultaInicial(this.state.filtro);
     }
   }
 

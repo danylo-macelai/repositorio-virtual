@@ -1,14 +1,13 @@
 package br.com.mobile.Resource;
 
 import java.io.File;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import br.com.mobile.Domain.ArquivoTO;
+import br.com.mobile.Domain.ContentTO;
 import br.com.mobile.Model.IArquivoModel;
 import br.com.mobile.Utils.FileUtils;
 import okhttp3.MultipartBody;
@@ -64,8 +63,8 @@ public class ArquivoResource {
         return callUpload;
     }
 
-    public Call<List<ArquivoTO>> Arquivos(String nome) {
-        Call<List<ArquivoTO>> call = arquivoModel.getArquivos(nome);
+    public Call<ContentTO> Arquivos(String nome, int pagination) {
+        Call<ContentTO> call = arquivoModel.getArquivos(nome, pagination);
         return call;
     }
 

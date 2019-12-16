@@ -108,7 +108,8 @@
         android:shadowRadius="50"
         android:text="Conectar"
         android:textSize="17sp"
-        android:textColor="#616161"
+        android:textColor="#ffffff "
+        android:textStyle="bold"
         android:background="@drawable/button_api_connection"
         android:onClick="conectar"
         android:fontFamily="@font/robotolight" />

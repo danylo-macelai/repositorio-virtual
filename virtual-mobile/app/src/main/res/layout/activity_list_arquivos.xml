@@ -6,13 +6,34 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rcvFilesList"
-        android:layout_width="402dp"
-        android:layout_height="602dp"
+        android:layout_width="396dp"
+        android:layout_height="497dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.72" />
+        app:layout_constraintVertical_bias="0.41" />
+
+    <Button
+        android:id="@+id/btnCarregarItens"
+        android:layout_width="275dp"
+        android:layout_height="49dp"
+        android:background="@drawable/button_api_connection"
+        android:fontFamily="@font/robotolight"
+        android:shadowColor="#bbdefb"
+        android:shadowDx="1"
+        android:shadowDy="0"
+        android:shadowRadius="50"
+        android:text="Carregar mais itens"
+        android:textColor="#ffffff "
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rcvFilesList"
+        app:layout_constraintVertical_bias="0.0"
+        android:onClick="carregarItens" />
 
 </android.support.constraint.ConstraintLayout>

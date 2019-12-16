@@ -1,8 +1,6 @@
 package br.com.mobile.Model;
 
-import java.util.List;
-
-import br.com.mobile.Domain.ArquivoTO;
+import br.com.mobile.Domain.ContentTO;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -29,7 +27,7 @@ public interface IArquivoModel {
     Call<ResponseBody> arquivoUpload(@Part MultipartBody.Part arquivo, @Header("Authorization") String token);
 
     @GET("arquivos")
-    Call<List<ArquivoTO>> getArquivos(@Query("nome") String nome);
+    Call<ContentTO> getArquivos(@Query("nome") String nome, @Query("page") int page);
 
     @Streaming
     @GET

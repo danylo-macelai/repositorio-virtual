@@ -53,7 +53,7 @@ public class UserActivity extends AppCompatActivity {
                     UserActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            txtUserName.setText(response.data().validarToken().nome());
+                            txtUserName.setText(response.data().validarToken().nome);
                             txtEmail.setText(response.data().validarToken().email());
                             txtPerfilType.setText(response.data().validarToken().perfilType().toString());
                             if (response.data().validarToken().ativo()) {

@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import br.com.mobile.Adapter.ArquivoListAdapter;
 import br.com.mobile.Domain.ArquivoTO;
+import br.com.mobile.Domain.ContentTO;
 import br.com.mobile.Resource.ArquivoResource;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -42,6 +43,8 @@ public class ListArquivosActivity extends AppCompatActivity implements ArquivoLi
     private ArquivoResource    arquivoResource;
     private PopupMenu          popupMenu;
     private ProgressDialog     progressDialog;
+    private int                page = 0;
+    private String             consulta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,47 +53,63 @@ public class ListArquivosActivity extends AppCompatActivity implements ArquivoLi
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("Lista de Arquivos");
 
-        rcView = (RecyclerView) findViewById(R.id.rcvFilesList);
         Intent intent = getIntent();
-        String consulta = (String) intent.getSerializableExtra("consulta");
+        consulta = (String) intent.getSerializableExtra("consulta");
         arquivoResource = new ArquivoResource(this);
         arquivos = new ArrayList<>();
         fileDoneList = new ArrayList<>();
 
-        getArquivos(consulta);
+        rcView = (RecyclerView) findViewById(R.id.rcvFilesList);
+        adapter = new ArquivoListAdapter(arquivos, fileDoneList, ListArquivosActivity.this);
+        rcView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        rcView.setHasFixedSize(true);
+        rcView.setAdapter(adapter);
+
+        getArquivos(consulta, page);
 
     }
 
-    private void getArquivos(String consulta) {
-        Call<List<ArquivoTO>> callArquivos = arquivoResource.Arquivos(consulta);
+    private void getArquivos(String consulta, final int pagination) {
+        int listPagination = 0;
+        Call<ContentTO> callArquivos = arquivoResource.Arquivos(consulta, pagination);
 
-        callArquivos.enqueue(new Callback<List<ArquivoTO>>() {
+        callArquivos.enqueue(new Callback<ContentTO>() {
             @Override
-            public void onResponse(Call<List<ArquivoTO>> call, Response<List<ArquivoTO>> response) {
+            public void onResponse(Call<ContentTO> call, Response<ContentTO> response) {
+                try {
 
-                Iterator<ArquivoTO> iterator = response.body().iterator();
-                while (iterator.hasNext()) {
-                    ArquivoTO arquivoTo = iterator.next();
-                    arquivo = arquivoTo;
-                    arquivos.add(arquivoTo);
-                    fileDoneList.add("notdownloading");
-                }
-                ListArquivosActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter = new ArquivoListAdapter(arquivos, fileDoneList, ListArquivosActivity.this);
-                        rcView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                        rcView.setHasFixedSize(true);
-                        rcView.setAdapter(adapter);
-
+                    ContentTO content = response.body();
+                    List<ArquivoTO> list = content.getListArchives();
+                    Iterator<ArquivoTO> iterator = list.iterator();
+                    while (iterator.hasNext()) {
+                        ArquivoTO arquivoTo = iterator.next();
+                        arquivos.add(arquivoTo);
+                        fileDoneList.add("notdownloading");
                     }
-                });
+                    if (page != 0) {
+                        Toast.makeText(ListArquivosActivity.this, "MAIS ITENS FORAM ADICIONADOS A LISTA!!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    adapter.notifyDataSetChanged();
 
+                } catch (Exception ex) {
+                    Log.e("ERROR LIST FILES", response.errorBody().toString());
+                    Toast.makeText(ListArquivosActivity.this, "ERRO: NÃO TEM ARQUIVOS PARA CONSULTAR!!",
+                            Toast.LENGTH_LONG).show();
+                    if (page != 0) {
+                        page--;
+                    }
+
+                    ex.printStackTrace();
+                }
+
+                // Log.e("ERROR LIST FILES", response.errorBody().toString());
             }
 
             @Override
-            public void onFailure(Call<List<ArquivoTO>> call, Throwable t) {
-
+            public void onFailure(Call<ContentTO> call, Throwable t) {
+                Log.e("ERROR LIST FILES: ", t.getMessage());
+                t.printStackTrace();
             }
         });
     }
@@ -120,6 +139,12 @@ public class ListArquivosActivity extends AppCompatActivity implements ArquivoLi
             }
         });
         popupMenu.show();
+    }
+
+    public void carregarItens(View v) {
+        page++;
+        Log.i("PAGINATION", String.valueOf(page));
+        getArquivos(consulta, page);
     }
 
     private void downloadFile(final ArquivoTO arquivo, final int posititon) {

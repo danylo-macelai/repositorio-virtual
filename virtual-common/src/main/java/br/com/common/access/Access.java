@@ -19,8 +19,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @SuppressWarnings("serial")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "errors",
-    "data"
+        "errors",
+        "data"
 })
 abstract class Access implements Serializable {
 

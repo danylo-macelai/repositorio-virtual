@@ -19,9 +19,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @SuppressWarnings("serial")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "message",
-    "locations",
-    "path"
+        "message",
+        "locations",
+        "path"
 })
 public class Error implements Serializable {
 

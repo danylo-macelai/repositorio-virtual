@@ -28,7 +28,7 @@ public enum SearchTab {
         for (SearchTab s : EnumSet.allOf(SearchTab.class)) {
             SearchTab.name_lookup.put(s.name().toLowerCase(), s);
         }
-        
+
         // Sound Files MIME Type
         SearchTab.name_lookup.put("audio/basic", SearchTab.AUDIO);
         SearchTab.name_lookup.put("audio/mid", SearchTab.AUDIO);
